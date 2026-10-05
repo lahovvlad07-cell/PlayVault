@@ -2,43 +2,119 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>PlayVault</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
+      --bg: #0b0f19;
+      --card-bg: #151c2c;
+      --card-border: #232d42;
       --accent: #38bdf8;
       --accent-hover: #0284c7;
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --success: #22c55e;
+      --danger: #ef4444;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding-bottom: 70px; -webkit-tap-highlight-color: transparent; }
-    header { padding: 16px; background: var(--card-bg); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
-    header h1 { font-size: 18px; color: var(--accent); }
-    .balance-badge { background: #334155; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 80px; user-select: none; }
     
-    .nav { display: flex; background: var(--card-bg); border-top: 1px solid #334155; position: fixed; bottom: 0; left: 0; right: 0; height: 60px; z-index: 100; }
-    .nav-btn { flex: 1; border: none; background: transparent; color: var(--text-muted); font-size: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; }
-    .nav-btn.active { color: var(--accent); font-weight: bold; }
+    header {
+      padding: 16px;
+      background: var(--card-bg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 { font-size: 18px; color: var(--accent); font-weight: 700; }
+    .balance-badge {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .nav {
+      display: flex;
+      background: var(--card-bg);
+      border-top: 1px solid var(--card-border);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      z-index: 100;
+    }
+    .nav-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .nav-btn.active { color: var(--accent); font-weight: 600; }
 
     .tab-content { display: none; padding: 16px; }
     .tab-content.active { display: block; }
 
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-    .card { background: var(--card-bg); border-radius: 12px; padding: 12px; border: 1px solid #334155; display: flex; flex-direction: column; justify-content: space-between; }
-    .card h3 { font-size: 15px; margin-bottom: 8px; }
-    .card .price { font-size: 16px; font-weight: bold; color: var(--accent); margin-bottom: 12px; }
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card h3 { font-size: 14px; margin-bottom: 6px; line-height: 1.3; }
+    .card .price { font-size: 15px; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
     
-    .btn { background: var(--accent); color: #000; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; text-align: center; }
-    .btn:active { background: var(--accent-hover); }
+    .btn {
+      background: var(--accent);
+      color: #0b0f19;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+    .btn:active { opacity: 0.8; }
 
-    .access-item { background: var(--card-bg); border-radius: 12px; padding: 14px; border: 1px solid #334155; margin-bottom: 12px; }
-    .access-item h4 { font-size: 16px; color: var(--accent); margin-bottom: 8px; }
-    .credentials { background: #0f172a; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 13px; margin-top: 6px; border: 1px dashed #334155; word-break: break-all; }
+    .access-item {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 12px;
+    }
+    .access-item h4 { font-size: 15px; color: var(--accent); margin-bottom: 6px; }
+    .credentials {
+      background: #0b0f19;
+      padding: 10px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 13px;
+      margin-top: 8px;
+      border: 1px dashed var(--card-border);
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -51,30 +127,33 @@
   <!-- Вкладка: Каталог -->
   <div id="tab-catalog" class="tab-content active">
     <div class="grid" id="packs-list">
-      <p style="color: var(--text-muted);">Загрузка каталога...</p>
+      <p style="color: var(--text-muted); text-align: center; grid-column: 1/-1;">Загрузка каталога...</p>
     </div>
   </div>
 
   <!-- Вкладка: Мои доступы -->
   <div id="tab-access" class="tab-content">
     <div id="access-list">
-      <p style="color: var(--text-muted);">Загрузка купленных товаров...</p>
+      <p style="color: var(--text-muted); text-align: center;">Загрузка купленных товаров...</p>
     </div>
   </div>
 
-  <!-- Навигация -->
+  <!-- Нижная навигация -->
   <nav class="nav">
-    <button class="nav-btn active" onclick="switchTab('catalog')">
+    <button class="nav-btn active" id="btn-catalog" onclick="switchTab('catalog')">
       <span>🎮</span> Каталог
     </button>
-    <button class="nav-btn" onclick="switchTab('access')">
+    <button class="nav-btn" id="btn-access" onclick="switchTab('access')">
       <span>🔑</span> Мои доступы
     </button>
   </nav>
 
   <script>
     const tg = window.Telegram?.WebApp;
-    if (tg) tg.expand();
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
 
     let currentUser = null;
 
@@ -85,11 +164,11 @@
 
       if (tabName === 'catalog') {
         document.getElementById('tab-catalog').classList.add('active');
-        event.currentTarget.classList.add('active');
+        document.getElementById('btn-catalog').classList.add('active');
         loadPacks();
       } else if (tabName === 'access') {
         document.getElementById('tab-access').classList.add('active');
-        event.currentTarget.classList.add('active');
+        document.getElementById('btn-access').classList.add('active');
         loadMyAccess();
       }
     }
@@ -106,43 +185,44 @@
           document.getElementById('user-balance').innerText = `Баланс: ${currentUser.balance || 0} ₽`;
         }
       } catch (e) {
-        console.error('Ошибка загрузки пользователя:', e);
+        console.error('Ошибка загрузки данных пользователя:', e);
       }
     }
 
-    // Загрузка товаров
+    // Загрузка паков из API
     async function loadPacks() {
+      const list = document.getElementById('packs-list');
       try {
-        const res = await fetch('/api/me'); 
         const initData = tg?.initData || '';
-        const packsRes = await fetch('/api/admin', {
+        const res = await fetch('/api/me', {
           headers: { 'x-telegram-init-data': initData }
         });
         
-        // Рендерим тестовые/доступные наборы
-        const list = document.getElementById('packs-list');
-        list.innerHTML = `
+        if (!res.ok) throw new Error('Network error');
+        const data = await res.json();
+        const packs = data.packs || [];
+
+        if (packs.length === 0) {
+          list.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1/-1;">Каталог пуст.</p>';
+          return;
+        }
+
+        list.innerHTML = packs.map(p => `
           <div class="card">
             <div>
-              <h3>Cyberpunk 2077</h3>
-              <div class="price">299 ₽</div>
+              <h3>${p.name}</h3>
+              <div class="price">${p.price} ₽</div>
             </div>
-            <button class="btn" onclick="buyPack(1)">Купить</button>
+            <button class="btn" onclick="buyPack(${p.id})">Купить</button>
           </div>
-          <div class="card">
-            <div>
-              <h3>Elden Ring</h3>
-              <div class="price">399 ₽</div>
-            </div>
-            <button class="btn" onclick="buyPack(2)">Купить</button>
-          </div>
-        `;
+        `).join('');
+
       } catch (e) {
-        console.error(e);
+        list.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1/-1;">Ошибка загрузки каталога.</p>';
       }
     }
 
-    // Покупка товара (ИСПРАВЛЕННАЯ ЛОГИКА)
+    // Покупка товара (ИСПРАВЛЕННАЯ ЛОГИКА ОПЛАТЫ С БАЛАНСА)
     async function buyPack(packId) {
       try {
         const initData = tg?.initData || '';
@@ -158,19 +238,23 @@
         const data = await res.json();
 
         if (!res.ok) {
-          alert(data.error === 'no_slots' ? 'Нет свободных слотов' : (data.error || 'Ошибка создания заказа'));
+          if (data.error === 'no_slots') {
+            alert('Свободных слотов сейчас нет');
+          } else {
+            alert(data.error || 'Не удалось создать заказ');
+          }
           return;
         }
 
-        // 1. Успешная покупка с баланса без вызова окна Stars
+        // 1. Успешная списание средств с баланса аккаунта
         if (data.paid_via === 'balance' || (data.success && !data.link)) {
-          alert('✅ Оплата успешно прошла с баланса!');
+          alert('✅ Товар успешно куплен!');
           await loadUserData();
           switchTab('access');
           return;
         }
 
-        // 2. Оплата через Telegram Stars (если передана валидная ссылка)
+        // 2. Оплата через Telegram Stars (если передана ссылка на инвойс)
         if (data.link) {
           if (tg && tg.openInvoice) {
             tg.openInvoice(data.link, async (status) => {
@@ -186,7 +270,7 @@
         }
       } catch (err) {
         console.error(err);
-        alert('Произошла ошибка при обработке запроса');
+        alert('Ошибка при обработке покупки');
       }
     }
 
@@ -199,18 +283,18 @@
           headers: { 'x-telegram-init-data': initData }
         });
 
-        if (!res.ok) throw new Error('Failed to fetch');
+        if (!res.ok) throw new Error('Fetch failed');
 
         const items = await res.json();
         if (!items || items.length === 0) {
-          container.innerHTML = '<p style="color: var(--text-muted);">У вас пока нет купленных доступов.</p>';
+          container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">У вас пока нет купленных доступов.</p>';
           return;
         }
 
         container.innerHTML = items.map(item => `
           <div class="access-item">
-            <h4>${item.name || 'Набор игр'}</h4>
-            <p style="font-size: 12px; color: var(--text-muted);">Дата покупки: ${new Date(item.created_at).toLocaleDateString()}</p>
+            <h4>${item.name || 'Товар'}</h4>
+            <p style="font-size: 11px; color: var(--text-muted);">Дата покупки: ${new Date(item.created_at).toLocaleDateString()}</p>
             <div class="credentials">
               Логин: <strong>${item.login || '—'}</strong><br/>
               Пароль: <strong>${item.pass || '—'}</strong>
@@ -219,11 +303,11 @@
         `).join('');
 
       } catch (e) {
-        container.innerHTML = '<p style="color: var(--text-muted);">Ошибка загрузки доступов.</p>';
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Не удалось загрузить данные.</p>';
       }
     }
 
-    // Инициализация
+    // Стартовая инициализация
     loadUserData();
     loadPacks();
   </script>
