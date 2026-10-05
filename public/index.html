@@ -875,13 +875,7 @@ const ME = {role: null, id: null};
 const isAdmin = () => ME.role === "owner" || ME.role === "admin";
 async function loadMe() {
   if(!tgInit()) return;
-  try {
-    const j = await api("/api/me");
-    ME.role = j.role;
-    ME.id = j.id;
-    S.bal = Number(j.balance || 0);
-    render();
-  } catch(e) {}
+  try { const j = await api("/api/me"); ME.role = j.role; ME.id = j.id; render(); } catch(e) {}
 }
 const curUser = () => { const u = tgUser(); return u ? (u.username ? "@"+u.username : "id"+u.id) : "guest"; };
 
@@ -937,7 +931,10 @@ function checkCode(c){
   return x.type === "bal" ? {amt:x.amt} : {pct:x.pct};
 }
 function redeemBalance(c){
-  return "Пополнение баланса промокодом пока недоступно";
+  const x = S.codes.find(k => k.code === c);
+  if(S.redeemed.has(c)) return "Вы уже активировали этот промокод";
+  S.bal += x.amt; x.used++; S.redeemed.add(c); saveCodes(); saveRedeemed(); chrome();
+  return "На баланс зачислено " + r(x.amt);
 }
 const promoPct = c => c ? (checkCode(c).pct || 0) : 0;
 const useCode = c => { const x = c && S.codes.find(k => k.code === c); if(x){ x.used++; saveCodes(); } };
@@ -1747,116 +1744,29 @@ async function realBuy(p) {
   const reset = () => { go.disabled = false; go.textContent = label; };
   go.disabled = true; go.textContent = "Создаём счёт…";
   try {
-    const j = await api("/api/orders", {
-      method:"POST",
-      body:{pack_id:p.id, payment_method:"stars"}
-    });
+    const j = await api("/api/orders", {method:"POST", body:{pack_id:p.id}});
     window.Telegram.WebApp.openInvoice(j.link, async st => {
       if(st === "paid") {
         go.textContent = "Выдаём доступ…";
         const ok = await waitOrder(j.order);
-        await loadMe();
         closeSheet(); S.tab = "mine"; S.open = null; render();
         toast(ok ? "Оплачено! Данные для входа ниже" : "Оплата прошла. Данные появятся в «Мои доступы» через минуту");
-      } else {
-        reset();
-        if(st === "cancelled") toast("Оплата отменена");
-        else if(st === "failed") toast("Оплата не прошла");
-      }
+      } else { reset(); if(st === "cancelled") toast("Оплата отменена"); else if(st === "failed") toast("Оплата не прошла"); }
     });
-  } catch(e) {
-    reset();
-    toast(e.message === "no_slots" ? "Свободных слотов сейчас нет" : "Не удалось создать счёт");
-  }
-}
-
-async function buyFromBalance(p) {
-  const go = $("#go"), label = go.textContent;
-  go.disabled = true; go.textContent = "Проверяем баланс…";
-  try {
-    const j = await api("/api/orders", {
-      method:"POST",
-      body:{pack_id:p.id, payment_method:"balance"}
-    });
-    S.bal = Number(j.balance);
-    await loadOrders();
-    closeSheet();
-    S.tab = "mine";
-    S.open = null;
-    render();
-    toast("Оплачено с баланса! Данные для входа ниже");
-  } catch(e) {
-    go.disabled = false; go.textContent = label;
-    if(e.message === "insufficient_balance") toast("Не хватает средств — пополните баланс");
-    else if(e.message === "no_slots") toast("Свободных слотов сейчас нет");
-    else if(e.message === "auth") toast("Откройте приложение через Telegram");
-    else toast("Не удалось выполнить покупку");
-  }
-}
-
-async function topupBalance(amount) {
-  return await api("/api/balance", {
-    method:"POST",
-    body:{amount_rub: amount}
-  });
-}
-
-async function waitTopup() {
-  for(let k = 0; k < 25; k++) {
-    const me = await api("/api/me");
-    if(Number(me.balance) > S.bal) {
-      S.bal = Number(me.balance);
-      return true;
-    }
-    await new Promise(r => setTimeout(r, 1200));
-  }
-  return false;
-}
-
-async function openBalanceTopup(amount) {
-  try {
-    const j = await topupBalance(amount);
-
-    // Тестовое пополнение: сервер уже сразу изменил users.balance_rub.
-    // Telegram Stars / Invoice здесь НЕ вызываются.
-    if (j && j.ok) {
-      S.bal = Number(j.balance);
-
-      closeSheet();
-      await loadMe();
-
-      if (S.tab === "me") {
-        me();
-      }
-
-      chrome();
-      toast("Баланс пополнен на " + r(amount));
-      return;
-    }
-
-    toast(
-      j?.error === "bad_amount"
-        ? "Некорректная сумма"
-        : "Не удалось пополнить баланс"
-    );
-
-  } catch (e) {
-    console.error("topup error:", e);
-    toast("Не удалось пополнить баланс");
-  }
+  } catch(e) { reset(); toast(e.message === "no_slots" ? "Свободных слотов сейчас нет" : "Не удалось создать счёт"); }
 }
 
 function checkout(p, plan, ext) {
-  if(tgInit()) S.promo = null; // сервер считает цену сам
+  if(tgInit()) S.promo = null; // скидку по промокоду сервер пока не считает
   const b = priceOf(p), d = promoPct(S.promo);
   const t = Math.max(1, Math.round(b*(1-d/100)));
-  sheet(`<h2>Оплата</h2>
+  sheet(`<h2>${ext!=null?"Продление":"Оплата"}</h2>
   <div class="mut">${p.name}</div>
   <div class="promo-row" style="${tgInit()?'display:none':''}">
     <input id="pc" placeholder="Промокод" value="${esc(S.promo||'')}" style="flex:1;height:42px;padding:0 14px;border-radius:11px;border:1px solid var(--brd);background:var(--sf2);color:var(--ink);font:inherit;text-transform:uppercase">
     <button class="btn sec sm" data-act="promo">Применить</button>
   </div>
-  ${PAY.filter(m=>m==="Telegram Stars" || m==="С баланса").map(m=>`<button class="opt ${S.pay===m?'on':''}" data-act="pm" data-m="${m}">
+  ${PAY.map(m=>`<button class="opt ${S.pay===m?'on':''}" data-act="pm" data-m="${m}">
     <span>${m}</span>
     ${m==="С баланса"?`<span class="mut">${r(S.bal)}</span>`:''}
   </button>`).join("")}
@@ -1864,22 +1774,27 @@ function checkout(p, plan, ext) {
   <div class="sum"><span>Цена</span><span>${r(b)}</span></div>
   ${d?`<div class="sum"><span>Скидка ${d}%</span><span style="color:var(--ok)">−${r(b-t)}</span></div>`:''}
   <div class="sum total"><span>К оплате</span><span>${r(t)}</span></div>
-  <div class="mut" style="font-size:12px;line-height:1.45">При оплате с баланса сумма списывается на сервере атомарно. Цена и наличие слота повторно проверяются перед покупкой.</div>
+  <div class="mut" style="font-size:12px;line-height:1.45">Гарантия возврата средств на баланс — 30 дней с момента покупки. Замены аккаунтов мы не делаем, все риски использования несёт покупатель.</div>
   <button class="btn pri" id="go">Оплатить ${r(t)}</button>`);
   S._co = [p, plan, ext];
   $("#go").onclick = () => {
-    if(S.pay === "С баланса") {
-      buyFromBalance(p);
-      return;
-    }
-    if(tgInit() && ext == null) {
-      if(S.pay !== "Telegram Stars") { toast("Выберите оплату с баланса или Telegram Stars"); return; }
-      realBuy(p);
-      return;
-    }
-    toast("Для покупки откройте приложение через Telegram");
+    if(tgInit() && ext == null) { if(S.pay !== "Telegram Stars") { toast("Пока доступна оплата только через Telegram Stars"); return; } realBuy(p); return; }
+    if(S.pay==="С баланса" && S.bal < t) { toast("Не хватает средств — пополните баланс"); return; }
+    $("#go").textContent = "Проверяем…"; $("#go").disabled = true;
+    setTimeout(()=>{
+      if(S.pay==="С баланса") S.bal -= t;
+      if(ext != null) {
+        const o=S.orders[ext];
+        o.exp = Math.max(o.exp, Date.now()) + 30*864e5; o.span=30;
+      } else {
+        S.orders.unshift({n:1001+S.orders.length,p,plan,exp:null,span:0});
+      }
+      S.spent += t; statsLive(p.id, S.pay); useCode(S.promo); S.promo = null; closeSheet(); S.tab="mine"; S.open=null; render();
+      toast(ext!=null?"Доступ продлён ✓":"Оплачено! Данные для входа ниже");
+    }, 900);
   };
 }
+
 function mkTicket(subj,text){const t={id:TN++,subj,st:"open",ts:Date.now(),msgs:[{f:"me",t:text,ts:Date.now()}],uu:false,ua:true};S.tickets.unshift(t);return t}
 
 function gameSheet(gameName, packId) {
@@ -2028,20 +1943,15 @@ document.addEventListener("click", e => {
   if(a==="tclose"||a==="treopen"){const t=getT();if(t){t.st=a==="tclose"?"closed":"open";render();toast(a==="tclose"?"Обращение закрыто":"Обращение открыто")}return}
   if(a==="ginfo"){const g=decodeURIComponent(b.dataset.g),pid=+b.dataset.pid;gameSheet(g,pid);hap();return}
   if(a==="topup"){
+    S.topm = S.topm || "Telegram Stars";
     sheet(`<h2>Пополнение баланса</h2>
-    <div class="mut" style="line-height:1.5">Пополнение выполняется через Telegram Stars. Деньги зачисляются на ваш серверный баланс только после подтверждения оплаты.</div>
-    <input class="search" id="ta" type="number" inputmode="numeric" min="10" step="1" placeholder="Сумма, ₽" style="height:48px;padding-left:16px;font-size:18px;font-weight:700">
+    <input class="search" id="ta" type="number" inputmode="numeric" min="10" placeholder="Сумма, ₽" style="height:48px;padding-left:16px;font-size:18px;font-weight:700">
+    ${PAY.filter(m=>m!=="С баланса").map(m=>`<button class="opt ${S.topm===m?"on":""}" data-act="tpm" data-m="${m}"><span>${m}</span></button>`).join("")}
     <button class="btn pri" data-act="tgo">Пополнить</button>`);
     return;
   }
-  if(a==="tgo"){
-    const amt=Math.floor(+($("#ta")?.value)||0);
-    if(amt<10){toast("Минимальная сумма — 10 ₽");return}
-    if(!tgInit()){toast("Откройте приложение через Telegram");return}
-    b.disabled = true;
-    openBalanceTopup(amt);
-    return;
-  }
+  if(a==="tpm"){S.topm=b.dataset.m;$$('[data-act="tpm"]').forEach(x=>x.classList.toggle("on",x===b));return}
+  if(a==="tgo"){const amt=Math.floor(+($("#ta")?.value)||0);if(amt<10){toast("Минимальная сумма — 10 ₽");return}S.bal+=amt;closeSheet();if(S.tab==="me")me();chrome();toast("Баланс пополнен на "+r(amt));return}
   if(a==="ctype"){S.ctype=b.dataset.t;$$('[data-act="ctype"]').forEach(x=>x.classList.toggle("on",x===b));const bl=S.ctype==="bal";$("#nl").textContent=bl?"Сумма на баланс, ₽":"Скидка, %";const np=$("#np");np.max=bl?10000:90;np.value=bl?100:10;return}
   if(a==="cgen"){const ch="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let c="";for(let k=0;k<8;k++)c+=ch[Math.random()*ch.length|0];const el=$("#nc");if(el)el.value=c;return}
   if(a==="ccreate"){
@@ -2050,11 +1960,9 @@ document.addEventListener("click", e => {
     const exp=ev?new Date(ev+"T23:59:59").getTime():0;
     if(code.length<3){toast("Код — минимум 3 символа (буквы и цифры)");return}
     if(S.codes.some(x=>x.code===code)){toast("Такой промокод уже есть");return}
-    const bal=S.ctype==="bal";
-    if(bal){toast("Промокоды на баланс отключены: используйте пополнение через Telegram Stars");return}
-    if(pct<1||pct>90){toast("Скидка — от 1 до 90%");return}
+    const bal=S.ctype==="bal"; if(bal?(pct<10||pct>10000):(pct<1||pct>90)){toast(bal?"Сумма — от 10 до 10 000 ₽":"Скидка — от 1 до 90%");return}
     if(exp&&exp<Date.now()){toast("Дата окончания уже прошла");return}
-    S.codes.unshift({code,type:"disc",pct,max,used:0,exp,on:true,created:Date.now()});saveCodes();
+    S.codes.unshift(bal?{code,type:"bal",amt:pct,max,used:0,exp,on:true,created:Date.now()}:{code,type:"disc",pct,max,used:0,exp,on:true,created:Date.now()});saveCodes();
     toast("Промокод "+code+" создан");admin();return;
   }
   if(a==="ctog"){const x=S.codes[i];if(x){x.on=!x.on;saveCodes();admin()}return}
@@ -2160,6 +2068,7 @@ document.addEventListener("click", e => {
     return;
   }
   if(a==="ext"){checkout(o.p,o.plan,i);return}
+  if(a==="top"){S.bal+=+b.dataset.n;me();chrome();toast("Баланс пополнен (демо)");return}
   if(a==="sup"){S.tab="tickets";render();scrollTo(0,0);return}
   if(a==="bad"){
     S._bad=i;
