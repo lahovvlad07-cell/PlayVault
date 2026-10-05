@@ -1778,7 +1778,37 @@ function checkout(p, plan, ext) {
   <button class="btn pri" id="go">Оплатить ${r(t)}</button>`);
   S._co = [p, plan, ext];
   $("#go").onclick = () => {
-    if(tgInit() && ext == null) { if(S.pay !== "Telegram Stars") { toast("Пока доступна оплата только через Telegram Stars"); return; } realBuy(p); return; }
+    // Баланс можно использовать и внутри Telegram Mini App.
+    // Для него не открываем Telegram Stars.
+    if(S.pay==="С баланса" && ext == null) {
+      if(S.bal < t) { toast("Не хватает средств — пополните баланс"); return; }
+      $("#go").textContent = "Проверяем…";
+      $("#go").disabled = true;
+      setTimeout(()=>{
+        S.bal -= t;
+        S.orders.unshift({n:1001+S.orders.length,p,plan,exp:null,span:0});
+        S.spent += t;
+        statsLive(p.id, S.pay);
+        useCode(S.promo);
+        S.promo = null;
+        closeSheet();
+        S.tab="mine";
+        S.open=null;
+        render();
+        toast("Оплачено с баланса! Данные для входа ниже");
+      }, 300);
+      return;
+    }
+
+    if(tgInit() && ext == null) {
+      if(S.pay !== "Telegram Stars") {
+        toast("Этот способ оплаты пока недоступен");
+        return;
+      }
+      realBuy(p);
+      return;
+    }
+
     if(S.pay==="С баланса" && S.bal < t) { toast("Не хватает средств — пополните баланс"); return; }
     $("#go").textContent = "Проверяем…"; $("#go").disabled = true;
     setTimeout(()=>{
