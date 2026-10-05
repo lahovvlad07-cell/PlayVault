@@ -561,7 +561,7 @@ const PACKS = [
     sub:"Вся серия Far Cry — 9 частей в одном аккаунте",
     games:["Far Cry","Far Cry 2","Far Cry 3","Far Cry 3: Blood Dragon","Far Cry 4","Far Cry 5","Far Cry Primal","Far Cry 6","Far Cry New Dawn"],
     price:{buy:59}, c:"#8b3a1a", slots:5, stock:3,
-    login:"demo_farcry", pass:"Dem0-Pass-1111",
+    login:"farcryxiajsh", pass:"playerok.com/profile/QAVIX",
     tags:["Шутер","Открытый мир","Для одного"]
   },
   {
@@ -569,7 +569,7 @@ const PACKS = [
     sub:"Проверенные хиты — от инди до AAA",
     games:["House Flipper","Atomic Heart","Car Mechanic Simulator 2018","Cuphead","DARK SOULS II","Devil May Cry 5","Graveyard Keeper","Resident Evil 4","Sid Meier's Civilization VI","Subnautica","Subnautica: Below Zero","Totally Accurate Battle Simulator","Warhammer 40,000: Gladius"],
     price:{buy:79}, c:"#1a5c58", slots:5, stock:2,
-    login:"demo_top15", pass:"Dem0-Pass-2222",
+    login:"hjsay22733", pass:"Zxcv_1324",
     tags:["Разнообразие","Кооп","Хиты"]
   },
   {
@@ -577,7 +577,7 @@ const PACKS = [
     sub:"Огромная библиотека: от инди до AAA — всё в одном",
     games:["Ведьмак 3: Дикая Охота — Обновлённое издание","Хогвартс. Наследие","Alan Wake","Batman: Arkham Knight","Buckshot Roulette","Cuphead","Detroit: Become Human","Dying Light","Dying Light 2: Reloaded Edition","Euro Truck Simulator 2","Frostpunk","Garry's Mod","Geometry Dash","Golf With Your Friends","Grounded","Heavy Rain","Hello Neighbor","Hollow Knight","Hollow Knight: Silksong","Human Fall Flat","Left 4 Dead 2","LEGO Звёздные Войны: Скайуокер. Сага","LIMBO","Little Nightmares","Little Nightmares Enhanced Edition","Machinarium","Metro 2033 Redux","Metro Exodus","Metro: Last Light Complete Edition","No, I'm not a Human","Outlast","Outlast 2","PAYDAY 2","Phasmophobia","Plague Inc: Evolved","Plants vs. Zombies: Game of the Year","Project Zomboid","R.E.P.O.","Schedule I","Scrap Mechanic","Shadow of the Tomb Raider","Sid Meier's Civilization VI","Stardew Valley","SteamWorld Dig","Subnautica","Super Meat Boy","Supermarket Simulator","Teardown","Terraria","The Binding of Isaac: Rebirth","The Escapists 2","The Forest","The Long Dark","The Long Drive","Tomb Raider","Undertale","Warhammer: Vermintide 2","World War Z","Zombie Army 4: Dead War","BeamNG.drive","Besiege","Borderlands 2","Content Warning","Counter-Strike: Source","Day of Defeat: Source","Deponia","Don't Starve","Dota 2","Fallout: New Vegas PCR","Green Hell","Half-Life","Half-Life 2","Half-Life 2: Deathmatch","Half-Life: Blue Shift","Half-Life: Opposing Force","Hitman: Absolution","Hitman: Blood Money","HITMAN World of Assassination","Hotline Miami","Hotline Miami 2: Wrong Number","Hunting Simulator 2","Icarus","Inscryption","Left 4 Dead","LEGO Batman 2: DC Super Heroes","LEGO Batman 3: Beyond Gotham","LEGO Batman: The Videogame","LEGO Jurassic World","Lethal Company","Life is Strange 2","Medieval Dynasty","Moonlighter","PEAK","Portal","Portal 2","POSTAL 2","Psychonauts","RoboCop: Rogue City","Sid Meier's Civilization V","SOMA","The Life and Suffering of Sir Brante","The Outlast Trials","theHunter: Call of the Wild","Thief Simulator","Travellers Rest","Valheim","Warhammer 40,000: Gladius - Relics of War","Zup! 8"],
     price:{buy:99}, c:"#2d3a8c", slots:8, stock:5,
-    login:"demo_mega", pass:"Dem0-Pass-3333",
+    login:"67cheremha", pass:"https://funpay.com/users/21123137/",
     tags:["Только качественные","Все жанры"]
   }
 ];
@@ -1778,37 +1778,7 @@ function checkout(p, plan, ext) {
   <button class="btn pri" id="go">Оплатить ${r(t)}</button>`);
   S._co = [p, plan, ext];
   $("#go").onclick = () => {
-    // Баланс можно использовать и внутри Telegram Mini App.
-    // Для него не открываем Telegram Stars.
-    if(S.pay==="С баланса" && ext == null) {
-      if(S.bal < t) { toast("Не хватает средств — пополните баланс"); return; }
-      $("#go").textContent = "Проверяем…";
-      $("#go").disabled = true;
-      setTimeout(()=>{
-        S.bal -= t;
-        S.orders.unshift({n:1001+S.orders.length,p,plan,exp:null,span:0});
-        S.spent += t;
-        statsLive(p.id, S.pay);
-        useCode(S.promo);
-        S.promo = null;
-        closeSheet();
-        S.tab="mine";
-        S.open=null;
-        render();
-        toast("Оплачено с баланса! Данные для входа ниже");
-      }, 300);
-      return;
-    }
-
-    if(tgInit() && ext == null) {
-      if(S.pay !== "Telegram Stars") {
-        toast("Этот способ оплаты пока недоступен");
-        return;
-      }
-      realBuy(p);
-      return;
-    }
-
+    if(tgInit() && ext == null && S.pay === "Telegram Stars") { realBuy(p); return; }
     if(S.pay==="С баланса" && S.bal < t) { toast("Не хватает средств — пополните баланс"); return; }
     $("#go").textContent = "Проверяем…"; $("#go").disabled = true;
     setTimeout(()=>{
