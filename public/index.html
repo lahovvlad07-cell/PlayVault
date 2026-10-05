@@ -1817,35 +1817,38 @@ async function openBalanceTopup(amount) {
   try {
     const j = await topupBalance(amount);
 
-    // В тестовом режиме сервер сразу начисляет деньги.
-    // Telegram invoice/подтверждение покупки здесь вообще не открывается.
-    if(j.test) {
+    // Тестовое пополнение: сервер уже сразу зачислил деньги.
+    // Telegram Stars / Invoice НЕ открываем.
+    if (j.ok) {
       S.bal = Number(j.balance);
+
       closeSheet();
-      if(S.tab === "me") me();
+
+      await loadMe();
+
+      if (S.tab === "me") {
+        me();
+      }
+
       chrome();
-      toast("Тест: баланс пополнен на " + r(amount));
+
+      toast("Баланс пополнен на " + r(amount));
       return;
     }
 
-    // Обычный режим: реальная оплата Telegram Stars.
-    window.Telegram.WebApp.openInvoice(j.link, async st => {
-      if(st === "paid") {
-        const old = S.bal;
-        const ok = await waitTopup();
-        await loadMe();
-        closeSheet();
-        if(S.tab === "me") me();
-        chrome();
-        toast(ok || S.bal > old ? "Баланс пополнен на " + r(amount) : "Оплата прошла. Баланс обновится через минуту");
-      } else if(st === "cancelled") {
-        toast("Пополнение отменено");
-      } else if(st === "failed") {
-        toast("Пополнение не прошло");
-      }
-    });
-  } catch(e) {
-    toast(e.message === "bad_amount" ? "Некорректная сумма" : "Не удалось пополнить баланс");
+    toast("Не удалось пополнить баланс");
+  } catch (e) {
+    if (e.message === "bad_amount") {
+      toast("Некорректная сумма");
+      return;
+    }
+
+    if (e.message === "auth") {
+      toast("Откройте приложение через Telegram");
+      return;
+    }
+
+    toast("Не удалось пополнить баланс");
   }
 }
 
@@ -2032,7 +2035,7 @@ document.addEventListener("click", e => {
   if(a==="ginfo"){const g=decodeURIComponent(b.dataset.g),pid=+b.dataset.pid;gameSheet(g,pid);hap();return}
   if(a==="topup"){
     sheet(`<h2>Пополнение баланса</h2>
-    <div class="mut" style="line-height:1.5">Укажите сумму пополнения. В тестовом режиме средства сразу зачисляются на серверный баланс без окна подтверждения Telegram.</div>
+    <div class="mut" style="line-height:1.5">Пополнение выполняется через Telegram Stars. Деньги зачисляются на ваш серверный баланс только после подтверждения оплаты.</div>
     <input class="search" id="ta" type="number" inputmode="numeric" min="10" step="1" placeholder="Сумма, ₽" style="height:48px;padding-left:16px;font-size:18px;font-weight:700">
     <button class="btn pri" data-act="tgo">Пополнить</button>`);
     return;
