@@ -1,88 +1,163 @@
 import { sql, tg } from "../lib/core.js";
 
+// Вебхук Telegram: подтверждение Stars, пополнение баланса и выдача слота.
 export default async function handler(req, res) {
-  // Проверка секретного токена вебхука
   if (req.headers["x-telegram-bot-api-secret-token"] !== process.env.WEBHOOK_SECRET) {
     return res.status(401).end();
   }
 
   const u = req.body || {};
 
-  // 1. Команда /start — отправка кнопки Mini App
-  if (u.message?.text?.startsWith("/start")) {
-    const chatId = u.message.chat.id;
-    const webAppUrl = `https://${req.headers.host}`;
-
-    await tg("sendMessage", {
-      chat_id: chatId,
-      text: "Привет! Нажми кнопку ниже, чтобы открыть магазин:",
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "🎮 Открыть PlayVault", web_app: { url: webAppUrl } }]
-        ]
-      }
-    });
-    return res.json({ ok: true });
-  }
-
-  // 2. Предпроверка заказа (Pre-checkout query)
   if (u.pre_checkout_query) {
     const q = u.pre_checkout_query;
-    const orderId = Number(q.invoice_payload);
+    const payload = String(q.invoice_payload || "");
 
-    // Проверяем наличие заказа в базе
-    const [o] = await sql`select id from orders where id = ${orderId} and user_id = ${q.from.id} and status = 'pending'`;
-
-    if (o) {
-      await tg("answerPreCheckoutQuery", { pre_checkout_query_id: q.id, ok: true });
+    if (payload.startsWith("balance:")) {
+      const id = Number(payload.slice("balance:".length));
+      const [t] = await sql`
+        select id
+        from balance_topups
+        where id = ${id}
+          and user_id = ${q.from.id}
+          and status = 'pending'
+          and stars = ${q.total_amount}
+      `;
+      await tg("answerPreCheckoutQuery", {
+        pre_checkout_query_id: q.id,
+        ok: !!t,
+        error_message: "Пополнение не найдено"
+      });
     } else {
-      await tg("answerPreCheckoutQuery", { 
-        pre_checkout_query_id: q.id, 
-        ok: false, 
-        error_message: "Заказ не найден или уже оплачен" 
+      const [o] = await sql`
+        select id
+        from orders
+        where id = ${Number(payload)}
+          and user_id = ${q.from.id}
+          and status = 'pending'
+          and payment_method = 'stars'
+          and stars = ${q.total_amount}
+      `;
+      await tg("answerPreCheckoutQuery", {
+        pre_checkout_query_id: q.id,
+        ok: !!o,
+        error_message: "Заказ не найден"
       });
     }
-    return res.json({ ok: true });
   }
 
-  // 3. Успешная оплата (Successful payment)
   const pay = u.message?.successful_payment;
   if (pay) {
-    const id = Number(pay.invoice_payload);
+    const idRaw = String(pay.invoice_payload || "");
     const uid = u.message.from.id;
 
-    // Обновляем заказ, переводим в статус paid
-    const [o] = await sql`update orders set status = 'paid', tg_charge_id = ${pay.telegram_payment_charge_id}
-                          where id = ${id} and user_id = ${uid} and status = 'pending'
-                          returning pack_id`;
+    if (idRaw.startsWith("balance:")) {
+      const id = Number(idRaw.slice("balance:".length));
 
-    if (o) {
-      // Бронируем свободный аккаунт и увеличиваем used
-      const [a] = await sql`update accounts set used = used + 1 where id = (
-                              select id from accounts where pack_id = ${o.pack_id} and used < max_slots
-                              order by used desc limit 1 for update skip locked) returning id`;
+      const credited = await sql.begin(async tx => {
+        const [t] = await tx`
+          update balance_topups
+          set status = 'paid',
+              tg_charge_id = ${pay.telegram_payment_charge_id}
+          where id = ${id}
+            and user_id = ${uid}
+            and status = 'pending'
+            and stars = ${pay.total_amount}
+          returning id, amount_rub
+        `;
 
-      if (a) {
-        await sql`update orders set account_id = ${a.id} where id = ${id}`;
-        await tg("sendMessage", { 
-          chat_id: uid, 
-          text: "✅ Оплата прошла успешно! Ваши данные для входа доступны в разделе «Мои доступы» внутри приложения." 
-        });
-      } else {
-        // Если слоты закончились прямо перед оплатой — делаем возврат Stars
-        await sql`update orders set status = 'refunded' where id = ${id}`;
-        await tg("refundStarPayment", { 
-          user_id: uid, 
-          telegram_payment_charge_id: pay.telegram_payment_charge_id 
-        });
-        await tg("sendMessage", { 
-          chat_id: uid, 
-          text: "К сожалению, свободные слоты закончились. Звёзды (Stars) автоматически возвращены на ваш баланс." 
+        if (!t) return null;
+
+        await tx`
+          insert into balance_transactions(
+            user_id, type, amount_rub, topup_id
+          )
+          values (${uid}, 'topup', ${t.amount_rub}, ${t.id})
+        `;
+
+        const [a] = await tx`
+          update users
+          set balance_rub = balance_rub + ${t.amount_rub}
+          where id = ${uid}
+          returning balance_rub
+        `;
+
+        return { amount: Number(t.amount_rub), balance: Number(a.balance_rub) };
+      });
+
+      if (credited) {
+        await tg("sendMessage", {
+          chat_id: uid,
+          text: `Баланс пополнен на ${credited.amount} ₽. Текущий баланс: ${credited.balance} ₽.`
         });
       }
+
+      return res.json({ ok: true });
     }
-    return res.json({ ok: true });
+
+    const id = Number(idRaw);
+    const result = await sql.begin(async tx => {
+      const [o] = await tx`
+        update orders
+        set status = 'paid',
+            tg_charge_id = ${pay.telegram_payment_charge_id}
+        where id = ${id}
+          and user_id = ${uid}
+          and status = 'pending'
+          and payment_method = 'stars'
+          and stars = ${pay.total_amount}
+        returning id, pack_id, price_rub
+      `;
+
+      if (!o) return null;
+
+      const [a] = await tx`
+        select id
+        from accounts
+        where pack_id = ${o.pack_id}
+          and used < max_slots
+        order by used asc, id asc
+        limit 1
+        for update skip locked
+      `;
+
+      if (!a) return { noSlot: true, orderId: o.id };
+
+      await tx`
+        update accounts
+        set used = used + 1
+        where id = ${a.id}
+      `;
+
+      await tx`
+        update orders
+        set account_id = ${a.id}
+        where id = ${o.id}
+      `;
+
+      return { orderId: o.id, accountId: a.id };
+    });
+
+    if (result?.noSlot) {
+      await sql`
+        update orders
+        set status = 'refunded'
+        where id = ${result.orderId}
+      `;
+      await tg("refundStarPayment", {
+        user_id: uid,
+        telegram_payment_charge_id: pay.telegram_payment_charge_id
+      });
+      await tg("sendMessage", {
+        chat_id: uid,
+        text: "Свободных слотов не осталось, Stars возвращены."
+      });
+    } else if (result?.accountId) {
+      await tg("sendMessage", {
+        chat_id: uid,
+        text: "Оплата прошла. Данные для входа: раздел «Мои доступы» в приложении."
+      });
+    }
   }
 
-  res.json({ ok: true });
+  return res.json({ ok: true });
 }
