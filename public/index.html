@@ -1801,7 +1801,7 @@ async function topupBalance(amount) {
   });
 }
 
-async function waitTopup(id) {
+async function waitTopup() {
   for(let k = 0; k < 25; k++) {
     const me = await api("/api/me");
     if(Number(me.balance) > S.bal) {
@@ -1819,7 +1819,7 @@ async function openBalanceTopup(amount) {
     window.Telegram.WebApp.openInvoice(j.link, async st => {
       if(st === "paid") {
         const old = S.bal;
-        const ok = await waitTopup(j.topup);
+        const ok = await waitTopup();
         await loadMe();
         closeSheet();
         if(S.tab === "me") me();
