@@ -29,21 +29,19 @@ export default async function handler(req, res) {
     const payload = String(q.invoice_payload || "");
 
     if (payload.startsWith("balance:")) {
-      const id = Number(payload.slice("balance:".length));
-      const [t] = await sql`
-        select id
-        from balance_topups
-        where id = ${id}
-          and user_id = ${q.from.id}
-          and status = 'pending'
-          and stars = ${q.total_amount}
-      `;
+      const parts = payload.split(":");
+      const payloadUser = Number(parts[1]);
+      const amount = Number(parts[2]);
+      const stars = Number(parts[3]);
+      const ok = payloadUser === q.from.id && Number.isSafeInteger(amount) && amount >= 10 && amount <= 100000
+        && Number.isSafeInteger(stars) && stars === Number(q.total_amount);
       await tg("answerPreCheckoutQuery", {
         pre_checkout_query_id: q.id,
-        ok: !!t,
-        error_message: "Пополнение не найдено"
+        ok,
+        error_message: ok ? undefined : "Пополнение не найдено"
       });
     } else {
+
       const [o] = await sql`
         select id
         from orders
@@ -67,28 +65,29 @@ export default async function handler(req, res) {
     const uid = u.message.from.id;
 
     if (idRaw.startsWith("balance:")) {
-      const id = Number(idRaw.slice("balance:".length));
+      const parts = idRaw.split(":");
+      const payloadUser = Number(parts[1]);
+      const amount = Number(parts[2]);
+      const stars = Number(parts[3]);
 
+      if (payloadUser !== uid || !Number.isSafeInteger(amount) || amount < 10 || amount > 100000 || stars !== Number(pay.total_amount)) {
+        return res.json({ ok: true });
+      }
+
+      const chargeId = String(pay.telegram_payment_charge_id || "");
       const credited = await sql.begin(async tx => {
+        // Уникальный Telegram charge ID делает webhook идемпотентным:
+        // повторная доставка одного платежа не начислит деньги второй раз.
         const [t] = await tx`
-          update balance_topups
-          set status = 'paid',
-              tg_charge_id = ${pay.telegram_payment_charge_id}
-          where id = ${id}
-            and user_id = ${uid}
-            and status = 'pending'
-            and stars = ${pay.total_amount}
+          insert into balance_transactions(
+            user_id, type, amount_rub, tg_charge_id
+          )
+          values (${uid}, 'topup', ${amount}, ${chargeId})
+          on conflict (tg_charge_id) do nothing
           returning id, amount_rub
         `;
 
         if (!t) return null;
-
-        await tx`
-          insert into balance_transactions(
-            user_id, type, amount_rub, topup_id
-          )
-          values (${uid}, 'topup', ${t.amount_rub}, ${t.id})
-        `;
 
         const [a] = await tx`
           update users
