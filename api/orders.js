@@ -13,28 +13,39 @@ export default async function handler(req, res) {
     return res.json(rows.map(({ login_enc, pass_enc, ...r }) => ({ ...r, login: dec(login_enc), pass: dec(pass_enc) })));
   }
 
-  // Покупка (ЭМУЛЯЦИЯ / ТЕСТОВЫЙ РЕЖИМ): моментальная выдача слота без оплаты
+  // Покупка (БЕСКОНЕЧНАЯ ЭМУЛЯЦИЯ ДЛЯ ВСЕХ ПОЛЬЗОВАТЕЛЕЙ)
   if (req.method === "POST") {
-    const [p] = await sql`select id, name, price, disc from packs where id = ${Number(req.body?.pack_id)} and active`;
+    const packId = Number(req.body?.pack_id);
+    const [p] = await sql`select id, name, price, disc from packs where id = ${packId} and active`;
     if (!p) return res.status(404).json({ error: "pack" });
     
-    // Ищем доступный аккаунт со свободным слотом
-    const [a] = await sql`update accounts set used = used + 1 where id = (
-                            select id from accounts where pack_id = ${p.id} and used < max_slots
-                            order by used desc limit 1 for update skip locked) returning id`;
+    // 1. Ищем существующий аккаунт со свободным слотом
+    let [a] = await sql`update accounts set used = used + 1 where id = (
+                          select id from accounts where pack_id = ${p.id} and used < max_slots
+                          order by used desc limit 1 for update skip locked) returning id`;
     
-    if (!a) return res.status(409).json({ error: "no_slots" });
+    // 2. Если свободных слотов нет — на лету создаем тестовый аккаунт для этого пака
+    if (!a) {
+      // Имя пользователя / пароль зашифрованы или в виде тестовой строки
+      const testLogin = `demo_user_${Math.floor(1000 + Math.random() * 9000)}`;
+      const testPass = `pass_${Math.random().toString(36).substring(2, 8)}`;
+      
+      const [newAcc] = await sql`
+        insert into accounts (pack_id, login_enc, pass_enc, max_slots, used)
+        values (${p.id}, ${testLogin}, ${testPass}, 9999, 1)
+        returning id`;
+      a = newAcc;
+    }
 
     const rub = Math.max(1, Math.round(p.price * (1 - p.disc / 100)));
     
-    // Записываем пользователя в БД
+    // Фиксируем пользователя в БД
     await sql`insert into users(id, username) values (${u.id}, ${u.username || null}) on conflict (id) do nothing`;
     
-    // Создаём сразу статусом 'paid'
+    // Создаем сразу оплаченный заказ
     const [o] = await sql`insert into orders(user_id, pack_id, account_id, price_rub, stars, status) 
                           values (${u.id}, ${p.id}, ${a.id}, ${rub}, 0, 'paid') returning id`;
 
-    // Возвращаем фейковую ссылку/успех, чтобы Mini App обновился
     return res.json({ order: o.id, success: true, link: null });
   }
 
