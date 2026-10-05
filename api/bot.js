@@ -8,6 +8,22 @@ export default async function handler(req, res) {
 
   const u = req.body || {};
 
+  // Обычная команда /start: Telegram доставляет её сюда тем же webhook,
+  // что и платежные события. Раньше она молча игнорировалась.
+  const msg = u.message;
+  const text = String(msg?.text || "").trim();
+  if (msg && text.split(/\s+/)[0].toLowerCase().split("@")[0] === "/start") {
+    const webappUrl = process.env.WEBAPP_URL || `https://${req.headers.host}`;
+    await tg("sendMessage", {
+      chat_id: msg.chat.id,
+      text: "Добро пожаловать! Откройте магазин кнопкой ниже.",
+      reply_markup: {
+        inline_keyboard: [[{ text: "🎮 Открыть магазин", web_app: { url: webappUrl } }]]
+      }
+    });
+    return res.json({ ok: true });
+  }
+
   if (u.pre_checkout_query) {
     const q = u.pre_checkout_query;
     const payload = String(q.invoice_payload || "");
