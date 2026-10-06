@@ -5,6 +5,18 @@ export default async function handler(req, res) {
   if (req.headers["x-telegram-bot-api-secret-token"] !== process.env.WEBHOOK_SECRET) return res.status(401).end();
   const u = req.body || {};
 
+  // /start в личке: приветствие и кнопка, открывающая Mini App
+  const m = u.message;
+  if (m && m.chat && m.chat.type === "private" && /^\/start(@\w+)?(\s|$)/.test(m.text || "")) {
+    const url = process.env.APP_URL || "https://playvault-ten.vercel.app";
+    await tg("sendMessage", {
+      chat_id: m.chat.id,
+      text: "Добро пожаловать в PlayVault! Выберите набор игр и получите доступ за минуту.",
+      reply_markup: { inline_keyboard: [[{ text: "Открыть PlayVault", web_app: { url } }]] },
+    });
+    return res.json({ ok: true });
+  }
+
   if (u.pre_checkout_query) {
     const q = u.pre_checkout_query;
     const [o] = await sql`select id from orders where id = ${Number(q.invoice_payload)} and user_id = ${q.from.id}
