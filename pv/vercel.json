@@ -1,1 +1,1 @@
-{"crons":[{"path":"/api/cron/steam","schedule":"0 */12 * * *"}],"functions":{"api/cron/steam.js":{"maxDuration":60}}}
+{"crons":[{"path":"/api/cron/steam","schedule":"0 */24 * * *"}],"functions":{"api/cron/steam.js":{"maxDuration":60}}}
