@@ -877,7 +877,6 @@ const api = async (path, opt = {}) => {
   return j;
 };
 const ME = {role: null, id: null};
-S.starsRate = 0.85; // подгружается из настроек
 const isAdmin = () => ME.role === "owner" || ME.role === "admin";
 async function loadMe() {
   if(!tgInit()) return;
@@ -947,7 +946,8 @@ const useCode = c => { const x = c && S.codes.find(k => k.code === c); if(x){ x.
 
 const S = {
   pop: loadPop(), w: loadWants(), codes: loadCodes(), redeemed: loadRedeemed(), at:"dash", rng:30, tab:"shop", open:null, pay:"Telegram Stars",
-  orders:[], fav:loadFav(), bal:0, spent:0, promo:null, q:"",
+  orders:[], fav:loadFav(), bal:0, spent:0, promo:null, q:"", starsRate:0.85, // starsRate подгружается из настроек
+ 
   tickets:[], tk:null, rec:"Ведьмак 3: Дикая Охота — Обновлённое издание",
   wantLog:[], _co:null, _bad:null, _ar:[], _timers:{}
 };
