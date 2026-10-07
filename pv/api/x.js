@@ -17,10 +17,14 @@ async function ping(req, res) {
       out[name] = { ms: Date.now() - t0, ...(r || {}) };
     } catch (e) { out[name] = { ms: Date.now() - t0, error: e.code || String(e.message || e).slice(0, 100) }; }
   };
-  await run("select1", async () => { await sql`select 1`; });
-  await run("connections", async () => { const [r] = await sql`select count(*)::int as total, (count(*) filter (where state = 'idle in transaction'))::int as idle_in_tx from pg_stat_activity`; return r; });
-  for (const t of ["users", "promo_codes", "wants", "tickets", "ticket_messages", "promo_uses", "want_done"])
-    await run(t, async () => { const [r] = await sql`select count(*)::int as rows from ${sql(t)}`; return r; });
+  // всё разом и с общим пределом 5 секунд, чтобы ответ пришёл даже если база не отвечает
+  const t = ["users", "promo_codes", "wants", "tickets", "ticket_messages", "promo_uses", "want_done"];
+  await Promise.all([
+    run("select1", async () => { await sql`select 1`; }),
+    run("connections", async () => { const [r] = await sql`select count(*)::int as total, (count(*) filter (where state = 'idle in transaction'))::int as idle_in_tx from pg_stat_activity`; return r; }),
+    ...t.map((n) => run(n, async () => { const [r] = await sql`select count(*)::int as rows from ${sql(n)}`; return r; })),
+  ]);
+  const u = process.env.DATABASE_URL || ""; out.env = { has_db_url: !!u, pooler: /pooler\.supabase/.test(u), port: (u.match(/:(\d{4,5})\//) || [])[1] || null, region: process.env.VERCEL_REGION || null };
   return res.status(200).json(out);
 }
 
@@ -30,7 +34,7 @@ export default async function handler(req, res) {
   if (!h) return res.status(404).json({ error: "not_found" });
   try {
     // если база не отвечает — не висим 300 секунд, отвечаем ошибкой через 15
-    let t; const guard = new Promise((_, rej) => { t = setTimeout(() => rej(Object.assign(new Error("db timeout"), { code: "TIMEOUT" })), req.query?.r === "ping" ? 60000 : 15000); });
+    let t; const guard = new Promise((_, rej) => { t = setTimeout(() => rej(Object.assign(new Error("db timeout"), { code: "TIMEOUT" })), req.query?.r === "ping" ? 12000 : 15000); });
     try { return await Promise.race([h(req, res), guard]); } finally { clearTimeout(t); }
   }
   catch (e) {
