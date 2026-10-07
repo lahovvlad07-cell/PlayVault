@@ -2,12 +2,25 @@ import crypto from "node:crypto";
 import postgres from "postgres";
 
 // Supabase: строка подключения «Transaction pooler» (порт 6543), подходит для serverless
-// idle_timeout: закрываем простаивающее соединение сами. Иначе Vercel «замораживает» функцию, пул Supabase обрывает сокет,
-// и следующий запрос зависает на минуты (в логах: «Task timed out after 300 seconds»).
-export const sql = postgres(process.env.DATABASE_URL, { ssl: "require", prepare: false, max: 1, idle_timeout: 5, max_lifetime: 300, connect_timeout: 10 });
+// max увеличен до 3: при stats.js делает 6 параллельных запросов через Promise.all —
+// с max:1 они выстраиваются в очередь и суммарно легко выходят за 5-10 сек таймаут функции.
+// idle_timeout: закрываем простаивающее соединение сами, иначе Vercel «замораживает» функцию,
+// пул Supabase обрывает сокет, и следующий запрос зависает на минуты.
+export const sql = postgres(process.env.DATABASE_URL, {
+  ssl: "require",
+  prepare: false,
+  max: 3,              // было 1
+  idle_timeout: 5,
+  max_lifetime: 300,
+  connect_timeout: 10,
+});
 
 // Отдельное короткоживущее соединение (диагностика)
-export const mkSql = (extra = {}) => postgres(process.env.DATABASE_URL, { ssl: "require", prepare: false, max: 1, connect_timeout: 8, idle_timeout: 2, ...extra });
+export const mkSql = (extra = {}) =>
+  postgres(process.env.DATABASE_URL, {
+    ssl: "require", prepare: false, max: 1,
+    connect_timeout: 8, idle_timeout: 2, ...extra,
+  });
 
 // Шифрование логинов и паролей аккаунтов (AES-256-GCM). ACC_KEY: openssl rand -base64 32
 const key = () => Buffer.from(process.env.ACC_KEY, "base64");
@@ -37,8 +50,8 @@ export function tgUser(req) {
   if (Date.now() / 1000 - Number(p.get("auth_date")) > 86400) return null;
   try { return JSON.parse(p.get("user")); } catch { return null; }
 }
+
 // Роль пользователя: "owner" | "admin" | null. Определяется только на сервере по подписанному Telegram ID.
-// Владелец: числовой ID из OWNER_ID (надёжно). Если OWNER_ID не задан, первый вход @nellmet привязывает его ID навсегда.
 export async function getRole(u) {
   if (!u) return null;
   const [r] = await sql`select role from admins where user_id = ${u.id}`;
@@ -60,11 +73,9 @@ export const tg = (method, body) =>
     method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body),
   }).then((r) => r.json());
 
-// ── Общие настройки и помощники ──────────────────────────────────────────────
 export const APP_URL = () => (process.env.APP_URL || "https://playvault-ten.vercel.app").replace(/\/$/, "");
 export const REF_BONUS = () => { const n = Number(process.env.REF_BONUS); return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 20; };
 
-// Имя бота для реферальной ссылки: BOT_USERNAME, иначе спрашиваем у Telegram и запоминаем
 let _bot;
 export async function botName() {
   if (process.env.BOT_USERNAME) return process.env.BOT_USERNAME.replace(/^@/, "");
@@ -73,7 +84,6 @@ export async function botName() {
   return _bot;
 }
 
-// start_param из подписанных данных Mini App (ссылка вида t.me/bot/app?startapp=ref_123)
 export function startParam(req) {
   return new URLSearchParams((req.headers.authorization || "").replace(/^tma /, "")).get("start_param") || "";
 }
@@ -82,7 +92,6 @@ export const saveUser = (u) => sql`
   insert into users(id, username, first_name, last_seen) values (${u.id}, ${u.username || null}, ${u.first_name || null}, now())
   on conflict (id) do update set username = excluded.username, first_name = coalesce(excluded.first_name, users.first_name), last_seen = now()`;
 
-// Привязка приглашённого к пригласившему: один раз, не себя, и только пока друг ещё ничего не купил
 export async function bindRef(userId, param) {
   const m = /^ref_(\d{1,15})$/.exec(param || "");
   if (!m || Number(m[1]) === Number(userId)) return;
@@ -92,8 +101,6 @@ export async function bindRef(userId, param) {
               and exists (select 1 from users where id = ${Number(m[1])})`;
 }
 
-// Бонус за друга: один раз за каждого приглашённого, при его первой оплаченной покупке.
-// Атомарно: флаг ref_rewarded ставится в том же запросе, поэтому повторный вызов ничего не начислит.
 export async function rewardRef(buyerId) {
   const bonus = REF_BONUS();
   if (!(bonus > 0)) return;
@@ -109,8 +116,6 @@ export async function rewardRef(buyerId) {
     text: `🎉 Ваш друг купил доступ в PlayVault!\nНа ваш баланс зачислено ${bonus} ₽. Сейчас на балансе: ${got.balance} ₽.` }).catch(() => {});
 }
 
-// ── Промокоды ────────────────────────────────────────────────────────────────
-// Проверка кода для пользователя: {code, kind, value} или {error}
 export async function promoLookup(code, userId) {
   const c = String(code || "").trim().toUpperCase();
   if (!c) return { error: "empty" };
@@ -123,7 +128,7 @@ export async function promoLookup(code, userId) {
   if (u) return { error: "used" };
   return { code: p.code, kind: p.kind, value: p.value };
 }
-// Засчитать использование: один раз на пользователя; true, если засчитано. tx — транзакция (по умолчанию общее соединение)
+
 export async function consumePromo(userId, code, tx = sql) {
   if (!code) return false;
   const [r] = await tx`insert into promo_uses(code, user_id) values (${code}, ${userId}) on conflict do nothing returning code`;
@@ -132,7 +137,6 @@ export async function consumePromo(userId, code, tx = sql) {
   return true;
 }
 
-// Уведомление всем администраторам в бота
 export async function notifyAdmins(text) {
   const rows = await sql`select user_id from admins`;
   await Promise.all(rows.map((a) => tg("sendMessage", {
