@@ -488,6 +488,7 @@ button.kpi:hover{background:var(--sf2)}
 .prof-row{display:flex;align-items:center;gap:10px}
 .pe-chip{display:inline-flex;align-items:center;gap:4px;background:var(--sf3);border:1px solid var(--brd);border-radius:20px;padding:3px 8px 3px 10px;font-size:13px;color:var(--ink)}
 .pe-chip-x{background:none;border:none;color:var(--sub);font-size:13px;cursor:pointer;padding:0;line-height:1;display:flex;align-items:center}
+.cred-sep{padding:10px 0 6px;border-top:1px solid var(--brd);margin-top:4px}
 .pf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pf-grid label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:600;color:var(--sub);min-width:0}
 .pf-grid label.wide{grid-column:1/-1}
@@ -1339,6 +1340,18 @@ function mine() {
         </div>
       </div>
       <div id="sg${i}"></div>
+      ${o.p.extra_service ? `<div class="cred-sep"><span class="tag" style="font-size:12px">${o.p.extra_service==="uplay"?"Ubisoft Connect (Uplay)":o.p.extra_service}</span></div>
+      <div class="cred">
+        <div><small>Логин</small><code>${esc(o.p.extra_login||"")}</code></div>
+        <button class="ico" data-act="cxl" data-i="${i}" aria-label="Копировать логин Uplay">Копировать</button>
+      </div>
+      <div class="cred">
+        <div><small>Пароль</small><code id="xpw${i}" class="mask">•••••••••</code></div>
+        <div style="display:flex;gap:4px">
+          <button class="ico" data-act="cxp" data-i="${i}" aria-label="Копировать пароль Uplay">Копировать</button>
+          <button class="ico" data-act="sxp" data-i="${i}" id="sxpb${i}">Показать</button>
+        </div>
+      </div>` : ""}
       <div class="row" style="gap:8px;flex-wrap:wrap">
         <button class="btn sec sm" data-act="gd" data-i="${i}">🔐 Код Steam Guard</button>
         ${o.exp?`<button class="btn sec sm" data-act="ext" data-i="${i}">Продлить</button>`:''}
@@ -1856,6 +1869,18 @@ function packEditSheet(packId) {
       <label class="pf-label" style="flex:1">Всего слотов<input id="pe-slots" type="number" min="1" max="100" value="5"></label>
       <label class="pf-label" style="flex:1">Свободно слотов<input id="pe-free-slots" type="number" min="0" max="100" value="5"></label>
     </div>
+    <div style="border-top:1px solid var(--brd);margin-top:10px;padding-top:12px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px">Доп. данные</div>
+      <div class="mut" style="font-size:12px;line-height:1.45;margin-bottom:8px">Дополнительный аккаунт сервиса — тоже выдаётся покупателю в «Мои доступы».</div>
+      <label class="pf-label">Сервис
+        <select id="pe-extra-svc" style="height:44px;padding:0 12px;border-radius:12px;border:1px solid var(--brd);background:var(--sf2);color:var(--ink);font:inherit;font-size:15px;width:100%">
+          <option value="">— не указывать —</option>
+          <option value="uplay">Ubisoft Connect (Uplay)</option>
+        </select>
+      </label>
+      <label class="pf-label">Логин Uplay<input id="pe-extra-login" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="email или логин"></label>
+      <label class="pf-label">Пароль Uplay<input id="pe-extra-pass" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="password"></label>
+    </div>
     <div class="mut" style="font-size:12px;line-height:1.45">${p ? "Заполните, чтобы добавить ещё один аккаунт к набору. Если не нужно, оставьте пустым." : "Можно оставить пустым и добавить аккаунт позже, открыв набор на редактирование."}</div>
   </div>
   <button class="btn pri" data-act="pesave" data-id="${packId||0}">Сохранить</button>`);
@@ -1906,9 +1931,14 @@ async function loadPackAccounts(packId) {
       const free = a.max_slots - a.used;
       const pc = a.max_slots ? Math.round(a.used / a.max_slots * 100) : 0;
       const bar = `<div class="slotbar" style="margin-top:4px"><i style="width:${pc}%;${pc>=90?"background:var(--hot)":""}"></i></div>`;
+      const svcLabel = a.extra_service === "uplay" ? "Uplay" : (a.extra_service || "");
       return `<div class="crow" style="align-items:flex-start;gap:8px">
         <div style="min-width:0;flex:1">
-          <code>${esc(a.login)}</code>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <code>${esc(a.login)}</code>
+            ${svcLabel ? `<span class="tag" style="font-size:11px">${svcLabel}</span>` : ""}
+          </div>
+          ${a.extra_login ? `<div class="mut" style="font-size:11px">+ ${svcLabel}: ${esc(a.extra_login)}</div>` : ""}
           <div class="mut" style="font-size:12px">занято ${a.used} из ${a.max_slots} · свободно ${free}</div>
           ${bar}
         </div>
@@ -2482,6 +2512,7 @@ document.addEventListener("click", e => {
     const showRaw=[...($("#pe-show-chips")?.querySelectorAll(".pe-chip")||[])].map(el=>el.childNodes[0]?.textContent?.trim()||"").filter(Boolean);
     const login=$("#pe-login").value.trim(), pass=$("#pe-pass").value, slots=Math.max(1,Math.min(100,Math.floor(+$("#pe-slots").value)||5));
     const freeSlots=Math.max(0,Math.min(slots,Math.floor(+$("#pe-free-slots")?.value??slots)));
+    const extraSvc=$("#pe-extra-svc")?.value||"", extraLogin=$("#pe-extra-login")?.value.trim()||"", extraPass=$("#pe-extra-pass")?.value||"";
     const wantAcc=!!(login||pass);
     if(!name||!price){toast("Укажи название и цену");return}
     if(wantAcc&&(!login||!pass)){toast("Для аккаунта нужны и логин, и пароль");return}
@@ -2489,7 +2520,7 @@ document.addEventListener("click", e => {
     const addAcc=async packId=>{
       if(!wantAcc) return "";
       try{
-        await api("/api/accounts",{method:"POST",body:{pack_id:packId,login,password:pass,max_slots:slots,used_slots:slots-freeSlots}});
+        await api("/api/accounts",{method:"POST",body:{pack_id:packId,login,password:pass,max_slots:slots,used_slots:slots-freeSlots,...(extraSvc?{extra_service:extraSvc,extra_login:extraLogin,extra_password:extraPass}:{})}});
         const p=PACKS.find(x=>x.id===packId);if(p){p.slots=(p.slots||0)+slots;p.stock=(p.stock||0)+slots;}
         return " + аккаунт добавлен";
       }catch(e){ return ", но аккаунт не добавился"; }
@@ -2655,6 +2686,27 @@ document.addEventListener("click", e => {
     navigator.clipboard?.writeText(text).then(()=>toast("Пароль скопирован")).catch(()=>{
       const el=document.createElement("textarea");el.value=text;document.body.appendChild(el);el.select();document.execCommand("copy");el.remove();toast("Пароль скопирован");
     });
+    return;
+  }
+  if(a==="cxl"){
+    const text=o.p.extra_login||"";
+    navigator.clipboard?.writeText(text).then(()=>toast("Логин Uplay скопирован")).catch(()=>{
+      const el=document.createElement("textarea");el.value=text;document.body.appendChild(el);el.select();document.execCommand("copy");el.remove();toast("Логин Uplay скопирован");
+    });
+    return;
+  }
+  if(a==="cxp"){
+    const text=o.p.extra_pass||"";
+    navigator.clipboard?.writeText(text).then(()=>toast("Пароль Uplay скопирован")).catch(()=>{
+      const el=document.createElement("textarea");el.value=text;document.body.appendChild(el);el.select();document.execCommand("copy");el.remove();toast("Пароль Uplay скопирован");
+    });
+    return;
+  }
+  if(a==="sxp"){
+    const el=$("#xpw"+i), spb=$("#sxpb"+i), h=el?.textContent.includes("•");
+    if(el){ el.textContent=h?o.p.extra_pass:"•••••••••"; el.classList.toggle("mask",!h); }
+    if(spb){ spb.textContent=h?"Скрыть":"Показать"; }
+    if(h){ clearTimeout(S._timers["xpw"+i]); S._timers["xpw"+i]=setTimeout(()=>{ const e=$("#xpw"+i),sb=$("#sxpb"+i); if(e&&e.textContent===o.p.extra_pass){e.textContent="•••••••••";e.classList.add("mask");if(sb)sb.textContent="Показать"} },12000); }
     return;
   }
   if(a==="ref"){ const l=refLink(); if(l) copyText(l,"Ссылка скопирована"); return; }

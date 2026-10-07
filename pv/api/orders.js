@@ -7,10 +7,18 @@ export default async function handler(req, res) {
   // Мои доступы: логин и пароль отдаём только по оплаченным заказам этого пользователя
   if (req.method === "GET") {
     const rows = await sql`
-      select o.id, o.pack_id, o.price_rub, o.created_at, p.name, a.login_enc, a.pass_enc
+      select o.id, o.pack_id, o.price_rub, o.created_at, p.name,
+             a.login_enc, a.pass_enc,
+             a.extra_service, a.extra_login_enc, a.extra_pass_enc
       from orders o join packs p on p.id = o.pack_id join accounts a on a.id = o.account_id
       where o.user_id = ${u.id} and o.status = 'paid' order by o.id desc`;
-    return res.json(rows.map(({ login_enc, pass_enc, ...r }) => ({ ...r, login: dec(login_enc), pass: dec(pass_enc) })));
+    return res.json(rows.map(({ login_enc, pass_enc, extra_login_enc, extra_pass_enc, ...r }) => ({
+      ...r,
+      login: dec(login_enc),
+      pass:  dec(pass_enc),
+      extra_login: extra_login_enc ? dec(extra_login_enc) : null,
+      extra_pass:  extra_pass_enc  ? dec(extra_pass_enc)  : null,
+    })));
   }
 
   // Покупка: цена считается на сервере, клиенту не доверяем
