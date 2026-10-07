@@ -1834,10 +1834,22 @@ async function loadPackAccounts(packId) {
   try {
     const rows = await api("/api/accounts?pack_id=" + packId);
     if(!$("#pe-acc-list")) return;
-    el.innerHTML = rows.length ? rows.map(a => `<div class="crow">
-      <div style="min-width:0"><code>${esc(a.login)}</code><div class="mut" style="font-size:12px">занято ${a.used} из ${a.max_slots}</div></div>
-      ${a.used ? "" : `<button class="sq" data-act="peaccdel" data-id="${a.id}" data-pid="${packId}" data-ms="${a.max_slots}" style="color:var(--hot)" aria-label="Удалить аккаунт">✕</button>`}
-    </div>`).join("") : "Аккаунтов пока нет: покупатели не смогут получить доступ.";
+    el.innerHTML = rows.length ? rows.map(a => {
+      const free = a.max_slots - a.used;
+      const pc = a.max_slots ? Math.round(a.used / a.max_slots * 100) : 0;
+      const bar = `<div class="slotbar" style="margin-top:4px"><i style="width:${pc}%;${pc>=90?"background:var(--hot)":""}"></i></div>`;
+      return `<div class="crow" style="align-items:flex-start;gap:8px">
+        <div style="min-width:0;flex:1">
+          <code>${esc(a.login)}</code>
+          <div class="mut" style="font-size:12px">занято ${a.used} из ${a.max_slots} · свободно ${free}</div>
+          ${bar}
+        </div>
+        <div style="display:flex;gap:4px;flex-shrink:0;margin-top:2px">
+          <button class="sq" data-act="peaccedit" data-id="${a.id}" data-pid="${packId}" data-ms="${a.max_slots}" data-used="${a.used}" data-login="${esc(a.login)}" title="Изменить слоты / данные" aria-label="Редактировать аккаунт">${ico("edit",14)}</button>
+          ${a.used ? "" : `<button class="sq" data-act="peaccdel" data-id="${a.id}" data-pid="${packId}" data-ms="${a.max_slots}" style="color:var(--hot)" aria-label="Удалить аккаунт">✕</button>`}
+        </div>
+      </div>`;
+    }).join("") : "Аккаунтов пока нет: покупатели не смогут получить доступ.";
   } catch(e) { el.textContent = "Не удалось загрузить аккаунты"; }
 }
 function packAddGameSheet(packId) {
@@ -2425,6 +2437,37 @@ document.addEventListener("click", e => {
         closeSheet();admin();toast("Сохранено"+note);
       }).catch(()=>toast("Ошибка"));
     }
+    return;
+  }
+  if(a==="peaccedit"){
+    const accId=+b.dataset.id, pid=+b.dataset.pid, curMs=+b.dataset.ms, curUsed=+b.dataset.used, curLogin=b.dataset.login||"";
+    sheet(`<h2>Редактировать аккаунт</h2>
+  <div class="mut" style="font-size:12px;margin-bottom:4px">Аккаунт: <code>${esc(curLogin)}</code></div>
+  <label class="pf-label">Всего слотов (max_slots)<input id="eacc-ms" type="number" min="1" max="100" value="${curMs}"></label>
+  <label class="pf-label">Уже занято (used) — сколько покупателей уже получили доступ<input id="eacc-used" type="number" min="0" max="${curMs}" value="${curUsed}"></label>
+  <div class="mut" style="font-size:12px;line-height:1.45;margin-bottom:4px">Оставьте логин/пароль пустыми, если менять не нужно.</div>
+  <label class="pf-label">Новый логин Steam (необязательно)<input id="eacc-login" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="оставьте пустым"></label>
+  <label class="pf-label">Новый пароль (необязательно)<input id="eacc-pass" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="оставьте пустым"></label>
+  <button class="btn pri" id="eacc-save">Сохранить</button>`);
+    $("#eacc-save").onclick = async () => {
+      const ms   = Math.max(1, Math.min(100, Math.floor(+$("#eacc-ms").value)  || curMs));
+      const used = Math.max(0, Math.min(ms,  Math.floor(+$("#eacc-used").value)));
+      const login    = $("#eacc-login").value.trim() || undefined;
+      const password = $("#eacc-pass").value.trim()  || undefined;
+      try {
+        const j = await api("/api/accounts", {method:"PATCH", body:{id:accId, max_slots:ms, used, login, password}});
+        // Обновляем локальный PACKS: пересчитываем суммарные слоты набора
+        const pack = PACKS.find(x=>x.id===pid);
+        if(pack) {
+          pack.slots = (pack.slots||0) - curMs + j.max_slots;
+          pack.stock = (pack.stock||0) - (curMs - curUsed) + (j.max_slots - j.used);
+        }
+        toast("Аккаунт обновлён");
+        closeSheet();
+        // Возвращаемся к редактированию набора
+        packEditSheet(pid);
+      } catch(e) { toast("Ошибка: " + (e.message||"сервер")); }
+    };
     return;
   }
   if(a==="peaccdel"){
