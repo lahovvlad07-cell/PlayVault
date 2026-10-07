@@ -35,14 +35,19 @@ export default async function handler(req, res) {
     const { id, name, sub, price, disc, cover_appid, cover_game,
             add_games, remove_games, set_show_games } = req.body || {};
     if (!id) return res.status(400).json({ error: "bad_request" });
-    if (name || sub !== undefined || price || disc !== undefined || cover_appid !== undefined || cover_game !== undefined) {
+    if (name || sub !== undefined || price || disc !== undefined) {
       await sql`update packs set
-        name        = coalesce(${name||null}, name),
-        sub         = coalesce(${sub??null}, sub),
-        price       = coalesce(${price||null}, price),
-        disc        = coalesce(${disc??null}, disc),
-        cover_appid = coalesce(${cover_appid??null}, cover_appid),
-        cover_game  = coalesce(${cover_game??null}, cover_game)
+        name  = coalesce(${name||null}, name),
+        sub   = coalesce(${sub??null}, sub),
+        price = coalesce(${price||null}, price),
+        disc  = coalesce(${disc??null}, disc)
+        where id = ${+id}`;
+    }
+    // cover_appid и cover_game обновляем отдельно — только когда явно переданы
+    if (cover_appid !== undefined || cover_game !== undefined) {
+      await sql`update packs set
+        cover_appid = ${cover_appid??null},
+        cover_game  = ${cover_game??null}
         where id = ${+id}`;
     }
     if (add_games?.length) {
