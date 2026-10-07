@@ -1803,7 +1803,7 @@ function packEditSheet(packId) {
   const p = PACKS.find(x => x.id === packId);
   const isNew = !packId;
   const title = isNew ? "Новый набор" : "Редактировать набор";
-  const showG = (p?.showGames || p?.games?.slice(0,3) || []).join(", ");
+  const showG = typeof p?.showGames === "string" ? p.showGames : (Array.isArray(p?.showGames) ? p.showGames.join(", ") : (p?.games?.slice(0,3) || []).join(", "));
   sheet(`<h2>${title}</h2>
   <label class="pf-label">Название<input id="pe-name" value="${esc(p?.name||"")}" placeholder="Название набора"></label>
   <label class="pf-label">Описание<input id="pe-sub" value="${esc(p?.sub||"")}" placeholder="Подзаголовок"></label>
