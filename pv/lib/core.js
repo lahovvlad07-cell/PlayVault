@@ -6,6 +6,9 @@ import postgres from "postgres";
 // и следующий запрос зависает на минуты (в логах: «Task timed out after 300 seconds»).
 export const sql = postgres(process.env.DATABASE_URL, { ssl: "require", prepare: false, max: 1, idle_timeout: 5, max_lifetime: 300, connect_timeout: 10 });
 
+// Отдельное короткоживущее соединение (диагностика)
+export const mkSql = (extra = {}) => postgres(process.env.DATABASE_URL, { ssl: "require", prepare: false, max: 1, connect_timeout: 8, idle_timeout: 2, ...extra });
+
 // Шифрование логинов и паролей аккаунтов (AES-256-GCM). ACC_KEY: openssl rand -base64 32
 const key = () => Buffer.from(process.env.ACC_KEY, "base64");
 export const enc = (t) => {

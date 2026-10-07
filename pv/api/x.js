@@ -5,26 +5,30 @@ import tickets from "../lib/h/tickets.js";
 import stats from "../lib/h/stats.js";
 import prices from "../lib/h/steam-prices.js";
 
-import { sql } from "../lib/core.js";
+import { sql, mkSql } from "../lib/core.js";
 
-// Диагностика: открыть /api/x?r=ping в браузере. Показывает, какой запрос к базе тормозит. Данных не отдаёт, только время и счётчики.
+// Диагностика: открыть /api/x?r=ping в браузере. Показывает, где именно зависает база. Данных не отдаёт.
 async function ping(req, res) {
   const out = {};
+  const cap = (p, ms = 5000) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("нет ответа за " + ms / 1000 + " с")), ms))]);
   const run = async (name, q) => {
     const t0 = Date.now();
-    try {
-      const r = await Promise.race([q(), new Promise((_, rej) => setTimeout(() => rej(new Error("нет ответа за 5 с")), 5000))]);
-      out[name] = { ms: Date.now() - t0, ...(r || {}) };
-    } catch (e) { out[name] = { ms: Date.now() - t0, error: e.code || String(e.message || e).slice(0, 100) }; }
+    try { const r = await cap(q()); out[name] = { ms: Date.now() - t0, ...(r || {}) }; }
+    catch (e) { out[name] = { ms: Date.now() - t0, error: e.code || String(e.message || e).slice(0, 100) }; }
   };
-  // всё разом и с общим пределом 5 секунд, чтобы ответ пришёл даже если база не отвечает
-  const t = ["users", "promo_codes", "wants", "tickets", "ticket_messages", "promo_uses", "want_done"];
+  const d = mkSql(); // новое соединение, отдельное от общего
+  const tables = ["users", "promo_codes", "wants", "tickets"];
   await Promise.all([
-    run("select1", async () => { await sql`select 1`; }),
-    run("connections", async () => { const [r] = await sql`select count(*)::int as total, (count(*) filter (where state = 'idle in transaction'))::int as idle_in_tx from pg_stat_activity`; return r; }),
-    ...t.map((n) => run(n, async () => { const [r] = await sql`select count(*)::int as rows from ${sql(n)}`; return r; })),
+    run("fresh_select1", async () => { await d`select 1`; }),
+    run("fresh_activity", async () => ({ rows: (await d`select state, wait_event_type as wait, (extract(epoch from now() - query_start))::int as age_s, left(query, 60) as q
+                                                    from pg_stat_activity where datname = current_database() and pid <> pg_backend_pid() and state <> 'idle' order by query_start limit 8`) })),
+    ...tables.map((n) => run("fresh_" + n, async () => { const [r] = await d`select count(*)::int as rows from ${d(n)}`; return r; })),
+    run("shared_select1", async () => { await sql`select 1`; }),
+    run("shared_users", async () => { const [r] = await sql`select count(*)::int as rows from users`; return r; }),
   ]);
-  const u = process.env.DATABASE_URL || ""; out.env = { has_db_url: !!u, pooler: /pooler\.supabase/.test(u), port: (u.match(/:(\d{4,5})\//) || [])[1] || null, region: process.env.VERCEL_REGION || null };
+  d.end({ timeout: 1 }).catch(() => {});
+  const u = process.env.DATABASE_URL || "";
+  out.env = { has_db_url: !!u, pooler: /pooler\.supabase/.test(u), port: (u.match(/:(\d{4,5})\//) || [])[1] || null, region: process.env.VERCEL_REGION || null };
   return res.status(200).json(out);
 }
 
