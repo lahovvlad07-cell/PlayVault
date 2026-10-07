@@ -484,6 +484,10 @@ button.kpi:hover{background:var(--sf2)}
 .btn.light{background:#fff;color:#12263d}
 .btn.light:active{opacity:.9}
 .prof .btn{max-width:280px}
+.prof-compact{padding:14px 14px 12px;display:flex;flex-direction:column;gap:0}
+.prof-row{display:flex;align-items:center;gap:10px}
+.pe-chip{display:inline-flex;align-items:center;gap:4px;background:var(--sf3);border:1px solid var(--brd);border-radius:20px;padding:3px 8px 3px 10px;font-size:13px;color:var(--ink)}
+.pe-chip-x{background:none;border:none;color:var(--sub);font-size:13px;cursor:pointer;padding:0;line-height:1;display:flex;align-items:center}
 .pf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pf-grid label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:600;color:var(--sub);min-width:0}
 .pf-grid label.wide{grid-column:1/-1}
@@ -1412,13 +1416,19 @@ function me() {
   const name = u ? ([u.first_name, u.last_name].filter(Boolean).join(" ") || "Пользователь") : "Гость";
   const sub = u ? (u.username ? "@"+u.username : "ID "+u.id) : "Вы не вошли через Telegram";
   const V = $("#view");
-  V.innerHTML = `<div class="card lead prof">
-    <div class="prof-top">
-      <div class="avatar">${esc(name[0].toUpperCase())}</div>
-      <div style="min-width:0"><div class="pname">${esc(name)}</div><div class="mut">${esc(sub)}</div></div>
+  V.innerHTML = `<div class="card prof-compact">
+    <div class="prof-row">
+      <div class="avatar" style="width:40px;height:40px;font-size:16px;flex-shrink:0">${esc(name[0].toUpperCase())}</div>
+      <div style="min-width:0;flex:1">
+        <div class="pname" style="font-size:15px">${esc(name)}</div>
+        <div class="mut" style="font-size:12px">${esc(sub)}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="mut" style="font-size:11px;margin-bottom:1px">Баланс</div>
+        <div style="font-size:20px;font-weight:800;color:#fff;line-height:1">${r(S.bal)}</div>
+      </div>
     </div>
-    <div class="bal-box"><div class="mut">Ваш баланс</div><div class="bal">${r(S.bal)}</div></div>
-    <button class="btn light" data-act="topup">Пополнить баланс</button>
+    <button class="btn light" style="height:38px;font-size:13px;margin-top:10px" data-act="topup">Пополнить баланс</button>
   </div>
   <div class="stat3">
     <div><b>${S.orders.length}</b><span>Наборов</span></div>
@@ -1803,15 +1813,34 @@ function packEditSheet(packId) {
   const p = PACKS.find(x => x.id === packId);
   const isNew = !packId;
   const title = isNew ? "Новый набор" : "Редактировать набор";
-  const showG = typeof p?.showGames === "string" ? p.showGames : (Array.isArray(p?.showGames) ? p.showGames.join(", ") : (p?.games?.slice(0,3) || []).join(", "));
+  const showGArr = typeof p?.showGames === "string"
+    ? p.showGames.split(",").map(x=>x.trim()).filter(Boolean)
+    : (Array.isArray(p?.showGames) ? p.showGames : (p?.games?.slice(0,3) || []));
+  const gamesList = p?.games || [];
+  const coverGameVal = p?.coverGame || "";
+
+  // Build cover game dropdown
+  const coverOpts = [`<option value="">— не выбрано —</option>`,
+    ...gamesList.map(g => `<option value="${esc(g)}"${g===coverGameVal?" selected":""}>${esc(g)}</option>`)
+  ].join("");
+
+  // Build show-games chips HTML
+  const showChips = showGArr.map(g =>
+    `<span class="pe-chip">${esc(g)}<button type="button" class="pe-chip-x" data-g="${encodeURIComponent(g)}">✕</button></span>`
+  ).join("");
+
   sheet(`<h2>${title}</h2>
   <label class="pf-label">Название<input id="pe-name" value="${esc(p?.name||"")}" placeholder="Название набора"></label>
   <label class="pf-label">Описание<input id="pe-sub" value="${esc(p?.sub||"")}" placeholder="Подзаголовок"></label>
   <label class="pf-label">Цена, ₽<input id="pe-price" type="number" value="${p?.price?.buy||99}" min="1"></label>
   <label class="pf-label">Скидка, %<input id="pe-disc" type="number" value="${p?.disc||0}" min="0" max="90"></label>
-  <label class="pf-label">Steam AppID обложки<input id="pe-appid" type="number" value="${p?.coverAppid||""}" placeholder="Например 292030"></label>
-  <label class="pf-label">Игра-обложка (альтернатива AppID)<input id="pe-cgame" value="${esc(p?.coverGame||"")}" placeholder="Ведьмак 3..."></label>
-  <label class="pf-label">3 игры для показа (через запятую)<input id="pe-show" value="${esc(showG)}" placeholder="Hollow Knight, Valheim, ..."></label>
+  <label class="pf-label">Игра-обложка${gamesList.length ? `<select id="pe-cgame" style="height:44px;padding:0 12px;border-radius:12px;border:1px solid var(--brd);background:var(--sf2);color:var(--ink);font:inherit;font-size:15px;width:100%">${coverOpts}</select>` : `<input id="pe-cgame" value="${esc(coverGameVal)}" placeholder="Ведьмак 3...">`}</label>
+  <div class="pf-label" style="gap:6px">
+    <span>3 игры для показа</span>
+    <div id="pe-show-chips" style="display:flex;flex-wrap:wrap;gap:6px;min-height:28px">${showChips}</div>
+    <input id="pe-show-q" placeholder="${gamesList.length ? "Поиск по играм набора…" : "Hollow Knight, Valheim, ..."}" autocomplete="off" style="height:44px;padding:0 12px;border-radius:12px;border:1px solid var(--brd);background:var(--sf2);color:var(--ink);font:inherit;font-size:15px;width:100%">
+    <div id="pe-show-res"></div>
+  </div>
   <div class="mut">Игры в наборе: ${p ? p.count : 0}</div>
   ${p ? `<div class="row" style="gap:8px">
     <button class="btn sec sm" data-act="peaddgame" data-id="${p.id}">Добавить игры</button>
@@ -1823,10 +1852,49 @@ function packEditSheet(packId) {
     ${p ? `<div id="pe-acc-list" class="mut">Загружаем аккаунты…</div>` : ""}
     <label class="pf-label">Логин Steam<input id="pe-login" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="login"></label>
     <label class="pf-label">Пароль<input id="pe-pass" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="password"></label>
-    <label class="pf-label">Слотов — сколько покупателей на аккаунт<input id="pe-slots" type="number" min="1" max="100" value="5"></label>
+    <div class="row" style="gap:10px">
+      <label class="pf-label" style="flex:1">Всего слотов<input id="pe-slots" type="number" min="1" max="100" value="5"></label>
+      <label class="pf-label" style="flex:1">Свободно слотов<input id="pe-free-slots" type="number" min="0" max="100" value="5"></label>
+    </div>
     <div class="mut" style="font-size:12px;line-height:1.45">${p ? "Заполните, чтобы добавить ещё один аккаунт к набору. Если не нужно, оставьте пустым." : "Можно оставить пустым и добавить аккаунт позже, открыв набор на редактирование."}</div>
   </div>
   <button class="btn pri" data-act="pesave" data-id="${packId||0}">Сохранить</button>`);
+
+  // Wire up show-games search
+  const peShowQ = $("#pe-show-q");
+  const peShowRes = $("#pe-show-res");
+  const peShowChips = $("#pe-show-chips");
+  const peSelectedGames = new Set(showGArr);
+
+  const redrawChips = () => {
+    peShowChips.innerHTML = [...peSelectedGames].map(g =>
+      `<span class="pe-chip">${esc(g)}<button type="button" class="pe-chip-x" data-g="${encodeURIComponent(g)}">✕</button></span>`
+    ).join("");
+    peShowChips.querySelectorAll(".pe-chip-x").forEach(btn => {
+      btn.onclick = () => { peSelectedGames.delete(decodeURIComponent(btn.dataset.g)); redrawChips(); };
+    });
+  };
+  redrawChips();
+
+  if(peShowQ) peShowQ.oninput = e => {
+    const q = e.target.value.trim();
+    if(!q) { peShowRes.innerHTML = ""; return; }
+    const pool = gamesList.length ? gamesList : [...new Set(PACKS.flatMap(p=>p.games))];
+    const m = rank(pool, q).slice(0, 10);
+    peShowRes.innerHTML = m.length
+      ? `<div class="clist">${m.map(g => `<div class="crow" style="cursor:pointer;padding:8px 4px" data-act="peshowpick" data-g="${encodeURIComponent(g)}"><span>${esc(g)}</span>${peSelectedGames.has(g)?`<span class="mut" style="font-size:12px">✓</span>`:""}</div>`).join("")}</div>`
+      : `<div class="mut" style="font-size:13px;padding:4px 0">Не найдено</div>`;
+    peShowRes.querySelectorAll("[data-act=peshowpick]").forEach(row => {
+      row.onclick = () => {
+        const g = decodeURIComponent(row.dataset.g);
+        if(peSelectedGames.size < 3) peSelectedGames.add(g);
+        else { const arr = [...peSelectedGames]; arr.shift(); arr.push(g); peSelectedGames.clear(); arr.forEach(x=>peSelectedGames.add(x)); }
+        redrawChips();
+        peShowQ.value = "";
+        peShowRes.innerHTML = "";
+      };
+    });
+  };
   if(p) loadPackAccounts(p.id);
 }
 async function loadPackAccounts(packId) {
@@ -2409,9 +2477,11 @@ document.addEventListener("click", e => {
   if(a==="pesave"){
     const id=+b.dataset.id;
     const name=$("#pe-name").value.trim(),sub=$("#pe-sub").value.trim(),price=+$("#pe-price").value,disc=+$("#pe-disc").value;
-    const cover_appid=+$("#pe-appid").value||null,cover_game=$("#pe-cgame").value.trim()||null;
-    const showRaw=$("#pe-show").value.split(",").map(x=>x.trim()).filter(Boolean);
+    const cover_appid=null;
+    const cgEl=$("#pe-cgame"); const cover_game=(cgEl?.value||"").trim()||null;
+    const showRaw=[...($("#pe-show-chips")?.querySelectorAll(".pe-chip")||[])].map(el=>el.childNodes[0]?.textContent?.trim()||"").filter(Boolean);
     const login=$("#pe-login").value.trim(), pass=$("#pe-pass").value, slots=Math.max(1,Math.min(100,Math.floor(+$("#pe-slots").value)||5));
+    const freeSlots=Math.max(0,Math.min(slots,Math.floor(+$("#pe-free-slots")?.value??slots)));
     const wantAcc=!!(login||pass);
     if(!name||!price){toast("Укажи название и цену");return}
     if(wantAcc&&(!login||!pass)){toast("Для аккаунта нужны и логин, и пароль");return}
@@ -2419,7 +2489,7 @@ document.addEventListener("click", e => {
     const addAcc=async packId=>{
       if(!wantAcc) return "";
       try{
-        await api("/api/accounts",{method:"POST",body:{pack_id:packId,login,password:pass,max_slots:slots}});
+        await api("/api/accounts",{method:"POST",body:{pack_id:packId,login,password:pass,max_slots:slots,used_slots:slots-freeSlots}});
         const p=PACKS.find(x=>x.id===packId);if(p){p.slots=(p.slots||0)+slots;p.stock=(p.stock||0)+slots;}
         return " + аккаунт добавлен";
       }catch(e){ return ", но аккаунт не добавился"; }
