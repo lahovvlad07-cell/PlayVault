@@ -939,7 +939,7 @@ const tgInit = () => { try{ return window.Telegram?.WebApp?.initData || ""; }cat
 const api = async (path, opt = {}) => {
   const r = await fetch(path, {method: opt.method || "GET", headers: {"content-type":"application/json", authorization: "tma " + tgInit()}, body: opt.body ? JSON.stringify(opt.body) : undefined});
   const j = await r.json().catch(() => ({}));
-  if(!r.ok) throw new Error(j.error || r.status);
+  if(!r.ok){ const er = new Error(j.error || r.status); er.detail = j.detail; throw er; }
   return j;
 };
 const ME = {role: null, id: null, bot: null, bonus: 20, friends: 0, bought: 0};
@@ -963,10 +963,12 @@ async function submitWant(game, src){
   const key = norm(name), ex = ALLG.find(g => norm(g) === key);
   if(ex) return {exists: ex};
   if(!tgInit()) return "nottg";
-  try { const j = await api("/api/wants", {method:"POST", body:{game:name, src}}); return j.dup ? "dup" : "ok"; }
-  catch(e){ return e.message === "limit" ? "limit" : e.message === "in_catalog" ? {exists:name} : "err"; }
+  try { const j = await api("/api/x?r=wants", {method:"POST", body:{game:name, src}}); return j.dup ? "dup" : "ok"; }
+  catch(e){ return e.message === "no_schema" ? "noschema" : e.message === "limit" ? "limit" : e.message === "in_catalog" ? {exists:name} : (S._wantErr = " ("+e.message+detailOf(e)+")", "err"); }
 }
-const wantToast = res => toast(res==="ok" ? "Запрос отправлен! Добавим, если будет спрос" : res==="dup" ? "Вы уже запрашивали эту игру" : res==="short" ? "Введите название игры" : res==="limit" ? "Слишком много запросов за сутки — попробуйте завтра" : res==="nottg" ? "Откройте приложение в Telegram" : res==="err" ? "Не удалось отправить, попробуйте позже" : `Эта игра уже есть в каталоге: «${res.exists}»`);
+const detailOf = e => e && e.detail ? " ("+e.detail+")" : "";
+const errMsg = (e, what) => e && e.message === "no_schema" ? "В базе нет новых таблиц: выполните db/schema_patch3.sql в Supabase" : "Не удалось загрузить: " + what + detailOf(e);
+const wantToast = res => toast(res==="ok" ? "Запрос отправлен! Добавим, если будет спрос" : res==="dup" ? "Вы уже запрашивали эту игру" : res==="short" ? "Введите название игры" : res==="limit" ? "Слишком много запросов за сутки — попробуйте завтра" : res==="nottg" ? "Откройте приложение в Telegram" : res==="noschema" ? errMsg({message:"no_schema"}) : res==="err" ? "Не удалось отправить, попробуйте позже"+(S._wantErr||"") : `Эта игра уже есть в каталоге: «${res.exists}»`);
 
 // ── Избранное (хранится в браузере) ──
 const FAV_KEY = "lib_fav_v1";
@@ -981,9 +983,9 @@ async function promoApply(c){
   if(!tgInit()) return {err:"Откройте приложение в Telegram"};
   if(!c) return {err:PROMO_ERR.empty};
   try{
-    const j = await api("/api/promo",{method:"POST",body:{action:"check",code:c}});
+    const j = await api("/api/x?r=promo",{method:"POST",body:{action:"check",code:c}});
     if(j.kind === "bal"){
-      const k = await api("/api/promo",{method:"POST",body:{action:"redeem",code:c}});
+      const k = await api("/api/x?r=promo",{method:"POST",body:{action:"redeem",code:c}});
       S.bal = k.balance; chrome(); return {bal:k.added};
     }
     S.promo = j.code; S.promoInfo = j; return {pct:j.value};
@@ -1049,7 +1051,7 @@ const tSig = L => L.map(t=>t.id+":"+t.st+":"+t.msgs.length+":"+(t.uu?1:0)+(t.ua?
 async function loadTickets(adm){
   if(!tgInit()) return false;
   try{
-    const L = (await api(adm ? "/api/tickets?all=1" : "/api/tickets")).map(mapT);
+    const L = (await api(adm ? "/api/x?r=tickets&all=1" : "/api/x?r=tickets")).map(mapT);
     const key = adm ? "atickets" : "tickets", ch = tSig(L) !== tSig(S[key]);
     S[key] = L; if(adm) S.atLoaded = true; return ch;
   }catch(e){ return false; }
@@ -1063,8 +1065,8 @@ async function pollTickets(){
 }
 async function createTicket(subj, text){
   if(!tgInit()){ toast("Откройте приложение в Telegram"); return null; }
-  try{ const j = await api("/api/tickets",{method:"POST",body:{action:"create",subject:subj,body:text}}); await loadTickets(false); return j.id; }
-  catch(e){ toast(e.message==="limit" ? "Слишком много обращений за сутки — дождитесь ответа" : "Не удалось отправить обращение"); return null; }
+  try{ const j = await api("/api/x?r=tickets",{method:"POST",body:{action:"create",subject:subj,body:text}}); await loadTickets(false); return j.id; }
+  catch(e){ toast(e.message==="no_schema" ? errMsg(e) : e.message==="limit" ? "Слишком много обращений за сутки — дождитесь ответа" : "Не удалось отправить обращение ("+e.message+detailOf(e)+")"); return null; }
 }
 
 function chrome() {
@@ -1518,7 +1520,7 @@ function chat(adm) {
   <button class="btn sec" data-act="${op?"tclose":"treopen"}">${op?"Закрыть обращение":"Открыть заново"}</button>`;
   if((adm&&t.ua)||(!adm&&t.uu)){
     if(adm) t.ua=false; else t.uu=false;
-    api("/api/tickets",{method:"POST",body:{action:"read",id:t.id,admin:!!adm}}).catch(()=>{}); chrome();
+    api("/api/x?r=tickets",{method:"POST",body:{action:"read",id:t.id,admin:!!adm}}).catch(()=>{}); chrome();
   }
   scrollTo(0, document.body.scrollHeight);
 }
@@ -1625,9 +1627,9 @@ function adminCat() {
 }
 
 // ── Промокоды ──
-const PROMO_ADM_ERR = {bad_code:"Код — от 3 до 20 символов: буквы, цифры, - и _", bad_value:"Скидка — 1–90%, пополнение — 10–10 000 ₽", bad_date:"Дата окончания должна быть в будущем", exists:"Такой промокод уже есть", forbidden:"Недостаточно прав"};
+const PROMO_ADM_ERR = {bad_code:"Код — от 3 до 20 символов: буквы, цифры, - и _", bad_value:"Скидка — 1–90%, пополнение — 10–10 000 ₽", bad_date:"Дата окончания должна быть в будущем", exists:"Такой промокод уже есть", forbidden:"Недостаточно прав", no_schema:"В базе нет новых таблиц: выполните db/schema_patch3.sql в Supabase"};
 function adminPromo(fresh = true) {
-  if(fresh) api("/api/promo").then(j => { S.pl = j; if(S.tab==="admin" && S.at==="promo") adminPromo(false); }).catch(() => { if(!S.pl) S.pl = []; toast("Не удалось загрузить промокоды"); if(S.tab==="admin" && S.at==="promo") adminPromo(false); });
+  if(fresh) api("/api/x?r=promo").then(j => { S.pl = j; if(S.tab==="admin" && S.at==="promo") adminPromo(false); }).catch(e => { if(!S.pl) S.pl = []; toast(errMsg(e,"промокоды")); if(S.tab==="admin" && S.at==="promo") adminPromo(false); });
   const bal = S.ctype === "bal", L = S.pl, V = $("#view");
   const keep = fresh ? null : {nc:$("#nc")?.value, nm:$("#nm")?.value, ne:$("#ne")?.value, np:$("#np")?.value};
   V.innerHTML = `${admHead("promo")}${aTitle("promo","Промокоды","Скидки на покупку и бонусы на баланс", L?`<span class="tag">${L.length}</span>`:"")}
@@ -1882,7 +1884,7 @@ function reqSheet(pre=""){
 }
 
 function adminWants(fresh = true){
-  if(fresh) api("/api/wants").then(j => { S.wl = j; if(S.tab==="admin" && S.at==="wants") adminWants(false); }).catch(() => { if(!S.wl) S.wl = []; toast("Не удалось загрузить запросы"); if(S.tab==="admin" && S.at==="wants") adminWants(false); });
+  if(fresh) api("/api/x?r=wants").then(j => { S.wl = j; if(S.tab==="admin" && S.at==="wants") adminWants(false); }).catch(e => { if(!S.wl) S.wl = []; toast(errMsg(e,"запросы игр")); if(S.tab==="admin" && S.at==="wants") adminWants(false); });
   const V = $("#view"), head = admHead("wants") + aTitle("wants","Спрос","Игры, которых клиентам не хватает");
   if(!S.wl){ V.innerHTML = head + aSkel(2); return; }
   const L = S.wl, act = L.filter(g=>!g.done), done = L.filter(g=>g.done);
@@ -1980,16 +1982,16 @@ function hbars(rows){
 
 function loadStats(R){
   S.stErr = false;
-  Promise.all([api("/api/stats?days="+R), api("/api/wants").catch(()=>null)]).then(([st,w]) => {
+  Promise.all([api("/api/x?r=stats&days="+R), api("/api/x?r=wants").catch(()=>null)]).then(([st,w]) => {
     S.st = st; if(w) S.wl = w;
     if(S.tab==="admin" && (S.at||"dash")==="dash" && (S.rng||30)===R) adminDash(false);
-  }).catch(() => { S.stErr = true; if(S.tab==="admin" && (S.at||"dash")==="dash") adminDash(false); });
+  }).catch(e => { S.stErr = e && e.message === "no_schema" ? "no_schema" : true; if(S.tab==="admin" && (S.at||"dash")==="dash") adminDash(false); });
 }
 function adminDash(fresh = true){
   const R = S.rng || 30, D = S.st && S.st.days === R ? S.st : null, V = $("#view");
   if(fresh) loadStats(R);
   const head = admHead("dash") + aTitle("dash","Обзор","Реальные данные магазина") + `<div class="chips-row">${[7,14,30,90].map(n=>`<button class="chip-btn ${R===n?"on":""}" data-act="rng" data-n="${n}">${n} дн.</button>`).join("")}</div>`;
-  if(!D){ V.innerHTML = head + (S.stErr ? aEmpty("dash","Не удалось загрузить","Проверьте соединение и попробуйте ещё раз",`<button class="btn pri sm" data-act="atab" data-t="dash">Повторить</button>`) : aSkel()); return; }
+  if(!D){ V.innerHTML = head + (S.stErr ? aEmpty("dash","Не удалось загрузить",S.stErr==="no_schema"?"В базе нет новых таблиц: выполните db/schema_patch3.sql в Supabase":"Проверьте соединение и попробуйте ещё раз",`<button class="btn pri sm" data-act="atab" data-t="dash">Повторить</button>`) : aSkel()); return; }
   const ser = D.series, cur = ser.slice(-R), prev = ser.slice(-2*R, -R), T = D.totals;
   const sm = (a,k) => a.reduce((s,x)=>s+x[k], 0);
   const A = {users:sm(cur,"users"), orders:sm(cur,"orders"), rev:sm(cur,"revenue")}, P = {users:sm(prev,"users"), orders:sm(prev,"orders"), rev:sm(prev,"revenue")};
@@ -2321,14 +2323,14 @@ document.addEventListener("click", e => {
     const adm=b.dataset.adm==="1", tx=$("#tm")?.value.trim(), t=getT();
     if(!tx||!t||b.disabled)return;
     b.disabled=true;
-    api("/api/tickets",{method:"POST",body:{action:"reply",id:t.id,body:tx,admin:adm}}).then(async()=>{
+    api("/api/x?r=tickets",{method:"POST",body:{action:"reply",id:t.id,body:tx,admin:adm}}).then(async()=>{
       await loadTickets(adm); render(); hap(); $("#tm")?.focus({preventScroll:true});
     }).catch(e=>{ b.disabled=false; toast(e.message==="closed"?"Обращение закрыто":"Не удалось отправить"); });
     return;
   }
   if(a==="tclose"||a==="treopen"){
     const t=getT(), adm=S.tab==="atk"; if(!t)return;
-    api("/api/tickets",{method:"POST",body:{action:a==="tclose"?"close":"reopen",id:t.id,admin:adm}}).then(async()=>{
+    api("/api/x?r=tickets",{method:"POST",body:{action:a==="tclose"?"close":"reopen",id:t.id,admin:adm}}).then(async()=>{
       await loadTickets(adm); render(); toast(a==="tclose"?"Обращение закрыто":"Обращение открыто");
     }).catch(()=>toast("Ошибка"));
     return;
@@ -2367,12 +2369,12 @@ document.addEventListener("click", e => {
       value:Math.floor(+($("#np")?.value)||0),max:Math.max(0,Math.floor(+($("#nm")?.value)||0)),expires:$("#ne")?.value||""};
     if(body.code.length<3){toast("Код — минимум 3 символа (буквы и цифры)");return}
     b.disabled=true;
-    api("/api/promo",{method:"POST",body}).then(()=>{toast("Промокод "+body.code+" создан");S.pl=null;adminPromo()})
-      .catch(e=>{b.disabled=false;toast(PROMO_ADM_ERR[e.message]||"Не удалось создать")});
+    api("/api/x?r=promo",{method:"POST",body}).then(()=>{toast("Промокод "+body.code+" создан");S.pl=null;adminPromo()})
+      .catch(e=>{b.disabled=false;toast(PROMO_ADM_ERR[e.message]||("Не удалось создать: "+e.message+detailOf(e)))});
     return;
   }
-  if(a==="ctog"){api("/api/promo",{method:"POST",body:{action:"toggle",code:b.dataset.c}}).then(()=>adminPromo()).catch(()=>toast("Ошибка"));return}
-  if(a==="cdel"){if(!confirm("Удалить промокод "+b.dataset.c+"?"))return;api("/api/promo",{method:"POST",body:{action:"delete",code:b.dataset.c}}).then(()=>{toast("Промокод удалён");adminPromo()}).catch(()=>toast("Ошибка"));return}
+  if(a==="ctog"){api("/api/x?r=promo",{method:"POST",body:{action:"toggle",code:b.dataset.c}}).then(()=>adminPromo()).catch(e=>toast("Ошибка: "+e.message+detailOf(e)));return}
+  if(a==="cdel"){if(!confirm("Удалить промокод "+b.dataset.c+"?"))return;api("/api/x?r=promo",{method:"POST",body:{action:"delete",code:b.dataset.c}}).then(()=>{toast("Промокод удалён");adminPromo()}).catch(e=>toast("Ошибка: "+e.message+detailOf(e)));return}
   if(a==="favs"){closeSheet();S.tab="favs";render();scrollTo(0,0);return}
   if(a==="treq"){reqSheet();return}
   if(a==="rqsend"){b.disabled=true;submitWant($("#rq")?.value||"","wish").then(res=>{b.disabled=false;wantToast(res);if(res!=="short"&&res!=="err"&&res!=="nottg")closeSheet()});return}
@@ -2464,8 +2466,8 @@ document.addEventListener("click", e => {
   if(a==="bcresume"){bcRunLoop(true);return}
   if(a==="atab"){const t=b.dataset.t;if(t==="tk"){S.tab="atks"}else{S.at=t;S.tab="admin"}render();scrollTo(0,0);return}
   if(a==="rng"){S.rng=+b.dataset.n;adminDash();return}
-  if(a==="wdone"){const k=decodeURIComponent(b.dataset.k),w=(S.wl||[]).find(x=>x.gkey===k);if(w){w.done=!w.done;adminWants(false);api("/api/wants",{method:"PATCH",body:{gkey:k,done:w.done}}).catch(()=>{toast("Не удалось сохранить");adminWants()})}return}
-  if(a==="wdel"){const k=decodeURIComponent(b.dataset.k);S.wl=(S.wl||[]).filter(x=>x.gkey!==k);adminWants(false);api("/api/wants",{method:"DELETE",body:{gkey:k}}).then(()=>toast("Удалено")).catch(()=>{toast("Не удалось удалить");adminWants()});return}
+  if(a==="wdone"){const k=decodeURIComponent(b.dataset.k),w=(S.wl||[]).find(x=>x.gkey===k);if(w){w.done=!w.done;adminWants(false);api("/api/x?r=wants",{method:"PATCH",body:{gkey:k,done:w.done}}).catch(()=>{toast("Не удалось сохранить");adminWants()})}return}
+  if(a==="wdel"){const k=decodeURIComponent(b.dataset.k);S.wl=(S.wl||[]).filter(x=>x.gkey!==k);adminWants(false);api("/api/x?r=wants",{method:"DELETE",body:{gkey:k}}).then(()=>toast("Удалено")).catch(()=>{toast("Не удалось удалить");adminWants()});return}
   if(a==="wcopy"){const text=(S.wl||[]).filter(g=>!g.done).map(g=>g.game+" — "+g.n).join("\n");navigator.clipboard?.writeText(text).then(()=>toast("Список скопирован")).catch(()=>toast("Не удалось скопировать"));return}
   if(a==="hsl"||a==="hsr"){const h=b.closest(".hs-wrap").querySelector(".hs");hsAnim(h,(h._raf?h._to:h.scrollLeft)+(a==="hsl"?-1:1)*Math.max(200,h.clientWidth*.8));return}
   if(a==="popadd"){const g=S._pr&&S._pr[i];if(g&&!S.pop.includes(g)){S.pop.push(g);saveSettings("pop",S.pop);toast("Добавлено в популярные")}admin();return}
