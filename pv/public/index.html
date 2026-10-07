@@ -1887,12 +1887,23 @@ function packEditSheet(packId) {
           <option value="uplay">Ubisoft Connect (Uplay)</option>
         </select>
       </label>
-      <label class="pf-label">Логин Uplay<input id="pe-extra-login" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="email или логин"></label>
-      <label class="pf-label">Пароль Uplay<input id="pe-extra-pass" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="password"></label>
+      <div id="pe-extra-fields" style="display:none">
+        <label class="pf-label">Логин Uplay<input id="pe-extra-login" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="email или логин"></label>
+        <label class="pf-label">Пароль Uplay<input id="pe-extra-pass" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="password"></label>
+      </div>
     </div>
     <div class="mut" style="font-size:12px;line-height:1.45">${p ? "Заполните, чтобы добавить ещё один аккаунт к набору. Если не нужно, оставьте пустым." : "Можно оставить пустым и добавить аккаунт позже, открыв набор на редактирование."}</div>
   </div>
   <button class="btn pri" data-act="pesave" data-id="${packId||0}">Сохранить</button>`);
+
+  // Wire up extra service toggle
+  const peSvc = $("#pe-extra-svc");
+  const peExtraFields = $("#pe-extra-fields");
+  if(peSvc && peExtraFields) {
+    const toggleExtraFields = () => { peExtraFields.style.display = peSvc.value ? "" : "none"; };
+    peSvc.onchange = toggleExtraFields;
+    toggleExtraFields();
+  }
 
   // Wire up show-games search
   const peShowQ = $("#pe-show-q");
@@ -2286,7 +2297,7 @@ function parseShowGames(raw) {
   if(typeof raw !== "string") return Array.isArray(raw) ? raw : [];
   const s = raw.trim();
   if(s.startsWith("[")) {
-    try { return JSON.parse(s).map(x=>String(x).replace(/^"|"$/g,"").trim()).filter(Boolean); } catch(e) {}
+    try { return JSON.parse(s).map(x=>String(x).trim()).filter(Boolean); } catch(e) { return []; }
   }
   return s.split(",").map(x=>x.trim()).filter(Boolean);
 }
@@ -2528,8 +2539,8 @@ document.addEventListener("click", e => {
   if(a==="pesave"){
     const id=+b.dataset.id;
     const name=$("#pe-name").value.trim(),sub=$("#pe-sub").value.trim(),price=+$("#pe-price").value,disc=+$("#pe-disc").value;
-    const cover_appid=null;
     const cgEl=$("#pe-cgame"); const cover_game=(cgEl?.value||"").trim()||null;
+    const cover_appid=cover_game?(APP[cover_game]||null):null;
     const showRaw=[...($("#pe-show-chips")?.querySelectorAll(".pe-chip-x")||[])].map(btn=>decodeURIComponent(btn.dataset.g||"")).filter(Boolean);
     const login=$("#pe-login").value.trim(), pass=$("#pe-pass").value, slots=Math.max(1,Math.min(100,Math.floor(+$("#pe-slots").value)||5));
     const freeSlots=Math.max(0,Math.min(slots,Math.floor(+$("#pe-free-slots")?.value??slots)));
