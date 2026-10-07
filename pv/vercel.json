@@ -1,0 +1,15 @@
+{
+  "crons": [
+    { "path": "/api/cron/steam", "schedule": "0 3 * * *" }
+  ],
+  "functions": {
+    "api/cron/steam.js": { "maxDuration": 60 }
+  },
+  "rewrites": [
+    { "source": "/api/promo", "destination": "/api/x?r=promo" },
+    { "source": "/api/wants", "destination": "/api/x?r=wants" },
+    { "source": "/api/tickets", "destination": "/api/x?r=tickets" },
+    { "source": "/api/stats", "destination": "/api/x?r=stats" },
+    { "source": "/api/steam-prices", "destination": "/api/x?r=steam-prices" }
+  ]
+}
