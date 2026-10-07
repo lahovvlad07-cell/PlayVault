@@ -53,7 +53,15 @@ export default async function handler(req, res) {
       await sql`delete from pack_games where pack_id = ${+id} and game = any(${remove_games})`;
     }
     if (set_show_games !== undefined) {
-      await sql`update packs set show_games = ${JSON.stringify(set_show_games)} where id = ${+id}`;
+      // Normalize: accept array or string, store as plain "Game1,Game2,Game3"
+      const gamesArr = Array.isArray(set_show_games)
+        ? set_show_games
+        : (typeof set_show_games === "string"
+            ? (set_show_games.startsWith("[")
+                ? JSON.parse(set_show_games)
+                : set_show_games.split(",").map(x => x.trim()).filter(Boolean))
+            : []);
+      await sql`update packs set show_games = ${gamesArr.join(",")} where id = ${+id}`;
     }
     return res.json({ ok: true });
   }

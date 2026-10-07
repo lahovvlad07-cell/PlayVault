@@ -1107,8 +1107,17 @@ function savingsBlock(p) {
   </div>`;
 }
 
+function packTopGames(p) {
+  // Priority: showGames from DB → TOP hardcode → first games
+  const sg = Array.isArray(p.showGames) && p.showGames.length ? p.showGames : null;
+  return sg || TOP[p.id] || p.games.slice(0, 3);
+}
+function packCoverGame(p) {
+  if(p.coverGame) return p.coverGame;
+  return packTopGames(p)[0] || p.games[0] || "";
+}
 function packHead(p) {
-  const tops = TOP[p.id] || [];
+  const tops = packTopGames(p);
   return `<div class="pack-hero" style="background:${p.c}">
     ${p.disc?`<span class="hero-badge">Скидка −${p.disc}%</span>`:""}
     <div class="t"><b>${p.count}</b><span>игр в наборе</span></div>
@@ -1117,7 +1126,7 @@ function packHead(p) {
 }
 
 function packRow(p) {
-  const cg = (TOP[p.id]||[])[0] || p.games[0], a = APP[cg], warn = p.stock <= 2;
+  const cg = packCoverGame(p), a = APP[cg], warn = p.stock <= 2;
   return `<button class="pack" data-act="open" data-id="${p.id}" aria-label="${esc(p.name)}">
     <div class="cover" style="background:${bg(cg)}">${a?`<img src="${steamImg(a)}" alt="" onerror="this.src=this.src.replace('shared.akamai.steamstatic.com/store_item_assets','cdn.cloudflare.steamstatic.com/steam/apps');this.onerror=null">`:`<span class="cl">${esc(cg[0])}</span>`}</div>
     <div class="pinfo">
@@ -1826,9 +1835,9 @@ function packEditSheet(packId) {
   const p = PACKS.find(x => x.id === packId);
   const isNew = !packId;
   const title = isNew ? "Новый набор" : "Редактировать набор";
-  const showGArr = typeof p?.showGames === "string"
-    ? p.showGames.split(",").map(x=>x.trim()).filter(Boolean)
-    : (Array.isArray(p?.showGames) ? p.showGames : (p?.games?.slice(0,3) || []));
+  const showGArr = Array.isArray(p?.showGames) && p.showGames.length
+    ? p.showGames
+    : parseShowGames(p?.showGames || "");
   const gamesList = p?.games || [];
   const coverGameVal = p?.coverGame || "";
 
@@ -2271,6 +2280,17 @@ async function saveSettings(key, value) {
   try { await api("/api/settings", { method:"POST", body:{ key, value } }); } catch(e) { toast("Ошибка сохранения"); }
 }
 
+// Парсит show_games из БД: принимает "[\"A\",\"B\"]" (старый JSON) или "A,B,C" (новый формат)
+function parseShowGames(raw) {
+  if(!raw) return [];
+  if(typeof raw !== "string") return Array.isArray(raw) ? raw : [];
+  const s = raw.trim();
+  if(s.startsWith("[")) {
+    try { return JSON.parse(s).map(x=>String(x).replace(/^"|"$/g,"").trim()).filter(Boolean); } catch(e) {}
+  }
+  return s.split(",").map(x=>x.trim()).filter(Boolean);
+}
+
 // ── Наборы из базы ────────────────────────────────────────
 async function loadServerPacks() {
   if(!tgInit()) return;
@@ -2279,18 +2299,19 @@ async function loadServerPacks() {
     packs.forEach(sp => {
       const local = PACKS.find(p => p.id === sp.id);
       const games = sp.games.map(g => g.game);
+      const showGames = parseShowGames(sp.show_games);
       if(local) {
         local.name = sp.name; local.sub = sp.sub || local.sub;
         local.price = { buy: sp.price }; local.disc = sp.disc || 0;
         local.games = games; local.count = games.length;
         local.slots = sp.slots.total; local.stock = sp.slots.free;
-        if(sp.cover_appid) local.coverAppid = sp.cover_appid;
-        if(sp.cover_game)  local.coverGame  = sp.cover_game;
-        if(sp.show_games)  local.showGames  = sp.show_games;
+        local.coverGame  = sp.cover_game  || local.coverGame  || "";
+        local.coverAppid = sp.cover_appid || local.coverAppid || null;
+        local.showGames  = showGames.length ? showGames : local.showGames || [];
       } else {
         PACKS.push({ id:sp.id, name:sp.name, sub:sp.sub||"", price:{buy:sp.price}, disc:sp.disc||0,
           games, count:games.length, c:"#5a62c9", slots:sp.slots.total, stock:sp.slots.free,
-          login:"", pass:"", coverAppid:sp.cover_appid, coverGame:sp.cover_game, showGames:sp.show_games });
+          login:"", pass:"", coverAppid:sp.cover_appid||null, coverGame:sp.cover_game||"", showGames });
       }
     });
     if(S.tab === "shop") render();
@@ -2509,7 +2530,7 @@ document.addEventListener("click", e => {
     const name=$("#pe-name").value.trim(),sub=$("#pe-sub").value.trim(),price=+$("#pe-price").value,disc=+$("#pe-disc").value;
     const cover_appid=null;
     const cgEl=$("#pe-cgame"); const cover_game=(cgEl?.value||"").trim()||null;
-    const showRaw=[...($("#pe-show-chips")?.querySelectorAll(".pe-chip")||[])].map(el=>el.childNodes[0]?.textContent?.trim()||"").filter(Boolean);
+    const showRaw=[...($("#pe-show-chips")?.querySelectorAll(".pe-chip-x")||[])].map(btn=>decodeURIComponent(btn.dataset.g||"")).filter(Boolean);
     const login=$("#pe-login").value.trim(), pass=$("#pe-pass").value, slots=Math.max(1,Math.min(100,Math.floor(+$("#pe-slots").value)||5));
     const freeSlots=Math.max(0,Math.min(slots,Math.floor(+$("#pe-free-slots")?.value??slots)));
     const extraSvc=$("#pe-extra-svc")?.value||"", extraLogin=$("#pe-extra-login")?.value.trim()||"", extraPass=$("#pe-extra-pass")?.value||"";
