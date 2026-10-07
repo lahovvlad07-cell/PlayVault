@@ -2,7 +2,9 @@ import crypto from "node:crypto";
 import postgres from "postgres";
 
 // Supabase: строка подключения «Transaction pooler» (порт 6543), подходит для serverless
-export const sql = postgres(process.env.DATABASE_URL, { ssl: "require", prepare: false, max: 1 });
+// idle_timeout: закрываем простаивающее соединение сами. Иначе Vercel «замораживает» функцию, пул Supabase обрывает сокет,
+// и следующий запрос зависает на минуты (в логах: «Task timed out after 300 seconds»).
+export const sql = postgres(process.env.DATABASE_URL, { ssl: "require", prepare: false, max: 1, idle_timeout: 5, max_lifetime: 300, connect_timeout: 10 });
 
 // Шифрование логинов и паролей аккаунтов (AES-256-GCM). ACC_KEY: openssl rand -base64 32
 const key = () => Buffer.from(process.env.ACC_KEY, "base64");

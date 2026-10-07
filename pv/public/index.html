@@ -937,7 +937,11 @@ const loadPop = () => POP_DEFAULT.filter(g => ALLG.includes(g));
 const tgUser = () => { try{ return window.Telegram?.WebApp?.initDataUnsafe?.user || null; }catch(e){ return null; } };
 const tgInit = () => { try{ return window.Telegram?.WebApp?.initData || ""; }catch(e){ return ""; } };
 const api = async (path, opt = {}) => {
-  const r = await fetch(path, {method: opt.method || "GET", headers: {"content-type":"application/json", authorization: "tma " + tgInit()}, body: opt.body ? JSON.stringify(opt.body) : undefined});
+  const ac = new AbortController(), to = setTimeout(() => ac.abort(), 20000);
+  let r;
+  try { r = await fetch(path, {method: opt.method || "GET", headers: {"content-type":"application/json", authorization: "tma " + tgInit()}, body: opt.body ? JSON.stringify(opt.body) : undefined, signal: ac.signal}); }
+  catch(e) { const er = new Error("timeout"); er.detail = "сервер не ответил за 20 секунд"; throw er; }
+  finally { clearTimeout(to); }
   const j = await r.json().catch(() => ({}));
   if(!r.ok){ const er = new Error(j.error || r.status); er.detail = j.detail; throw er; }
   return j;
@@ -2223,7 +2227,16 @@ function rndGame() {
 // ═══════════════════════════════════════════
 // RENDER
 // ═══════════════════════════════════════════
-const tabsFix = () => { const t = $(".atabs"), a = $(".atabs .on"); if(t && a) t.scrollLeft = Math.max(0, a.offsetLeft - (t.clientWidth - a.offsetWidth)/2); };
+// Лента вкладок админки: при перерисовке (например, после загрузки данных) не прыгает в начало
+let TABX = 0, TABK = null;
+const tabsFix = () => {
+  const t = $(".atabs"), a = $(".atabs .on");
+  if(!t || !a){ TABK = null; return; }
+  if(a.textContent !== TABK){ TABK = a.textContent; t.scrollLeft = Math.max(0, a.offsetLeft - (t.clientWidth - a.offsetWidth)/2); TABX = t.scrollLeft; }
+  else t.scrollLeft = TABX;
+};
+document.addEventListener("scroll", e => { if(e.target.classList && e.target.classList.contains("atabs")) TABX = e.target.scrollLeft; }, true);
+new MutationObserver(tabsFix).observe(document.getElementById("view"), {childList:true});
 const render = () => {
   if(["admin","atks","atk"].includes(S.tab) && !isAdmin()) S.tab = "me";
   ({shop,mine,me,favs,admin,tickets,ticket:()=>chat(0),atks,atk:()=>chat(1)})[S.tab]();

@@ -3,7 +3,8 @@
     { "path": "/api/cron/steam", "schedule": "0 3 * * *" }
   ],
   "functions": {
-    "api/cron/steam.js": { "maxDuration": 60 }
+    "api/cron/steam.js": { "maxDuration": 60 },
+    "api/x.js": { "maxDuration": 20 }
   },
   "rewrites": [
     { "source": "/api/promo", "destination": "/api/x?r=promo" },
