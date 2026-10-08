@@ -1719,8 +1719,17 @@ function adminCat() {
       </label>
       <div style="text-align:center;font-size:13px;color:var(--mut)">Пример:<br><b style="font-size:18px;color:var(--ink)" id="sr-ex">${Math.ceil(99*S.starsRate)} XTR</b><br>за 99 ₽</div>
     </div>
+    <div id="sr-rub" style="font-size:14px;font-weight:700;color:var(--ink);line-height:1.5">${starsRateLine(S.starsRate)}</div>
     <button class="btn pri" data-act="srset">Сохранить курс</button>
   </div>`;
+  const srIn = $("#sr-val");
+  if(srIn) srIn.oninput = () => {
+    const v = parseFloat(srIn.value);
+    if(!(v > 0)) return;
+    const ex = $("#sr-ex"), rb = $("#sr-rub");
+    if(ex) ex.textContent = Math.ceil(99*v) + " XTR";
+    if(rb) rb.innerHTML = starsRateLine(v);
+  };
   $("#pg").oninput = e => {
     const q = e.target.value.trim();
     S._pr = q ? rank(ALLG.filter(g => !S.pop.includes(g)), q).slice(0,8) : [];
@@ -2303,6 +2312,22 @@ async function refreshBalance(target) {
   toast("Баланс обновится в течение минуты");
 }
 
+// Курс Stars в рублях: 1 Star = 1/rate ₽ (rate = Stars за 1 ₽)
+function starsRateLine(rate) {
+  if(!(rate > 0)) return "";
+  const rubPerStar = (1/rate).toFixed(2).replace(".", ",");
+  return `1 ⭐ = ${rubPerStar} ₽ &nbsp;·&nbsp; 100 ₽ = ${Math.ceil(100*rate)} ⭐`;
+}
+// Дешёвая покупка Stars у стороннего продавца (Plati). Открывается во внешнем браузере.
+const PLATI_STARS_URL = "https://plati.market/itm/telegram-stars-by-username-automatic-delivery/5275956";
+function buyStarsBlock() {
+  return `<div class="stars-buy" style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:14px;border:1px solid var(--brd);background:var(--sf2)">
+    <div style="font-size:14px;font-weight:700;color:var(--ink)">Нет Stars? Купите дешевле</div>
+    <div class="mut" style="font-size:12px;line-height:1.45">Звёзды на Plati стоят заметно дешевле, чем в самом Telegram. Укажите свой @username, и Stars придут на аккаунт обычно за 5–25 минут. Затем вернитесь сюда и оплатите. Продавец сторонний, это не PlayVault.</div>
+    <button class="btn sec sm" style="width:100%" data-act="buystars">⭐ Купить Stars на Plati</button>
+  </div>`;
+}
+
 function checkout(p, plan, ext) {
   const b = priceOf(p), d = promoPct(S.promo);
   const t = Math.max(1, Math.round(b*(1-d/100)));
@@ -2322,6 +2347,7 @@ function checkout(p, plan, ext) {
       <span class="mut">${r(S.bal)}</span>
     </button>
   </div>
+  ${buyStarsBlock()}
   <div class="sep"></div>
   <div class="sum"><span>Цена</span><span>${r(b)}</span></div>
   ${d?`<div class="sum"><span>Скидка ${d}%</span><span style="color:var(--ok)">−${r(b-t)}</span></div>`:''}
@@ -2566,8 +2592,16 @@ document.addEventListener("click", e => {
     S.topm = S.topm || "Telegram Stars";
     sheet(`<h2>Пополнение баланса</h2>
     <input class="search" id="ta" type="number" inputmode="numeric" min="10" placeholder="Сумма, ₽" style="height:48px;padding-left:16px;font-size:18px;font-weight:700">
-    <div class="stars-info">⭐ Оплата через Telegram Stars</div>
+    <div class="stars-info">⭐ Оплата через Telegram Stars<br><span class="mut" style="font-size:12px">${starsRateLine(S.starsRate)}</span></div>
+    <div class="mut" id="ta-ex" style="font-size:13px;min-height:18px"></div>
+    ${buyStarsBlock()}
     <button class="btn pri" id="go" data-act="tgo">Пополнить</button>`);
+    const ta = $("#ta");
+    if(ta) ta.oninput = () => { const n = Math.floor(+ta.value||0), ex = $("#ta-ex"); if(ex) ex.textContent = n >= 10 ? "К оплате: " + Math.ceil(n*S.starsRate) + " ⭐" : ""; };
+    return;
+  }
+  if(a==="buystars"){
+    try{ window.Telegram.WebApp.openLink(PLATI_STARS_URL); }catch(e){ window.open(PLATI_STARS_URL,"_blank","noopener"); }
     return;
   }
   if(a==="tpm"){S.topm=b.dataset.m;$$('[data-act="tpm"]').forEach(x=>x.classList.toggle("on",x===b));return}
