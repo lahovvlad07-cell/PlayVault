@@ -2428,8 +2428,12 @@ function buyStarsBlock(need) {
 }
 
 function checkout(p, plan, ext) {
-  const b = priceOf(p), d = promoPct(S.promo);
-  const t = Math.max(1, Math.round(b*(1-d/100)));
+  const raw = p.price.buy;                                      // оригинальная цена без скидок
+  const afterDisc = priceOf(p);                                 // цена после скидки набора
+  const d = promoPct(S.promo);                                  // скидка промокода, %
+  const t = Math.max(1, Math.round(afterDisc*(1-d/100)));       // итоговая цена
+  const packDisc = p.disc || 0;
+  const hasAnyDisc = packDisc > 0 || d > 0;
   sheet(`<h2>${ext!=null?"Продление":"Оплата"}</h2>
   <div class="mut">${p.name}</div>
   <div class="promo-row">
@@ -2446,13 +2450,14 @@ function checkout(p, plan, ext) {
       <span class="mut">${r(S.bal)}</span>
     </button>
   </div>
-  ${S.pay==="Telegram Stars"?buyStarsBlock(Math.ceil(t*S.starsRate)):""}
   <div class="sep"></div>
-  <div class="sum"><span>Цена</span><span>${r(b)}</span></div>
-  ${d?`<div class="sum"><span>Скидка ${d}%</span><span style="color:var(--ok)">−${r(b-t)}</span></div>`:''}
+  <div class="sum"><span>Цена</span><span>${hasAnyDisc?`<s class="mut" style="font-weight:400">${r(raw)}</s> ${r(t)}`:r(raw)}</span></div>
+  ${packDisc?`<div class="sum"><span>Скидка набора ${packDisc}%</span><span style="color:var(--ok)">−${r(raw-afterDisc)}</span></div>`:''}
+  ${d?`<div class="sum"><span>Промокод ${d}%</span><span style="color:var(--ok)">−${r(afterDisc-t)}</span></div>`:''}
   <div class="sum total"><span>К оплате</span><span>${r(t)}</span></div>
   <div class="mut" style="font-size:12px;line-height:1.45">Гарантия возврата средств на баланс — 14 дней с момента покупки. Замены аккаунтов мы не делаем, все риски использования несёт покупатель.</div>
-  <button class="btn pri" id="go">Оплатить ${r(t)}</button>`);
+  <button class="btn pri" id="go">Оплатить ${r(t)}</button>
+  ${S.pay==="Telegram Stars"?buyStarsBlock(Math.ceil(t*S.starsRate)):""}`);
   S._co = [p, plan, ext];
   $("#go").onclick = () => {
     if(!tgInit()){ toast("Откройте приложение в Telegram"); return; }
