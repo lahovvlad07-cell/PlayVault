@@ -2491,8 +2491,8 @@ function checkout(p, plan, ext) {
   ` : ''}
   <div class="sum total"><span>К оплате</span><span>${r(t)}</span></div>
   <div class="checkout-guarantee">Гарантия возврата средств на баланс — 14 дней с момента покупки. Замены аккаунтов мы не делаем, все риски использования несёт покупатель.</div>
-  <button class="btn pri co-pay-btn" id="go">Оплатить ${r(t)}</button>
-  ${S.pay==="Telegram Stars"?buyStarsBlock(Math.ceil(t*S.starsRate)):""}`);
+  ${S.pay==="Telegram Stars"?buyStarsBlock(Math.ceil(t*S.starsRate)):""}
+  <button class="btn pri co-pay-btn" id="go" style="position:sticky;bottom:0;z-index:2;box-shadow:0 -8px 16px var(--sf)">Оплатить ${r(t)}</button>`);
   S._co = [p, plan, ext];
   $("#go").onclick = () => {
     if(!tgInit()){ toast("Откройте приложение в Telegram"); return; }
