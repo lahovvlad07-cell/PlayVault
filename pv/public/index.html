@@ -681,6 +681,37 @@ button:focus-visible{outline:2px solid var(--ac)}
 .hv-rnd{height:46px;padding:0 16px;border-radius:12px;display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:14px;font-weight:700;color:#e4eefa;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);cursor:pointer;transition:background .15s}
 .hv-rnd:hover{background:rgba(255,255,255,.14)}
 .hv-rnd:active{transform:scale(.97)}
+
+/* ── checkout & topup visual fixes ── */
+/* pay-methods: два варианта оплаты стопкой с gap */
+.pay-methods{display:flex;flex-direction:column;gap:8px}
+
+/* строка «Цена» — выровнять зачёркнутое и актуальное */
+.sum .price-line{display:flex;align-items:baseline;gap:6px}
+.sum .price-line s{font-size:13px;font-weight:400;color:var(--sub);text-decoration:line-through}
+.sum .price-line strong{font-size:14px;font-weight:700;color:var(--ink)}
+
+/* sum + total — добавить чуть воздуха */
+.sum{padding:2px 0}
+.sum.total{padding-top:4px}
+
+/* stars-info в topup — единый стиль с opt */
+.stars-info{
+  background:var(--sf2);border:1px solid var(--brd);
+  border-radius:13px;padding:14px;
+  font-weight:700;font-size:14px;text-align:center;
+  line-height:1.45;
+}
+.stars-info .mut{font-size:13px;font-weight:500;margin-top:3px;display:block}
+
+/* sbuy-btn: sec стиль уже есть, просто убрать лишний top-margin */
+.sbuy-btn{margin-top:2px}
+
+/* гарантийный текст — немного меньше и не так тесно */
+.checkout-guarantee{
+  font-size:12px;line-height:1.5;color:var(--sub);
+  padding:8px 12px;background:var(--sf2);border-radius:10px;
+}
 </style>
 
 <div id="app">
@@ -2451,11 +2482,11 @@ function checkout(p, plan, ext) {
     </button>
   </div>
   <div class="sep"></div>
-  <div class="sum"><span>Цена</span><span>${hasAnyDisc?`<s class="mut" style="font-weight:400">${r(raw)}</s> ${r(t)}`:r(raw)}</span></div>
+  <div class="sum"><span>Цена</span><span class="price-line">${hasAnyDisc?`<s>${r(raw)}</s><strong>${r(t)}</strong>`:r(raw)}</span></div>
   ${packDisc?`<div class="sum"><span>Скидка набора ${packDisc}%</span><span style="color:var(--ok)">−${r(raw-afterDisc)}</span></div>`:''}
   ${d?`<div class="sum"><span>Промокод ${d}%</span><span style="color:var(--ok)">−${r(afterDisc-t)}</span></div>`:''}
   <div class="sum total"><span>К оплате</span><span>${r(t)}</span></div>
-  <div class="mut" style="font-size:12px;line-height:1.45">Гарантия возврата средств на баланс — 14 дней с момента покупки. Замены аккаунтов мы не делаем, все риски использования несёт покупатель.</div>
+  <div class="checkout-guarantee">Гарантия возврата средств на баланс — 14 дней с момента покупки. Замены аккаунтов мы не делаем, все риски использования несёт покупатель.</div>
   <button class="btn pri" id="go">Оплатить ${r(t)}</button>
   ${S.pay==="Telegram Stars"?buyStarsBlock(Math.ceil(t*S.starsRate)):""}`);
   S._co = [p, plan, ext];
@@ -2696,9 +2727,9 @@ document.addEventListener("click", e => {
     S.topm = S.topm || "Telegram Stars";
     sheet(`<h2>Пополнение баланса</h2>
     <input class="search" id="ta" type="number" inputmode="numeric" min="10" placeholder="Сумма, ₽" style="height:48px;padding-left:16px;font-size:18px;font-weight:700">
-    <div class="stars-info">⭐ Оплата через Telegram Stars<br><span class="mut" style="font-size:12px">${starsRateLine(S.starsRate)}</span></div>
-    ${buyStarsBlock(0)}
-    <button class="btn pri" id="go" data-act="tgo">Пополнить</button>`);
+    <div class="stars-info">⭐ Оплата через Telegram Stars<br><span class="mut">${starsRateLine(S.starsRate)}</span></div>
+    <button class="btn pri" id="go" data-act="tgo">Пополнить</button>
+    ${buyStarsBlock(0)}`);
     const ta = $("#ta");
     if(ta) ta.oninput = () => {
       const n = Math.floor(+ta.value||0), box = $("#sbuy-need"), nn = $("#sbuy-n");
