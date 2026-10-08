@@ -683,17 +683,18 @@ button:focus-visible{outline:2px solid var(--ac)}
 .hv-rnd:active{transform:scale(.97)}
 
 /* ── checkout & topup visual fixes ── */
+
 /* pay-methods: два варианта оплаты стопкой с gap */
 .pay-methods{display:flex;flex-direction:column;gap:8px}
 
-/* строка «Цена» — выровнять зачёркнутое и актуальное */
-.sum .price-line{display:flex;align-items:baseline;gap:6px}
-.sum .price-line s{font-size:13px;font-weight:400;color:var(--sub);text-decoration:line-through}
-.sum .price-line strong{font-size:14px;font-weight:700;color:var(--ink)}
+/* сумма — строки со скидками чуть меньше, итог крупный */
+.sum{padding:1px 0;align-items:baseline}
+.sum .mut{font-size:13px}
+.sum.total{padding-top:6px;margin-top:2px}
 
-/* sum + total — добавить чуть воздуха */
-.sum{padding:2px 0}
-.sum.total{padding-top:4px}
+/* зачёркнутая цена в строке «Цена» */
+.sum .price-line{display:inline-flex;align-items:baseline;gap:0}
+.sum .price-line s{font-size:13px;font-weight:400;color:var(--sub);text-decoration:line-through}
 
 /* stars-info в topup — единый стиль с opt */
 .stars-info{
@@ -704,14 +705,15 @@ button:focus-visible{outline:2px solid var(--ac)}
 }
 .stars-info .mut{font-size:13px;font-weight:500;margin-top:3px;display:block}
 
-/* sbuy-btn: sec стиль уже есть, просто убрать лишний top-margin */
-.sbuy-btn{margin-top:2px}
-
-/* гарантийный текст — немного меньше и не так тесно */
+/* гарантийный текст */
 .checkout-guarantee{
   font-size:12px;line-height:1.5;color:var(--sub);
   padding:8px 12px;background:var(--sf2);border-radius:10px;
 }
+
+/* кнопка оплаты — фиксируем ширину чтобы не прыгала при смене текста */
+.co-pay-btn{min-width:0;width:100%;white-space:nowrap;overflow:hidden}
+#go{min-width:0;width:100%;white-space:nowrap}
 </style>
 
 <div id="app">
@@ -2383,8 +2385,8 @@ async function waitOrder(id) {
 }
 async function realBuy(p) {
   const go = $("#go"), label = go.textContent;
-  const reset = () => { go.disabled = false; go.textContent = label; };
-  go.disabled = true; go.textContent = "Создаём счёт…";
+  const reset = () => { go.style.minWidth=""; go.style.minWidth=""; go.disabled = false; go.textContent = label; };
+  go.style.minWidth=go.offsetWidth+"px"; go.disabled = true; go.textContent = "Создаём счёт…";
   try {
     const j = await api("/api/orders", {method:"POST", body:{pack_id:p.id, promo:S.promo||undefined}});
     window.Telegram.WebApp.openInvoice(j.link, async st => {
@@ -2401,13 +2403,13 @@ async function realBuy(p) {
 
 async function realBuyBalance(p) {
   const go = $("#go"), label = go.textContent;
-  go.disabled = true; go.textContent = "Оплачиваем…";
+  go.style.minWidth=go.offsetWidth+"px"; go.disabled = true; go.textContent = "Оплачиваем…";
   try {
     const j = await api("/api/orders", {method:"POST", body:{pack_id:p.id, method:"balance", promo:S.promo||undefined}});
     promoClear(); S.bal = j.balance; closeSheet(); await loadOrders();
     S.tab = "mine"; S.open = null; render(); toast("Оплачено! Данные для входа ниже");
   } catch(e) {
-    go.disabled = false; go.textContent = label;
+    go.style.minWidth=""; go.disabled = false; go.textContent = label;
     toast(PROMO_ERR[e.message] ? PROMO_ERR[e.message] : e.message === "no_funds" ? "Не хватает средств — пополните баланс" : e.message === "no_slots" ? "Свободных слотов сейчас нет" : "Не удалось оплатить");
   }
 }
@@ -2482,12 +2484,14 @@ function checkout(p, plan, ext) {
     </button>
   </div>
   <div class="sep"></div>
-  <div class="sum"><span>Цена</span><span class="price-line">${hasAnyDisc?`<s>${r(raw)}</s><strong>${r(t)}</strong>`:r(raw)}</span></div>
-  ${packDisc?`<div class="sum"><span>Скидка набора ${packDisc}%</span><span style="color:var(--ok)">−${r(raw-afterDisc)}</span></div>`:''}
-  ${d?`<div class="sum"><span>Промокод ${d}%</span><span style="color:var(--ok)">−${r(afterDisc-t)}</span></div>`:''}
+  ${hasAnyDisc ? `
+  <div class="sum"><span class="mut">Цена</span><span class="price-line"><s>${r(raw)}</s></span></div>
+  ${packDisc?`<div class="sum"><span class="mut">Скидка набора ${packDisc}%</span><span style="color:var(--ok);font-weight:700">−${r(raw-afterDisc)}</span></div>`:''}
+  ${d?`<div class="sum"><span class="mut">Промокод ${d}%</span><span style="color:var(--ok);font-weight:700">−${r(afterDisc-t)}</span></div>`:''}
+  ` : ''}
   <div class="sum total"><span>К оплате</span><span>${r(t)}</span></div>
   <div class="checkout-guarantee">Гарантия возврата средств на баланс — 14 дней с момента покупки. Замены аккаунтов мы не делаем, все риски использования несёт покупатель.</div>
-  <button class="btn pri" id="go">Оплатить ${r(t)}</button>
+  <button class="btn pri co-pay-btn" id="go">Оплатить ${r(t)}</button>
   ${S.pay==="Telegram Stars"?buyStarsBlock(Math.ceil(t*S.starsRate)):""}`);
   S._co = [p, plan, ext];
   $("#go").onclick = () => {
@@ -2752,15 +2756,15 @@ document.addEventListener("click", e => {
     const amt=Math.floor(+($("#ta")?.value)||0);
     if(amt<10){toast("Минимальная сумма — 10 ₽");return}
     if(!tgInit()){toast("Откройте приложение в Telegram");return}
-    const btn=$("#go")||b;btn.disabled=true;btn.textContent="Создаём счёт…";
+    const btn=$("#go")||b;btn.style.minWidth=btn.offsetWidth+"px";btn.disabled=true;btn.textContent="Создаём счёт…";
     (async()=>{try{
       const j=await api("/api/topup",{method:"POST",body:{amount:amt,rate:S.starsRate}});
       window.Telegram.WebApp.openInvoice(j.link, async st=>{
         if(st==="paid"){
           closeSheet(); toast("Оплата получена, зачисляем…"); refreshBalance(S.bal+amt);
-        } else { btn.disabled=false;btn.textContent="Пополнить"; if(st==="failed")toast("Оплата не прошла"); }
+        } else { btn.style.minWidth="";btn.disabled=false;btn.textContent="Пополнить"; if(st==="failed")toast("Оплата не прошла"); }
       });
-    }catch(e){btn.disabled=false;btn.textContent="Пополнить";toast("Ошибка");}
+    }catch(e){btn.style.minWidth="";btn.disabled=false;btn.textContent="Пополнить";toast("Ошибка");}
     })();
     return;
   }
