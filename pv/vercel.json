@@ -1,0 +1,62 @@
+{
+  "regions": [
+    "fra1"
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/steam",
+      "schedule": "0 3 * * *"
+    }
+  ],
+  "functions": {
+    "api/cron/steam.js": {
+      "maxDuration": 60
+    },
+    "api/x.js": {
+      "maxDuration": 30
+    },
+    "api/orders.js": {
+      "maxDuration": 30
+    },
+    "api/packs.js": {
+      "maxDuration": 20
+    },
+    "api/admin.js": {
+      "maxDuration": 20
+    },
+    "api/accounts.js": {
+      "maxDuration": 20
+    },
+    "api/bot.js": {
+      "maxDuration": 20
+    },
+    "api/cron/broadcast.js": {
+      "maxDuration": 60
+    },
+    "api/broadcast.js": {
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/promo",
+      "destination": "/api/x?r=promo"
+    },
+    {
+      "source": "/api/wants",
+      "destination": "/api/x?r=wants"
+    },
+    {
+      "source": "/api/tickets",
+      "destination": "/api/x?r=tickets"
+    },
+    {
+      "source": "/api/stats",
+      "destination": "/api/x?r=stats"
+    },
+    {
+      "source": "/api/steam-prices",
+      "destination": "/api/x?r=steam-prices"
+    }
+  ]
+}
