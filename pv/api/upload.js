@@ -55,8 +55,8 @@ export default async function handler(req, res) {
     const photo = r.result.photo;
     const fileId = photo[photo.length - 1].file_id;
 
-    // Резолвим в прямой URL (~1 час) для превью и для хранения в тикете
-    const previewUrl = await resolveFileId(fileId);
+    // Прямую ссылку api.telegram.org/file/bot<TOKEN>/… клиенту не отдаём: в ней токен бота,
+    // а sendPhoto по такой ссылке падает с "failed to get HTTP URL content". Отдаём file_id.
 
     // Удаляем сообщение чтобы не засорять чат
     tg("deleteMessage", { chat_id: u.id, message_id: r.result.message_id }).catch(() => {});
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
     // url = https:// URL (сохраняется в ticket_messages.photo, показывается в <img>)
     // preview = тот же URL (для немедленного превью в UI)
     // fileId = file_id (для отправки через sendPhoto в Telegram)
-    return res.json({ ok: true, url: previewUrl || fileId, preview: previewUrl, fileId });
+    return res.json({ ok: true, url: fileId, preview: null, fileId });
   } catch (e) {
     return res.status(500).json({ error: "server", detail: e.message });
   }

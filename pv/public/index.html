@@ -2143,7 +2143,7 @@ async function uploadPhoto(file) {
       try {
         const data = r.result.split(",")[1];
         const j = await api("/api/upload", { method: "POST", body: { data, mime: file.type } });
-        if (j.ok && j.url) resolve({ url: j.url, preview: j.preview || j.url });
+        if (j.ok && (j.fileId || j.url)) resolve({ url: j.fileId || j.url, preview: null });
         else reject(new Error(j.error || "upload_failed"));
       } catch(e) { reject(e); }
     };
