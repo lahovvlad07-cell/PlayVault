@@ -44,12 +44,10 @@ export default async function handler(req, res) {
       }
       promo = pr;
     }
-    // Скидки суммируются с cap 100%: totalDisc = min(100, packDisc + promoDisc)
-    const packDisc = p.disc || 0;
+    // Промокод применяется поверх уже скидкованной цены набора (base)
     const promoDisc = promo ? promo.value : 0;
-    const totalDisc = Math.min(100, packDisc + promoDisc);
     const rub = promo
-      ? Math.max(1, Math.round(p.price * (1 - totalDisc / 100)))
+      ? Math.max(1, Math.round(base * (1 - promoDisc / 100)))
       : base;
     const [rateRow] = await sql`select value from settings where key = 'stars_rate'`;
     const rate = rateRow ? JSON.parse(rateRow.value) : Number(process.env.STARS_PER_RUB || 0.85);
