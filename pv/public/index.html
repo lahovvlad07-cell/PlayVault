@@ -667,10 +667,6 @@ button:focus-visible{outline:2px solid var(--ac)}
 .mp-faq details p{margin:0 0 14px;line-height:1.5}
 .mp-sup{display:grid;grid-template-columns:1.3fr 1fr;gap:10px;margin-top:4px}
 .mp-sup .btn{height:46px;font-size:14px}
-.mp-hide-btn{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.13);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.7);font-size:16px;line-height:1;padding:0;transition:background .15s}
-.mp-hide-btn:hover{background:rgba(255,255,255,.22)}
-.mp-bal.hidden .mp-sum,.mp-bal.hidden .mp-lbl{filter:blur(6px);user-select:none}
-.mp-stats.hidden b{filter:blur(5px);user-select:none}
 
 .hd-r{display:flex;align-items:center;gap:8px}
 .tgch{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#2aabee;color:#fff;border:0;cursor:pointer;flex:none;transition:transform .15s,opacity .15s}
@@ -1244,7 +1240,7 @@ const toast = t => {
 const sheet = h => { const sb=$("#sb"); sb.innerHTML = '<div class="sheet-handle"></div>' + h; sb.classList.remove("co-sheet"); $("#sheet").classList.add("open"); };
 const closeSheet = () => { $("#sheet").classList.remove("open"); $("#sb").classList.remove("co-sheet"); };
 
-const unreadU = () => S.tickets.filter(t=>t.uu).length;
+const unreadU = () => S.tickets.filter(t=>t.uu && t.st==="open").length;
 const getT = () => (S.tab==="atk" ? S.atickets : S.tickets).find(t=>t.id===S.tk);
 const mapT = t => ({id:t.id, subj:t.subject, st:t.status, ts:+new Date(t.created_at), uu:t.unread_user, ua:t.unread_admin,
   who: t.username ? "@"+t.username : (t.first_name || ("id"+t.user_id)),
@@ -1655,18 +1651,16 @@ function me() {
   const u = tgUser();
   const name = u ? ([u.first_name, u.last_name].filter(Boolean).join(" ") || "Пользователь") : "Гость";
   const sub = u ? (u.username ? "@"+u.username : "ID "+u.id) : "Вы не вошли через Telegram";
-  const _mpHidden = localStorage.getItem("mp_hide") === "1";
   const V = $("#view");
   V.innerHTML = `<div class="mp-hero">
-    <button class="mp-hide-btn" id="mp-hide-toggle" title="Скрыть данные">${_mpHidden ? "👁" : "🙈"}</button>
     <div class="mp-user">
-      ${ME.photo ? `<img class="avatar mp-av" src="${ME.photo}" alt="${esc(name[0].toUpperCase())}" style="object-fit:cover;border:none" onerror="this.outerHTML='<div class=\\'avatar mp-av\\'>${esc(name[0].toUpperCase())}</div>'">` : `<div class="avatar mp-av">${esc(name[0].toUpperCase())}</div>`}
+      ${ME.photo ? `<img class="avatar mp-av" src="${ME.photo}" alt="${esc(name[0])}" style="object-fit:cover;border:none" onerror="this.outerHTML='<div class=\"avatar mp-av\">'+(this.alt||'?')+'</div>'">` : `<div class="avatar mp-av">${esc(name[0].toUpperCase())}</div>`}
       <div class="mp-who">
         <div class="mp-name">${esc(name)}</div>
         <div class="mp-sub">${esc(sub)}</div>
       </div>
     </div>
-    <div class="mp-bal${_mpHidden ? " hidden" : ""}">
+    <div class="mp-bal">
       <div>
         <div class="mp-lbl">Баланс</div>
         <div class="mp-sum">${r(S.bal)}</div>
@@ -1674,7 +1668,7 @@ function me() {
       <button class="btn light mp-top" data-act="topup">＋ Пополнить</button>
     </div>
   </div>
-  <div class="mp-stats${_mpHidden ? " hidden" : ""}">
+  <div class="mp-stats">
     <div><b>${S.orders.length}</b><span>Наборов</span></div>
     <div><b>${r(S.spent)}</b><span>Потрачено</span></div>
     <div><b>${S.fav.size}</b><span>Избранное</span></div>
@@ -1713,18 +1707,6 @@ function me() {
     </div>
   </div>
   ${isAdmin() ? `<button class="btn sec" data-act="adm">Админ-панель</button>` : ''}`;
-  // Кнопка скрытия баланса/статистики
-  const hideBtn = $("#mp-hide-toggle");
-  if (hideBtn) {
-    hideBtn.addEventListener("click", () => {
-      const bal = V.querySelector(".mp-bal");
-      const stats = V.querySelector(".mp-stats");
-      const isHidden = bal.classList.toggle("hidden");
-      stats.classList.toggle("hidden", isHidden);
-      hideBtn.textContent = isHidden ? "👁" : "🙈";
-      localStorage.setItem("mp_hide", isHidden ? "1" : "0");
-    });
-  }
 }
 
 function tkBtn() {
@@ -1746,7 +1728,7 @@ function tickets() {
   ${S.tickets.length ? S.tickets.map(t=>{const l=t.msgs[t.msgs.length-1];return `<button class="tk" data-act="topen" data-id="${t.id}">
     <div class="row"><b style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${esc(t.subj)}</b><span class="tag ${t.st==='open'?'ok':''}">${t.st==='open'?'Открыт':'Закрыт'}</span></div>
     <div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.f==="me"?"Вы: ":"Поддержка: "}${esc(l.t)}</div>
-    <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}</span>${t.uu?'<span class="disc-badge">новый ответ</span>':''}</div>
+    <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}</span>${t.uu&&t.st==="open"?'<span class="disc-badge">новый ответ</span>':''}</div>
   </button>`}).join("") : `<div class="card empty">
     <h3>Обращений пока нет</h3>
     <div class="mut">Если что-то не работает или есть вопрос — создайте обращение</div>
@@ -1756,7 +1738,7 @@ function tickets() {
 
 function atks(fresh = true) {
   if(fresh){ const was = S.atLoaded; loadTickets(true).then(ch => { chrome(); if(S.tab==="atks" && (ch || !was)) atks(false); }); }
-  const L = S.atickets, aw = L.filter(t=>t.ua).length, op = L.filter(t=>t.st==="open").length;
+  const L = S.atickets, aw = L.filter(t=>t.ua && t.st==="open").length, op = L.filter(t=>t.st==="open").length;
   const V = $("#view");
   V.innerHTML = `${admHead("tk")}${aTitle("tk","Тикеты","Обращения клиентов",`<span class="tag ${aw?"hot":""}">${aw?aw+" ждут ответа":op+" открыто"}</span>`)}
   ${!S.atLoaded ? `<div class="sk" style="height:96px"></div><div class="sk" style="height:96px"></div>` : L.length ? L.map(t=>{const l=t.msgs[t.msgs.length-1];return `<button class="tk tk2" data-act="atk" data-id="${t.id}">
@@ -1764,7 +1746,7 @@ function atks(fresh = true) {
     <div class="tk-b">
       <div class="row"><b class="ell" style="flex:1">${esc(t.subj)}</b><span class="tag ${t.st==='open'?'ok':''}">${t.st==='open'?'Открыт':'Закрыт'}</span></div>
       <div class="mut ell">${esc(t.who)} · ${l.f==="me"?"":"Вы: "}${esc(l.t)}</div>
-      <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}</span>${t.ua?'<span class="disc-badge">ждёт ответа</span>':''}</div>
+      <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}</span>${t.ua&&t.st==="open"?'<span class="disc-badge">ждёт ответа</span>':''}</div>
     </div>
   </button>`}).join("") : aEmpty("tk","Тикетов нет","Когда клиент напишет в поддержку, обращение появится здесь — и придёт уведомление в бота.")}`;
 }
@@ -1869,7 +1851,7 @@ const av = (name) => `<div class="av" style="background:${bg(String(name||"?"))}
 const dateRu = ts => new Date(ts).toLocaleDateString("ru",{day:"numeric",month:"short"});
 
 function admHead(cur){
-  const aw = S.atickets.filter(t=>t.ua).length;
+  const aw = S.atickets.filter(t => t.ua && t.st === "open").length;
   const T = [["dash","Обзор"],["wants","Спрос"],["cat","Каталог"],["promo","Промо"],["tk","Тикеты"],["bc","Рассылка"],["team","Админы"]];
   return `<button class="back" data-act="mebk">Профиль</button>
   <div class="atabs">${T.map(([k,l])=>`<button class="atab ${cur===k?"on":""}" data-act="atab" data-t="${k}">${ico(k,16)}<span>${l}</span>${k==="tk"&&aw?`<i>${aw}</i>`:""}</button>`).join("")}</div>`;
