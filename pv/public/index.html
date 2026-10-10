@@ -1654,7 +1654,7 @@ function me() {
   const V = $("#view");
   V.innerHTML = `<div class="mp-hero">
     <div class="mp-user">
-      ${ME.photo ? `<img class="avatar mp-av" src="${ME.photo}" alt="${esc(name[0])}" style="object-fit:cover;border:none" onerror="this.outerHTML='<div class=\"avatar mp-av\">'+(this.alt||'?')+'</div>'">` : `<div class="avatar mp-av">${esc(name[0].toUpperCase())}</div>`}
+      ${ME.photo ? `<img id="mp-avatar" class="avatar mp-av" src="${ME.photo}" style="object-fit:cover;border:none">` : `<div class="avatar mp-av">${esc(name[0].toUpperCase())}</div>`}
       <div class="mp-who">
         <div class="mp-name">${esc(name)}</div>
         <div class="mp-sub">${esc(sub)}</div>
@@ -1707,6 +1707,17 @@ function me() {
     </div>
   </div>
   ${isAdmin() ? `<button class="btn sec" data-act="adm">Админ-панель</button>` : ''}`;
+  // Фикс аватарки: если фото не загрузилось — показываем первую букву имени
+  const mpAv = $("#mp-avatar");
+  if (mpAv) {
+    const letter = esc(name[0].toUpperCase());
+    mpAv.onerror = function() {
+      const d = document.createElement("div");
+      d.className = "avatar mp-av";
+      d.textContent = letter;
+      this.replaceWith(d);
+    };
+  }
 }
 
 function tkBtn() {
