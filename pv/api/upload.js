@@ -38,17 +38,15 @@ export default async function handler(req, res) {
     const buf = Buffer.from(data, "base64");
     if (buf.length > 10 * 1024 * 1024) return res.status(413).json({ error: "too_large" });
 
-    // Отправляем боту фото через multipart (sendPhoto с Buffer)
-    const FormData = (await import("form-data")).default;
+    // Отправляем боту фото через нативный FormData (Node 18+, не требует npm-пакета)
     const form = new FormData();
-    form.append("chat_id", u.id);
-    form.append("photo", buf, { filename: "upload.jpg", contentType: mime });
+    form.append("chat_id", String(u.id));
+    form.append("photo", new Blob([buf], { type: mime }), "upload.jpg");
     form.append("disable_notification", "true");
 
     const r = await fetch(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendPhoto`, {
       method: "POST",
       body: form,
-      headers: form.getHeaders(),
     }).then(x => x.json());
 
     if (!r.ok) return res.status(500).json({ error: "tg_error", detail: r.description });
