@@ -1272,6 +1272,7 @@ const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 const r = n => Math.round(n).toLocaleString("ru") + " ₽";
 const esc = x => String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function _avErr(img){ img.outerHTML='<div class="avatar mp-av">'+(img.alt||'?')+'</div>'; }
 const tm = ts => new Date(ts).toLocaleString("ru",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
 const hue = s => {let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h};
 const bg = n => `linear-gradient(155deg,hsl(${hue(n)} 45% 30%),hsl(${hue(n)} 50% 14%))`;
@@ -1722,7 +1723,7 @@ function me() {
   const V = $("#view");
   V.innerHTML = `<div class="mp-hero">
     <div class="mp-user">
-      ${ME.photo ? `<img class="avatar mp-av" src="${ME.photo}" alt="${esc(name[0])}" style="object-fit:cover;border:none" onerror="this.outerHTML='<div class=&quot;avatar mp-av&quot;>'+(this.alt||'?')+'</div>'">` : `<div class="avatar mp-av">${esc(name[0].toUpperCase())}</div>`}
+      ${ME.photo ? `<img class="avatar mp-av" src="${ME.photo}" alt="${esc(name[0])}" style="object-fit:cover;border:none" onerror="_avErr(this)">` : `<div class="avatar mp-av">${esc(name[0].toUpperCase())}</div>`}
       <div class="mp-who">
         <div class="mp-name">${esc(name)}</div>
         <div class="mp-sub">${esc(sub)}</div>
