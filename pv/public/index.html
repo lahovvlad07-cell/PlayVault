@@ -348,7 +348,7 @@ h3{font-size:15px;font-weight:700}
   display:flex;align-items:center;gap:10px;font-size:14px;cursor:default;
 }
 .result-item:last-child{border:0}
-.pack-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pack-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .pack-ref{display:flex;align-items:center;gap:6px;color:var(--sub);font-size:12px;flex-shrink:0;cursor:pointer}
 .pack-ref:hover{color:var(--ac)}
 
@@ -1533,7 +1533,7 @@ function gres() {
   }
   el.innerHTML = `<div class="results">${m.slice(0,40).map(([n,ps]) => `<div class="result-item">
     <button class="gname-btn" data-act="ginfo" data-g="${encodeURIComponent(n)}" data-pid="${ps[0].id}">${n}</button>
-    <span class="pack-refs">${ps.map(p=>`<span class="pack-ref" data-act="open" data-id="${p.id}"><span class="pack-dot" style="background:${p.c}"></span>${p.name.split(" ")[0]}${p.disc?` <span class="disc-badge">−${p.disc}%</span>`:""}</span>`).join("")}</span>
+    <span class="pack-refs">${ps.map(p=>`<span class="pack-ref" data-act="open" data-id="${p.id}" title="${esc(p.name)}"><span class="pack-dot" style="background:${p.c}"></span>${ps.length<=2?p.name.split(" ")[0]+"":""} ${p.disc?`<span class="disc-badge">−${p.disc}%</span>`:""}</span>`).join("")}</span>
   </div>`).join("")}</div>`;
 }
 
