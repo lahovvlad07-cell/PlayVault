@@ -30,15 +30,20 @@ export default async function handler(req, res) {
 
     if (!r.ok) return res.status(500).json({ error: "tg_error", detail: r.description });
 
-    // Берём наибольший размер фото
+    // Берём наибольший размер фото — file_id постоянный, используется в sendPhoto напрямую
     const photo = r.result.photo;
     const fileId = photo[photo.length - 1].file_id;
+
+    // Временный прямой URL для превью в UI (живёт ~1 час, только для отображения)
+    const r2 = await tg("getFile", { file_id: fileId });
+    const previewUrl = r2.ok ? `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${r2.result.file_path}` : null;
 
     // Удаляем сообщение чтобы не засорять чат
     tg("deleteMessage", { chat_id: u.id, message_id: r.result.message_id }).catch(() => {});
 
-    // Возвращаем file_id — Telegram принимает его в sendPhoto, в отличие от прямого URL
-    return res.json({ ok: true, file_id: fileId });
+    // url = file_id (постоянный, передаётся в sendPhoto/тикеты)
+    // preview = временная ссылка только для <img> в UI
+    return res.json({ ok: true, url: fileId, preview: previewUrl });
   } catch (e) {
     return res.status(500).json({ error: "server", detail: e.message });
   }

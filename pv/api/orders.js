@@ -31,24 +31,17 @@ export default async function handler(req, res) {
       ? await sql`select 1 from accounts where pack_id = ${p.id} limit 1`
       : await sql`select 1 from accounts where pack_id = ${p.id} and used < max_slots limit 1`;
     if (!free.length) return res.status(409).json({ error: "no_slots" });
-    const base = Math.max(1, Math.round(p.price * (1 - p.disc / 100)));
     // Промокод на скидку: цену считает сервер
     let promo = null;
     if (req.body?.promo) {
-      const pr = await promoLookup(req.body.promo, u.id);
+      const pr = await promoLookup(req.body.promo, u.id, p.id);
       if (pr.error) return res.status(400).json({ error: "promo_" + pr.error });
-      if (pr.kind !== "disc" && pr.kind !== "pack") return res.status(400).json({ error: "promo_not_discount" });
-      if (pr.kind === "pack") {
-        // pack-промо действует только на конкретный набор
-        if (pr.pack_id !== p.id) return res.status(400).json({ error: "promo_wrong_pack" });
-      }
+      if (pr.kind !== "disc") return res.status(400).json({ error: "promo_not_discount" });
       promo = pr;
     }
-    // Промокод применяется поверх уже скидкованной цены набора (base)
-    const promoDisc = promo ? promo.value : 0;
-    const rub = promo
-      ? Math.max(1, Math.round(base * (1 - promoDisc / 100)))
-      : base;
+    // Суммарная скидка (набора + промокод) не может превышать 100%
+    const totalDiscPct = Math.min(100, (p.disc || 0) + (promo ? promo.value : 0));
+    const rub = Math.max(1, Math.round(p.price * (1 - totalDiscPct / 100)));
     const [rateRow] = await sql`select value from settings where key = 'stars_rate'`;
     const rate = rateRow ? JSON.parse(rateRow.value) : Number(process.env.STARS_PER_RUB || 0.85);
     const stars = Math.ceil(rub * rate);

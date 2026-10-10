@@ -798,6 +798,15 @@ const PACKS = [
     coverGame:"BeamNG.drive", coverAppid:284160,
     login:"", pass:"",
     tags:["Симуляторы","Выживание","Открытый мир"]
+  },
+  {
+    id:6, name:"Ultimate Collection", count:0,
+    sub:"35+ игр: хорроры, экшен, стратегии, инди — всё лучшее",
+    games:["911 Operator","Batman: The Enemy Within - The Telltale Series","Batman: The Telltale Series","BeamNG.drive","Beholder","Beyond: Two Souls","Buckshot Roulette","Call of Duty","Car Mechanic Simulator 2018","CloverPit","Detroit: Become Human","DOOM","Goose Goose Duck","Heavy Rain","Hollow Knight","Hotline Miami 2: Wrong Number","Injustice 2","Little Nightmares","Little Nightmares Enhanced Edition","Little Nightmares II","Mafia II: Definitive Edition","Metro 2033 Redux","Metro: Last Light Redux","Mortal Kombat 11","Overcooked! 2","PEAK","People Playground","Plants vs. Zombies: Game of the Year","Rayman Origins","Resident Evil 2","Resident Evil 3","RESIDENT EVIL RESISTANCE","Scrap Mechanic","Sifu","Slime Rancher","Stick Fight: The Game","Terraria","The Walking Dead","The Walking Dead: Season Two","The Walking Dead: The Final Season","Ведьмак 3: Дикая Охота — Обновлённое издание"],
+    price:{buy:99}, c:"#3a1a6b", slots:5, stock:5,
+    coverGame:"Ведьмак 3: Дикая Охота — Обновлённое издание", coverAppid:292030,
+    login:"", pass:"",
+    tags:["Хорроры","Экшен","Инди","Всё лучшее"]
   }
 ];
 PACKS.forEach(p => {
@@ -806,10 +815,10 @@ PACKS.forEach(p => {
 });
 
 // Steam app IDs
-const APP = {"Far Cry": 13520, "Far Cry 2": 19900, "Far Cry 3": 220240, "Far Cry 3: Blood Dragon": 233270, "Far Cry 4": 298110, "Far Cry 5": 552520, "Far Cry Primal": 371660, "Far Cry 6": 2369390, "Far Cry New Dawn": 939960, "House Flipper": 738370, "Atomic Heart": 668580, "Car Mechanic Simulator 2018": 645630, "Cuphead": 268910, "DARK SOULS II": 236430, "Devil May Cry 5": 601150, "Graveyard Keeper": 599140, "Resident Evil 4": 2050650, "Sid Meier's Civilization VI": 289070, "Subnautica": 264710, "Subnautica: Below Zero": 848450, "Totally Accurate Battle Simulator": 508440, "Warhammer 40,000: Gladius": 489630, "Ведьмак 3: Дикая Охота — Обновлённое издание": 292030, "Хогвартс. Наследие": 990080, "Alan Wake": 108710, "Batman: Arkham Knight": 208650, "Buckshot Roulette": 2835570, "Detroit: Become Human": 1222140, "Dying Light": 239140, "Dying Light 2: Reloaded Edition": 534380, "Euro Truck Simulator 2": 227300, "Frostpunk": 323190, "Garry's Mod": 4000, "Geometry Dash": 322170, "Golf With Your Friends": 431240, "Grounded": 962130, "Heavy Rain": 960910, "Hello Neighbor": 521890, "Hollow Knight": 367520, "Hollow Knight: Silksong": 1030300, "Human Fall Flat": 477160, "Left 4 Dead 2": 550, "LEGO Звёздные Войны: Скайуокер. Сага": 920210, "LIMBO": 48000, "Little Nightmares": 424840, "Little Nightmares Enhanced Edition": 424840, "Machinarium": 40700, "Metro 2033 Redux": 286690, "Metro Exodus": 412020, "Metro: Last Light Complete Edition": 287390, "No, I'm not a Human": 3180070, "Outlast": 238320, "Outlast 2": 414700, "PAYDAY 2": 218620, "Phasmophobia": 739630, "Plague Inc: Evolved": 246620, "Plants vs. Zombies: Game of the Year": 3590, "Project Zomboid": 108600, "R.E.P.O.": 3241660, "Schedule I": 3164500, "Scrap Mechanic": 387990, "Shadow of the Tomb Raider": 750920, "Stardew Valley": 413150, "SteamWorld Dig": 252410, "Super Meat Boy": 40800, "Supermarket Simulator": 2670630, "Teardown": 1167630, "Terraria": 105600, "The Binding of Isaac: Rebirth": 250900, "The Escapists 2": 641990, "The Forest": 242760, "The Long Dark": 305620, "The Long Drive": 1017180, "Tomb Raider": 203160, "Undertale": 391540, "Warhammer: Vermintide 2": 552500, "World War Z": 699130, "Zombie Army 4: Dead War": 694280, "BeamNG.drive": 284160, "Besiege": 346010, "Borderlands 2": 49520, "Content Warning": 2881650, "Counter-Strike: Source": 240, "Day of Defeat: Source": 300, "Deponia": 214340, "Don't Starve": 219740, "Dota 2": 570, "Fallout: New Vegas PCR": 22380, "Green Hell": 815370, "Half-Life": 70, "Half-Life 2": 220, "Half-Life 2: Deathmatch": 320, "Half-Life: Blue Shift": 130, "Half-Life: Opposing Force": 50, "Hitman: Absolution": 203140, "Hitman: Blood Money": 6860, "HITMAN World of Assassination": 1659040, "Hotline Miami": 219150, "Hotline Miami 2: Wrong Number": 274170, "Hunting Simulator 2": 1135910, "Icarus": 1149460, "Inscryption": 1092790, "Left 4 Dead": 500, "LEGO Batman 2: DC Super Heroes": 214570, "LEGO Batman 3: Beyond Gotham": 296050, "LEGO Batman: The Videogame": 21000, "LEGO Jurassic World": 352400, "Lethal Company": 1966720, "Life is Strange 2": 532210, "Medieval Dynasty": 1129580, "Moonlighter": 606150, "PEAK": 3527290, "Portal": 400, "Portal 2": 620, "POSTAL 2": 223470, "Psychonauts": 3830, "RoboCop: Rogue City": 1681430, "Sid Meier's Civilization V": 8930, "SOMA": 282140, "The Life and Suffering of Sir Brante": 1135910, "The Outlast Trials": 1304930, "theHunter: Call of the Wild": 518790, "Thief Simulator": 704850, "Travellers Rest": 1139980, "Valheim": 892970, "Warhammer 40,000: Gladius - Relics of War": 489630, "Zup! 8": 705830, "Hearts of Iron IV": 394360, "PC Building Simulator": 621060, "Don't Starve Together": 322330, "Wreckfest": 228380, "Dead by Daylight": 381210, "Sonic Mania": 584400, "Planet Zoo": 703080, "Mortal Kombat X": 307780, "Batman: The Telltale Series": 278340, "People Playground": 1118200, "Slime Rancher": 433340, "Ghostwire: Tokyo": 1475810, "Who's Your Daddy?!": 318010, "Bully: Scholarship Edition": 12200, "Sniper Elite 4": 312670, "Among Us": 945360, "Batman: Arkham Asylum GOTY": 35140, "Batman: Arkham City GOTY": 45510, "LEGO Worlds": 332310, "Supermarket Together": 2689520, "Counter-Strike": 10, "Counter-Strike 2": 730, "Counter-Strike: Condition Zero": 80, "Hitman 2: Silent Assassin": 6910, "Hitman: Contracts": 6920, "Hitman: Sniper Challenge": 205930,"Football Manager 2020": 1100600,"Football Manager 2020 Touch": 1100610,"Football Manager 2021": 1263850,"Football Manager 2021 Touch": 1263860,"Football Manager 2022": 1569040,"Football Manager 2023": 1904540,"Esports Manager 2026": 2749950,"Ultimate Zombie Defense": 1035510,"Bendy and the Dark Revival": 1431850,"Sons of the Forest":1326470,"GTA IV: The Complete Edition":12210,"Construction Simulator":1273400,"SimRail - The Railway Simulator":1422130,"Resident Evil Village Gold Edition":1196590,"Soccer Manager 2027":0,"The Sims 4":1222690,"Call of Duty":2};
+const APP = {"Far Cry": 13520, "Far Cry 2": 19900, "Far Cry 3": 220240, "Far Cry 3: Blood Dragon": 233270, "Far Cry 4": 298110, "Far Cry 5": 552520, "Far Cry Primal": 371660, "Far Cry 6": 2369390, "Far Cry New Dawn": 939960, "House Flipper": 738370, "Atomic Heart": 668580, "Car Mechanic Simulator 2018": 645630, "Cuphead": 268910, "DARK SOULS II": 236430, "Devil May Cry 5": 601150, "Graveyard Keeper": 599140, "Resident Evil 4": 2050650, "Sid Meier's Civilization VI": 289070, "Subnautica": 264710, "Subnautica: Below Zero": 848450, "Totally Accurate Battle Simulator": 508440, "Warhammer 40,000: Gladius": 489630, "Ведьмак 3: Дикая Охота — Обновлённое издание": 292030, "Хогвартс. Наследие": 990080, "Alan Wake": 108710, "Batman: Arkham Knight": 208650, "Buckshot Roulette": 2835570, "Detroit: Become Human": 1222140, "Dying Light": 239140, "Dying Light 2: Reloaded Edition": 534380, "Euro Truck Simulator 2": 227300, "Frostpunk": 323190, "Garry's Mod": 4000, "Geometry Dash": 322170, "Golf With Your Friends": 431240, "Grounded": 962130, "Heavy Rain": 960910, "Hello Neighbor": 521890, "Hollow Knight": 367520, "Hollow Knight: Silksong": 1030300, "Human Fall Flat": 477160, "Left 4 Dead 2": 550, "LEGO Звёздные Войны: Скайуокер. Сага": 920210, "LIMBO": 48000, "Little Nightmares": 424840, "Little Nightmares Enhanced Edition": 424840, "Machinarium": 40700, "Metro 2033 Redux": 286690, "Metro Exodus": 412020, "Metro: Last Light Complete Edition": 287390, "No, I'm not a Human": 3180070, "Outlast": 238320, "Outlast 2": 414700, "PAYDAY 2": 218620, "Phasmophobia": 739630, "Plague Inc: Evolved": 246620, "Plants vs. Zombies: Game of the Year": 3590, "Project Zomboid": 108600, "R.E.P.O.": 3241660, "Schedule I": 3164500, "Scrap Mechanic": 387990, "Shadow of the Tomb Raider": 750920, "Stardew Valley": 413150, "SteamWorld Dig": 252410, "Super Meat Boy": 40800, "Supermarket Simulator": 2670630, "Teardown": 1167630, "Terraria": 105600, "The Binding of Isaac: Rebirth": 250900, "The Escapists 2": 641990, "The Forest": 242760, "The Long Dark": 305620, "The Long Drive": 1017180, "Tomb Raider": 203160, "Undertale": 391540, "Warhammer: Vermintide 2": 552500, "World War Z": 699130, "Zombie Army 4: Dead War": 694280, "BeamNG.drive": 284160, "Besiege": 346010, "Borderlands 2": 49520, "Content Warning": 2881650, "Counter-Strike: Source": 240, "Day of Defeat: Source": 300, "Deponia": 214340, "Don't Starve": 219740, "Dota 2": 570, "Fallout: New Vegas PCR": 22380, "Green Hell": 815370, "Half-Life": 70, "Half-Life 2": 220, "Half-Life 2: Deathmatch": 320, "Half-Life: Blue Shift": 130, "Half-Life: Opposing Force": 50, "Hitman: Absolution": 203140, "Hitman: Blood Money": 6860, "HITMAN World of Assassination": 1659040, "Hotline Miami": 219150, "Hotline Miami 2: Wrong Number": 274170, "Hunting Simulator 2": 1135910, "Icarus": 1149460, "Inscryption": 1092790, "Left 4 Dead": 500, "LEGO Batman 2: DC Super Heroes": 214570, "LEGO Batman 3: Beyond Gotham": 296050, "LEGO Batman: The Videogame": 21000, "LEGO Jurassic World": 352400, "Lethal Company": 1966720, "Life is Strange 2": 532210, "Medieval Dynasty": 1129580, "Moonlighter": 606150, "PEAK": 3527290, "Portal": 400, "Portal 2": 620, "POSTAL 2": 223470, "Psychonauts": 3830, "RoboCop: Rogue City": 1681430, "Sid Meier's Civilization V": 8930, "SOMA": 282140, "The Life and Suffering of Sir Brante": 1135910, "The Outlast Trials": 1304930, "theHunter: Call of the Wild": 518790, "Thief Simulator": 704850, "Travellers Rest": 1139980, "Valheim": 892970, "Warhammer 40,000: Gladius - Relics of War": 489630, "Zup! 8": 705830, "Hearts of Iron IV": 394360, "PC Building Simulator": 621060, "Don't Starve Together": 322330, "Wreckfest": 228380, "Dead by Daylight": 381210, "Sonic Mania": 584400, "Planet Zoo": 703080, "Mortal Kombat X": 307780, "Batman: The Telltale Series": 278340, "People Playground": 1118200, "Slime Rancher": 433340, "Ghostwire: Tokyo": 1475810, "Who's Your Daddy?!": 318010, "Bully: Scholarship Edition": 12200, "Sniper Elite 4": 312670, "Among Us": 945360, "Batman: Arkham Asylum GOTY": 35140, "Batman: Arkham City GOTY": 45510, "LEGO Worlds": 332310, "Supermarket Together": 2689520, "Counter-Strike": 10, "Counter-Strike 2": 730, "Counter-Strike: Condition Zero": 80, "Hitman 2: Silent Assassin": 6910, "Hitman: Contracts": 6920, "Hitman: Sniper Challenge": 205930,"Football Manager 2020": 1100600,"Football Manager 2020 Touch": 1100610,"Football Manager 2021": 1263850,"Football Manager 2021 Touch": 1263860,"Football Manager 2022": 1569040,"Football Manager 2023": 1904540,"Esports Manager 2026": 2749950,"Ultimate Zombie Defense": 1035510,"Bendy and the Dark Revival": 1431850,"Sons of the Forest":1326470,"GTA IV: The Complete Edition":12210,"Construction Simulator":1273400,"SimRail - The Railway Simulator":1422130,"Resident Evil Village Gold Edition":1196590,"Soccer Manager 2027":0,"The Sims 4":1222690,"Call of Duty":2,"911 Operator":503560,"Batman: The Enemy Within - The Telltale Series":675260,"Beholder":475550,"Beyond: Two Souls":960990,"CloverPit":3314790,"DOOM":379720,"Goose Goose Duck":1568590,"Injustice 2":627270,"Little Nightmares II":860510,"Mafia II: Definitive Edition":1030830,"Metro: Last Light Redux":287390,"Mortal Kombat 11":976310,"Overcooked! 2":728880,"Rayman Origins":207490,"Resident Evil 2":883710,"Resident Evil 3":952060,"RESIDENT EVIL RESISTANCE":952070,"Sifu":2138710,"Stick Fight: The Game":674940,"The Walking Dead":207610,"The Walking Dead: Season Two":261030,"The Walking Dead: The Final Season":866800};
 
 // Steam prices (approx RUB) for "you save" calculation
-const STEAM_PRICE = {"Far Cry": 299, "Far Cry 2": 399, "Far Cry 3": 599, "Far Cry 3: Blood Dragon": 499, "Far Cry 4": 799, "Far Cry 5": 999, "Far Cry Primal": 699, "Far Cry 6": 1499, "Far Cry New Dawn": 799, "Atomic Heart": 2499, "Cuphead": 699, "DARK SOULS II": 999, "Devil May Cry 5": 1499, "Resident Evil 4": 2499, "Subnautica": 999, "Subnautica: Below Zero": 999, "House Flipper": 699, "Car Mechanic Simulator 2018": 499, "Graveyard Keeper": 499, "Sid Meier's Civilization VI": 1999, "Totally Accurate Battle Simulator": 499, "Warhammer 40,000: Gladius": 799, "Ведьмак 3: Дикая Охота — Обновлённое издание": 1499, "Хогвартс. Наследие": 3999, "Dying Light": 999, "Dying Light 2: Reloaded Edition": 1999, "Euro Truck Simulator 2": 599, "Frostpunk": 799, "Garry's Mod": 149, "Grounded": 1499, "Heavy Rain": 799, "Hollow Knight": 299, "Lethal Company": 399, "Phasmophobia": 499, "Project Zomboid": 599, "R.E.P.O.": 299, "Stardew Valley": 299, "Terraria": 299, "Valheim": 399, "PAYDAY 2": 299, "Half-Life 2": 299, "Portal 2": 299, "Inscryption": 499, "Undertale": 199, "Alan Wake": 499, "Batman: Arkham Knight": 999, "Buckshot Roulette": 199, "Detroit: Become Human": 999, "Geometry Dash": 199, "Golf With Your Friends": 299, "Hello Neighbor": 499, "Human Fall Flat": 299, "Left 4 Dead 2": 299, "LEGO Звёздные Войны: Скайуокер. Сага": 2499, "LIMBO": 199, "Little Nightmares": 699, "Little Nightmares Enhanced Edition": 699, "Machinarium": 299, "Metro 2033 Redux": 499, "Metro Exodus": 1499, "Metro: Last Light Complete Edition": 499, "No, I'm not a Human": 299, "Outlast": 499, "Outlast 2": 699, "Plague Inc: Evolved": 299, "Plants vs. Zombies: Game of the Year": 149, "Schedule I": 599, "Scrap Mechanic": 499, "Shadow of the Tomb Raider": 1499, "SteamWorld Dig": 299, "Super Meat Boy": 299, "Supermarket Simulator": 399, "Teardown": 999, "The Binding of Isaac: Rebirth": 299, "The Escapists 2": 599, "The Forest": 499, "The Long Dark": 999, "The Long Drive": 299, "Tomb Raider": 499, "Warhammer: Vermintide 2": 699, "World War Z": 999, "Zombie Army 4: Dead War": 1499, "BeamNG.drive": 999, "Besiege": 399, "Borderlands 2": 699, "Content Warning": 199, "Counter-Strike: Source": 299, "Day of Defeat: Source": 199, "Deponia": 499, "Don't Starve": 299, "Fallout: New Vegas PCR": 499, "Green Hell": 699, "Half-Life": 149, "Half-Life 2: Deathmatch": 99, "Half-Life: Blue Shift": 99, "Half-Life: Opposing Force": 99, "Hitman: Absolution": 499, "Hitman: Blood Money": 299, "HITMAN World of Assassination": 2499, "Hotline Miami": 199, "Hotline Miami 2: Wrong Number": 199, "Hunting Simulator 2": 999, "Icarus": 999, "Left 4 Dead": 299, "LEGO Batman 2: DC Super Heroes": 999, "LEGO Batman 3: Beyond Gotham": 999, "LEGO Batman: The Videogame": 799, "LEGO Jurassic World": 999, "Life is Strange 2": 999, "Medieval Dynasty": 999, "Moonlighter": 499, "PEAK": 599, "Portal": 149, "POSTAL 2": 299, "Psychonauts": 299, "RoboCop: Rogue City": 2499, "Sid Meier's Civilization V": 999, "SOMA": 599, "The Life and Suffering of Sir Brante": 499, "The Outlast Trials": 999, "theHunter: Call of the Wild": 999, "Thief Simulator": 499, "Travellers Rest": 399, "Warhammer 40,000: Gladius - Relics of War": 799, "Zup! 8": 49, "Hearts of Iron IV": 2499, "PC Building Simulator": 499, "Don't Starve Together": 399, "Wreckfest": 999, "Dead by Daylight": 499, "Sonic Mania": 599, "Planet Zoo": 1499, "Mortal Kombat X": 999, "Batman: The Telltale Series": 799, "People Playground": 299, "Slime Rancher": 499, "Ghostwire: Tokyo": 2499, "Who's Your Daddy?!": 199, "Bully: Scholarship Edition": 599, "Sniper Elite 4": 999, "Among Us": 299, "Batman: Arkham Asylum GOTY": 799, "Batman: Arkham City GOTY": 799, "LEGO Worlds": 999, "Supermarket Together": 499, "Counter-Strike": 149, "Counter-Strike 2": 730, "Counter-Strike: Condition Zero": 99, "Hitman 2: Silent Assassin": 299, "Hitman: Contracts": 299, "Hitman: Sniper Challenge": 199,"Football Manager 2020": 699,"Football Manager 2020 Touch": 399,"Football Manager 2021": 799,"Football Manager 2021 Touch": 499,"Football Manager 2022": 899,"Football Manager 2023": 999,"Esports Manager 2026": 799,"Ultimate Zombie Defense": 299,"Bendy and the Dark Revival": 1199,"Sons of the Forest":1199,"GTA IV: The Complete Edition":499,"Construction Simulator":999,"SimRail - The Railway Simulator":899,"Resident Evil Village Gold Edition":2499,"Soccer Manager 2027":699,"The Sims 4":0,"Call of Duty":299};
+const STEAM_PRICE = {"Far Cry": 299, "Far Cry 2": 399, "Far Cry 3": 599, "Far Cry 3: Blood Dragon": 499, "Far Cry 4": 799, "Far Cry 5": 999, "Far Cry Primal": 699, "Far Cry 6": 1499, "Far Cry New Dawn": 799, "Atomic Heart": 2499, "Cuphead": 699, "DARK SOULS II": 999, "Devil May Cry 5": 1499, "Resident Evil 4": 2499, "Subnautica": 999, "Subnautica: Below Zero": 999, "House Flipper": 699, "Car Mechanic Simulator 2018": 499, "Graveyard Keeper": 499, "Sid Meier's Civilization VI": 1999, "Totally Accurate Battle Simulator": 499, "Warhammer 40,000: Gladius": 799, "Ведьмак 3: Дикая Охота — Обновлённое издание": 1499, "Хогвартс. Наследие": 3999, "Dying Light": 999, "Dying Light 2: Reloaded Edition": 1999, "Euro Truck Simulator 2": 599, "Frostpunk": 799, "Garry's Mod": 149, "Grounded": 1499, "Heavy Rain": 799, "Hollow Knight": 299, "Lethal Company": 399, "Phasmophobia": 499, "Project Zomboid": 599, "R.E.P.O.": 299, "Stardew Valley": 299, "Terraria": 299, "Valheim": 399, "PAYDAY 2": 299, "Half-Life 2": 299, "Portal 2": 299, "Inscryption": 499, "Undertale": 199, "Alan Wake": 499, "Batman: Arkham Knight": 999, "Buckshot Roulette": 199, "Detroit: Become Human": 999, "Geometry Dash": 199, "Golf With Your Friends": 299, "Hello Neighbor": 499, "Human Fall Flat": 299, "Left 4 Dead 2": 299, "LEGO Звёздные Войны: Скайуокер. Сага": 2499, "LIMBO": 199, "Little Nightmares": 699, "Little Nightmares Enhanced Edition": 699, "Machinarium": 299, "Metro 2033 Redux": 499, "Metro Exodus": 1499, "Metro: Last Light Complete Edition": 499, "No, I'm not a Human": 299, "Outlast": 499, "Outlast 2": 699, "Plague Inc: Evolved": 299, "Plants vs. Zombies: Game of the Year": 149, "Schedule I": 599, "Scrap Mechanic": 499, "Shadow of the Tomb Raider": 1499, "SteamWorld Dig": 299, "Super Meat Boy": 299, "Supermarket Simulator": 399, "Teardown": 999, "The Binding of Isaac: Rebirth": 299, "The Escapists 2": 599, "The Forest": 499, "The Long Dark": 999, "The Long Drive": 299, "Tomb Raider": 499, "Warhammer: Vermintide 2": 699, "World War Z": 999, "Zombie Army 4: Dead War": 1499, "BeamNG.drive": 999, "Besiege": 399, "Borderlands 2": 699, "Content Warning": 199, "Counter-Strike: Source": 299, "Day of Defeat: Source": 199, "Deponia": 499, "Don't Starve": 299, "Fallout: New Vegas PCR": 499, "Green Hell": 699, "Half-Life": 149, "Half-Life 2: Deathmatch": 99, "Half-Life: Blue Shift": 99, "Half-Life: Opposing Force": 99, "Hitman: Absolution": 499, "Hitman: Blood Money": 299, "HITMAN World of Assassination": 2499, "Hotline Miami": 199, "Hotline Miami 2: Wrong Number": 199, "Hunting Simulator 2": 999, "Icarus": 999, "Left 4 Dead": 299, "LEGO Batman 2: DC Super Heroes": 999, "LEGO Batman 3: Beyond Gotham": 999, "LEGO Batman: The Videogame": 799, "LEGO Jurassic World": 999, "Life is Strange 2": 999, "Medieval Dynasty": 999, "Moonlighter": 499, "PEAK": 599, "Portal": 149, "POSTAL 2": 299, "Psychonauts": 299, "RoboCop: Rogue City": 2499, "Sid Meier's Civilization V": 999, "SOMA": 599, "The Life and Suffering of Sir Brante": 499, "The Outlast Trials": 999, "theHunter: Call of the Wild": 999, "Thief Simulator": 499, "Travellers Rest": 399, "Warhammer 40,000: Gladius - Relics of War": 799, "Zup! 8": 49, "Hearts of Iron IV": 2499, "PC Building Simulator": 499, "Don't Starve Together": 399, "Wreckfest": 999, "Dead by Daylight": 499, "Sonic Mania": 599, "Planet Zoo": 1499, "Mortal Kombat X": 999, "Batman: The Telltale Series": 799, "People Playground": 299, "Slime Rancher": 499, "Ghostwire: Tokyo": 2499, "Who's Your Daddy?!": 199, "Bully: Scholarship Edition": 599, "Sniper Elite 4": 999, "Among Us": 299, "Batman: Arkham Asylum GOTY": 799, "Batman: Arkham City GOTY": 799, "LEGO Worlds": 999, "Supermarket Together": 499, "Counter-Strike": 149, "Counter-Strike 2": 730, "Counter-Strike: Condition Zero": 99, "Hitman 2: Silent Assassin": 299, "Hitman: Contracts": 299, "Hitman: Sniper Challenge": 199,"Football Manager 2020": 699,"Football Manager 2020 Touch": 399,"Football Manager 2021": 799,"Football Manager 2021 Touch": 499,"Football Manager 2022": 899,"Football Manager 2023": 999,"Esports Manager 2026": 799,"Ultimate Zombie Defense": 299,"Bendy and the Dark Revival": 1199,"Sons of the Forest":1199,"GTA IV: The Complete Edition":499,"Construction Simulator":999,"SimRail - The Railway Simulator":899,"Resident Evil Village Gold Edition":2499,"Soccer Manager 2027":699,"The Sims 4":0,"Call of Duty":299,"911 Operator":399,"Batman: The Enemy Within - The Telltale Series":799,"Beholder":299,"Beyond: Two Souls":999,"CloverPit":399,"DOOM":799,"Goose Goose Duck":299,"Injustice 2":999,"Little Nightmares II":699,"Mafia II: Definitive Edition":799,"Metro: Last Light Redux":499,"Mortal Kombat 11":1499,"Overcooked! 2":699,"Rayman Origins":699,"Resident Evil 2":1999,"Resident Evil 3":1999,"RESIDENT EVIL RESISTANCE":0,"Sifu":1499,"Stick Fight: The Game":299,"The Walking Dead":499,"The Walking Dead: Season Two":499,"The Walking Dead: The Final Season":499};
 
 // ── Цены Steam ───────────────────────────────────────────────
 // STEAM_DATA[игра] = { avg: средняя цена, ₽; sale: цена со скидкой СЕЙЧАС, ₽ (или null); pct: скидка, %; est: true = ориентировочная оценка }
@@ -984,7 +993,29 @@ const GDESC = {
   "Resident Evil Village Gold Edition":"Survival-horror от первого лица с Итаном Уинтерсом. Gold Edition включает DLC «Тени Розы» и дополнительный контент.",
   "Soccer Manager 2027":"Современный менеджер футбольного клуба: трансферы, тактики, развитие игроков. Актуальные клубы и лиги.",
   "The Sims 4":"Легендарная симуляция жизни. Создавайте персонажей, стройте дома и проживайте любые судьбы.",
-  "Call of Duty":"Культовый военный шутер, положивший начало серии. Кампании Второй мировой войны с кинематографичными сражениями."
+  "Call of Duty":"Культовый военный шутер, положивший начало серии. Кампании Второй мировой войны с кинематографичными сражениями.",
+  "911 Operator":"Управляйте службой спасения: принимайте звонки, распределяйте машины скорой, полиции и пожарных. Реальные карты городов мира.",
+  "Batman: The Enemy Within - The Telltale Series":"Продолжение истории Бэтмена: новый Джокер, Аманда Уоллер и тяжёлые моральные выборы. Каждое решение имеет последствия.",
+  "Beholder":"Антиутопический симулятор надзирателя: следите за жильцами, собирайте компромат и решайте — доносить или помочь. Тяжёлые выборы без правильных ответов.",
+  "Beyond: Two Souls":"Кинематографичный интерактивный триллер с Эллен Пейдж. История Джоди Холмс и духа Эйдена на протяжении 15 лет её жизни.",
+  "CloverPit":"Хаотичная кооп-игра про работу клоуна: выполняйте безумные задания, взаимодействуйте с окружением и не теряйте рассудок.",
+  "DOOM":"Легендарный шутер 2016 года: быстрый, яростный, без передышки. Уничтожайте орды демонов в аду и на Марсе.",
+  "Goose Goose Duck":"Социальная игра на вычисление предателей — как Among Us, но с гусями. Поддерживает до 16 игроков, множество ролей.",
+  "Injustice 2":"Файтинг от создателей Mortal Kombat: Бэтмен против Супермена и весь DC-ростер. Прокачка брони и снаряжения между боями.",
+  "Little Nightmares II":"Продолжение атмосферного хоррора: Моно и Шесть в мире, захваченном Бледным городом. Новые головоломки и пугающие враги.",
+  "Mafia II: Definitive Edition":"Кинематографичная история мафии 40-50-х: Вито Скалетта поднимается по лестнице преступного мира. Атмосфера нуара и джаза.",
+  "Metro: Last Light Redux":"Постапокалиптический шутер в московском метро. Продолжение истории Артёма: путь к поверхности сквозь мутантов и фракции выживших.",
+  "Mortal Kombat 11":"Культовый файтинг с жестокими фаталити. Огромный ростер бойцов, детальная прокачка экипировки и эпичный сюжетный режим.",
+  "Overcooked! 2":"Безумный кулинарный кооп для 1-4 игроков: готовьте блюда на движущихся кухнях, мостах и в других сумасшедших локациях.",
+  "Rayman Origins":"Яркий платформер-красавец с сумасшедшим юмором. Классика Ubisoft с великолепной анимацией и кооперативом до 4 игроков.",
+  "Resident Evil 2":"Ремейк культового хоррора 1998 года от Capcom. Леон и Клэр в Raccoon City, Тиран на хвосте — один из лучших хорроров десятилетия.",
+  "Resident Evil 3":"Напряжённый хоррор с Немезисом на пятках. Джилл Валентайн пытается вырваться из Raccoon City до того, как его сотрут с лица земли.",
+  "RESIDENT EVIL RESISTANCE":"Асимметричный мультиплеер из вселенной RE: 4 выживших против одного мастермайнда, расставляющего ловушки.",
+  "Sifu":"Брутальный экшен про кунг-фу: каждая смерть старит героя. Один против сотен — освойте боевую систему или состаритесь до смерти.",
+  "Stick Fight: The Game":"Безумный физический файтинг: стикмены колошматят друг друга на крошечных аренах. Идеален для весёлых вечеров с друзьями.",
+  "The Walking Dead":"Эпизодическая история выживания в зомби-апокалипсис. Ли и Клементина — одна из самых трогательных историй в играх.",
+  "The Walking Dead: Season Two":"Клементина одна в жестоком мире. Продолжение эмоционального путешествия — теперь вы принимаете все решения за неё.",
+  "The Walking Dead: The Final Season":"Финальная глава истории Клементины. Взросление, потери и надежда в мире, где каждый день может быть последним."
 };
 
 const TOP = {
@@ -992,7 +1023,8 @@ const TOP = {
   2: ["Atomic Heart","DARK SOULS II","Resident Evil 4"],
   3: ["Ведьмак 3: Дикая Охота — Обновлённое издание","Хогвартс. Наследие","Lethal Company"],
   4: ["Hearts of Iron IV","Football Manager 2023","Batman: Arkham Knight"],
-  5: ["BeamNG.drive","Sons of the Forest","Resident Evil Village Gold Edition"]
+  5: ["BeamNG.drive","Sons of the Forest","Resident Evil Village Gold Edition"],
+  6: ["Ведьмак 3: Дикая Охота — Обновлённое издание","Mortal Kombat 11","Resident Evil 2"]
 };
 
 const PAY = ["Telegram Stars","С баланса"];
@@ -1167,21 +1199,16 @@ const loadFav = () => { try{ const a = JSON.parse(localStorage.getItem(FAV_KEY))
 const saveFav = () => { try{ localStorage.setItem(FAV_KEY, JSON.stringify([...S.fav])); }catch(e){} };
 
 // ── Промокоды: проверяет и считает сервер ──
-const PROMO_ERR = {not_found:"Промокод не найден", inactive:"Промокод отключён", expired:"Срок действия промокода истёк", exhausted:"Лимит использований исчерпан", used:"Вы уже использовали этот промокод", empty:"Введите промокод", not_balance:"Этот код даёт скидку при оплате", promo_not_found:"Промокод не найден", promo_inactive:"Промокод отключён", promo_expired:"Срок действия промокода истёк", promo_exhausted:"Лимит использований исчерпан", promo_used:"Вы уже использовали этот промокод", promo_not_discount:"Этот код пополняет баланс — введите его в профиле", promo_wrong_pack:"Этот промокод действует на другой набор"};
-// packId — id текущего открытого набора; для промо типа pack возвращает 0, если набор не тот
-const promoPct = (c, packId) => {
-  if (!c || !S.promoInfo || S.promoInfo.code !== c) return 0;
-  const kind = S.promoInfo.kind;
-  if (kind === "disc") return S.promoInfo.value;
-  if (kind === "pack") return (S.promoInfo.pack_id && S.promoInfo.pack_id === packId) ? S.promoInfo.value : 0;
-  return 0;
-};
+const PROMO_ERR = {not_found:"Промокод не найден", inactive:"Промокод отключён", expired:"Срок действия промокода истёк", exhausted:"Лимит использований исчерпан", used:"Вы уже использовали этот промокод", empty:"Введите промокод", not_balance:"Этот код даёт скидку при оплате", wrong_pack:"Этот промокод действует только для другого набора", promo_not_found:"Промокод не найден", promo_inactive:"Промокод отключён", promo_expired:"Срок действия промокода истёк", promo_exhausted:"Лимит использований исчерпан", promo_used:"Вы уже использовали этот промокод", promo_not_discount:"Этот код пополняет баланс — введите его в профиле", promo_wrong_pack:"Этот промокод действует только для другого набора"};
+const promoPct = c => (c && S.promoInfo && S.promoInfo.code === c && S.promoInfo.kind === "disc") ? S.promoInfo.value : 0;
 const promoClear = () => { S.promo = null; S.promoInfo = null; };
-async function promoApply(c){
+async function promoApply(c, packId){
   if(!tgInit()) return {err:"Откройте приложение в Telegram"};
   if(!c) return {err:PROMO_ERR.empty};
   try{
-    const j = await api("/api/x?r=promo",{method:"POST",body:{action:"check",code:c}});
+    const body = {action:"check",code:c};
+    if(packId) body.pack_id = packId;
+    const j = await api("/api/x?r=promo",{method:"POST",body});
     if(j.kind === "bal"){
       const k = await api("/api/x?r=promo",{method:"POST",body:{action:"redeem",code:c}});
       S.bal = k.balance; chrome(); return {bal:k.added};
@@ -1192,7 +1219,7 @@ async function promoApply(c){
 
 const S = {
   pop: loadPop(), atickets:[], atLoaded:false, promoInfo:null, wl:null, pl:null, st:null, at:"dash", rng:30, tab:"shop", open:null, pay:"Telegram Stars",
-  orders:[], fav:loadFav(), bal:0, spent:0, promo:null, q:"", starsRate:0.85, // starsRate подгружается из настроек
+  orders:[], fav:loadFav(), bal:0, spent:0, promo:null, q:"", starsRate:0.85, selectedPromoPackId:null, // starsRate подгружается из настроек
  
   tickets:[], tk:null, rec:"Ведьмак 3: Дикая Охота — Обновлённое издание",
   wantLog:[], _co:null, _bad:null, _ar:[], _timers:{}, _hiddenOrders:new Set()
@@ -1240,7 +1267,7 @@ const toast = t => {
 const sheet = h => { const sb=$("#sb"); sb.innerHTML = '<div class="sheet-handle"></div>' + h; sb.classList.remove("co-sheet"); $("#sheet").classList.add("open"); };
 const closeSheet = () => { $("#sheet").classList.remove("open"); $("#sb").classList.remove("co-sheet"); };
 
-const unreadU = () => S.tickets.filter(t=>t.uu && t.st==="open").length;
+const unreadU = () => S.tickets.filter(t=>t.uu).length;
 const getT = () => (S.tab==="atk" ? S.atickets : S.tickets).find(t=>t.id===S.tk);
 const mapT = t => ({id:t.id, subj:t.subject, st:t.status, ts:+new Date(t.created_at), uu:t.unread_user, ua:t.unread_admin,
   who: t.username ? "@"+t.username : (t.first_name || ("id"+t.user_id)),
@@ -1654,7 +1681,7 @@ function me() {
   const V = $("#view");
   V.innerHTML = `<div class="mp-hero">
     <div class="mp-user">
-      ${ME.photo ? `<img id="mp-avatar" class="avatar mp-av" src="${ME.photo}" style="object-fit:cover;border:none">` : `<div class="avatar mp-av">${esc(name[0].toUpperCase())}</div>`}
+      ${ME.photo ? `<img class="avatar mp-av" src="${ME.photo}" alt="${esc(name[0])}" style="object-fit:cover;border:none" onerror="this.outerHTML='<div class=\"avatar mp-av\">'+(this.alt||'?')+'</div>'">` : `<div class="avatar mp-av">${esc(name[0].toUpperCase())}</div>`}
       <div class="mp-who">
         <div class="mp-name">${esc(name)}</div>
         <div class="mp-sub">${esc(sub)}</div>
@@ -1679,7 +1706,7 @@ function me() {
       <input id="mp" placeholder="Введите промокод" autocomplete="off" autocapitalize="characters">
       <button class="btn sec" data-act="mpromo">Применить</button>
     </div>
-    ${S.promo ? `<span class="tag ok" style="align-self:flex-start">Код ${esc(S.promo)} · скидка ${promoPct(S.promo, S.open?.id)}%</span>` : ''}
+    ${S.promo ? `<span class="tag ok" style="align-self:flex-start">Код ${esc(S.promo)} · скидка ${promoPct(S.promo)}%</span>` : ''}
   </div>
   ${favCard()}
   ${refCard()}
@@ -1707,17 +1734,6 @@ function me() {
     </div>
   </div>
   ${isAdmin() ? `<button class="btn sec" data-act="adm">Админ-панель</button>` : ''}`;
-  // Фикс аватарки: если фото не загрузилось — показываем первую букву имени
-  const mpAv = $("#mp-avatar");
-  if (mpAv) {
-    const letter = esc(name[0].toUpperCase());
-    mpAv.onerror = function() {
-      const d = document.createElement("div");
-      d.className = "avatar mp-av";
-      d.textContent = letter;
-      this.replaceWith(d);
-    };
-  }
 }
 
 function tkBtn() {
@@ -1739,7 +1755,7 @@ function tickets() {
   ${S.tickets.length ? S.tickets.map(t=>{const l=t.msgs[t.msgs.length-1];return `<button class="tk" data-act="topen" data-id="${t.id}">
     <div class="row"><b style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${esc(t.subj)}</b><span class="tag ${t.st==='open'?'ok':''}">${t.st==='open'?'Открыт':'Закрыт'}</span></div>
     <div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.f==="me"?"Вы: ":"Поддержка: "}${esc(l.t)}</div>
-    <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}</span>${t.uu&&t.st==="open"?'<span class="disc-badge">новый ответ</span>':''}</div>
+    <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}</span>${t.uu?'<span class="disc-badge">новый ответ</span>':''}</div>
   </button>`}).join("") : `<div class="card empty">
     <h3>Обращений пока нет</h3>
     <div class="mut">Если что-то не работает или есть вопрос — создайте обращение</div>
@@ -1749,7 +1765,7 @@ function tickets() {
 
 function atks(fresh = true) {
   if(fresh){ const was = S.atLoaded; loadTickets(true).then(ch => { chrome(); if(S.tab==="atks" && (ch || !was)) atks(false); }); }
-  const L = S.atickets, aw = L.filter(t=>t.ua && t.st==="open").length, op = L.filter(t=>t.st==="open").length;
+  const L = S.atickets, aw = L.filter(t=>t.ua).length, op = L.filter(t=>t.st==="open").length;
   const V = $("#view");
   V.innerHTML = `${admHead("tk")}${aTitle("tk","Тикеты","Обращения клиентов",`<span class="tag ${aw?"hot":""}">${aw?aw+" ждут ответа":op+" открыто"}</span>`)}
   ${!S.atLoaded ? `<div class="sk" style="height:96px"></div><div class="sk" style="height:96px"></div>` : L.length ? L.map(t=>{const l=t.msgs[t.msgs.length-1];return `<button class="tk tk2" data-act="atk" data-id="${t.id}">
@@ -1757,7 +1773,7 @@ function atks(fresh = true) {
     <div class="tk-b">
       <div class="row"><b class="ell" style="flex:1">${esc(t.subj)}</b><span class="tag ${t.st==='open'?'ok':''}">${t.st==='open'?'Открыт':'Закрыт'}</span></div>
       <div class="mut ell">${esc(t.who)} · ${l.f==="me"?"":"Вы: "}${esc(l.t)}</div>
-      <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}</span>${t.ua&&t.st==="open"?'<span class="disc-badge">ждёт ответа</span>':''}</div>
+      <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}</span>${t.ua?'<span class="disc-badge">ждёт ответа</span>':''}</div>
     </div>
   </button>`}).join("") : aEmpty("tk","Тикетов нет","Когда клиент напишет в поддержку, обращение появится здесь — и придёт уведомление в бота.")}`;
 }
@@ -1812,12 +1828,15 @@ function chat(adm) {
       tmFile.value = "";
       if(!file.type.startsWith("image/")){ toast("Только изображения"); return; }
       if(file.size > 10*1024*1024){ toast("Файл слишком большой (макс. 10 МБ)"); return; }
+      // Локальный превью сразу
+      if(tmPreview && tmPreviewImg){ tmPreviewImg.src = URL.createObjectURL(file); tmPreview.style.display="block"; }
       toast("Загружаю фото…");
       try {
-        const url = await uploadPhoto(file);
-        sendBtn._pendingPhoto = url;
-        if(tmPreview && tmPreviewImg){ tmPreviewImg.src = url; tmPreview.style.display="block"; }
-      } catch(err){ toast("Не удалось загрузить фото: " + (err.message||"")); }
+        const { url, preview } = await uploadPhoto(file);
+        sendBtn._pendingPhoto = url; // file_id для отправки
+        if(tmPreviewImg && preview) tmPreviewImg.src = preview;
+        toast("Фото загружено ✓");
+      } catch(err){ toast("Не удалось загрузить фото: " + (err.message||"")); if(tmPreview) tmPreview.style.display="none"; }
     };
   }
   if(tmClear && sendBtn && tmPreview){
@@ -1862,7 +1881,7 @@ const av = (name) => `<div class="av" style="background:${bg(String(name||"?"))}
 const dateRu = ts => new Date(ts).toLocaleDateString("ru",{day:"numeric",month:"short"});
 
 function admHead(cur){
-  const aw = S.atickets.filter(t => t.ua && t.st === "open").length;
+  const aw = S.atickets.filter(t=>t.ua).length;
   const T = [["dash","Обзор"],["wants","Спрос"],["cat","Каталог"],["promo","Промо"],["tk","Тикеты"],["bc","Рассылка"],["team","Админы"]];
   return `<button class="back" data-act="mebk">Профиль</button>
   <div class="atabs">${T.map(([k,l])=>`<button class="atab ${cur===k?"on":""}" data-act="atab" data-t="${k}">${ico(k,16)}<span>${l}</span>${k==="tk"&&aw?`<i>${aw}</i>`:""}</button>`).join("")}</div>`;
@@ -1957,26 +1976,25 @@ function adminCat() {
 }
 
 // ── Промокоды ──
-const PROMO_ADM_ERR = {bad_code:"Код — от 3 до 20 символов: буквы, цифры, - и _", bad_value:"Скидка — 1–100%, пополнение — 10–10 000 ₽; для набора выберите набор", bad_date:"Дата окончания должна быть в будущем", exists:"Такой промокод уже есть", forbidden:"Недостаточно прав", no_schema:"В базе нет новых таблиц: выполните db/schema_patch3.sql в Supabase"};
+const PROMO_ADM_ERR = {bad_code:"Код — от 3 до 20 символов: буквы, цифры, - и _", bad_value:"Скидка — 1–100%, пополнение — 10–10 000 ₽", bad_date:"Дата окончания должна быть в будущем", exists:"Такой промокод уже есть", forbidden:"Недостаточно прав", pack_not_found:"Набор не найден", no_schema:"В базе нет новых таблиц: выполните db/schema_patch3.sql в Supabase"};
 function adminPromo(fresh = true) {
   if(fresh) api("/api/x?r=promo").then(j => { S.pl = j; if(S.tab==="admin" && S.at==="promo") adminPromo(false); }).catch(e => { if(!S.pl) S.pl = []; toast(errMsg(e,"промокоды")); if(S.tab==="admin" && S.at==="promo") adminPromo(false); });
-  const bal = S.ctype === "bal", L = S.pl, V = $("#view");
+  const bal = S.ctype === "bal", pack = S.ctype === "pack", L = S.pl, V = $("#view");
   const keep = fresh ? null : {nc:$("#nc")?.value, nm:$("#nm")?.value, ne:$("#ne")?.value, np:$("#np")?.value};
+  const packOpts = PACKS.map(p=>`<option value="${p.id}"${S.selectedPromoPackId===p.id?" selected":""}>${esc(p.name)}</option>`).join("");
   V.innerHTML = `${admHead("promo")}${aTitle("promo","Промокоды","Скидки на покупку и бонусы на баланс", L?`<span class="tag">${L.length}</span>`:"")}
   <div class="card">
     ${aCardH("plus","Новый промокод")}
     <div class="chips-row">
-      <button class="chip-btn ${S.ctype!=="bal"&&S.ctype!=="pack"?"on":""}" data-act="ctype" data-t="disc">Скидка на покупку</button>
+      <button class="chip-btn ${!bal&&!pack?"on":""}" data-act="ctype" data-t="disc">Скидка на покупку</button>
+      <button class="chip-btn ${pack?"on":""}" data-act="ctype" data-t="pack">Скидка на набор</button>
       <button class="chip-btn ${bal?"on":""}" data-act="ctype" data-t="bal">Пополнение баланса</button>
-      <button class="chip-btn ${S.ctype==="pack"?"on":""}" data-act="ctype" data-t="pack">Скидка на набор</button>
     </div>
+    ${pack?`<div class="row-in"><label>Набор<select id="npack" style="height:42px;padding:0 12px;border-radius:11px;border:1px solid var(--brd);background:var(--sf2);color:var(--ink);font:inherit;width:100%">${packOpts}</select></label></div>`:""}
     <div class="row-in">
       <input id="nc" placeholder="Код, например SUMMER15" maxlength="20" autocomplete="off" autocapitalize="characters">
       <button class="btn sec" data-act="cgen">Случайный</button>
     </div>
-    ${S.ctype==="pack"?`<label class="pf-label" style="margin-bottom:6px">Набор
-      <select id="npack">${(PACKS||[]).filter(pk=>pk.id&&pk.name).map(pk=>`<option value="${pk.id}">${esc(pk.name)}</option>`).join("")}</select>
-    </label>`:""}
     <div class="pf-grid">
       <label><span id="nl">${bal?"Сумма на баланс, ₽":"Скидка, %"}</span><input id="np" type="number" min="1" max="${bal?10000:100}" value="${bal?100:10}"></label>
       <label>Лимит (0 — без лимита)<input id="nm" type="number" min="0" value="0"></label>
@@ -1993,7 +2011,7 @@ function adminPromo(fresh = true) {
       return `<div class="crow promo-r${st[1]==="ok"?"":" dim"}">
         <div style="min-width:0;display:flex;flex-direction:column;gap:5px">
           <div class="row" style="justify-content:flex-start;gap:8px;flex-wrap:wrap"><code class="ccode">${esc(c.code)}</code><span class="tag ${st[1]}">${st[0]}</span></div>
-          <div style="font-weight:700">${c.kind==="bal"?"+"+c.value+" ₽ на баланс":c.kind==="pack"?`Скидка −${c.value}% на «${esc((PACKS||[]).find(p=>p.id===c.pack_id)?.name||"набор")}»`:"Скидка −"+c.value+"%"}</div>
+          <div style="font-weight:700">${c.kind==="bal"?"+"+c.value+" ₽ на баланс":c.pack_id?`Скидка −${c.value}% на набор «${esc(PACKS.find(p=>p.id===c.pack_id)?.name||"#"+c.pack_id)}»`:"Скидка −"+c.value+"%"}</div>
           ${c.max_uses?`<div class="slotbar"><i style="width:${pc}%"></i></div>`:""}
           <div class="mut" style="font-size:12px">${c.kind==="bal"?"Активирован":"Использован"}: ${c.used}${c.max_uses?" из "+c.max_uses:""}${c.expires_at?" · до "+dateRu(c.expires_at):""}</div>
         </div>
@@ -2004,6 +2022,7 @@ function adminPromo(fresh = true) {
       </div>`;}).join("")}
   </div>` : aEmpty("gift","Промокодов пока нет","Создайте первый — клиенты вводят его в профиле или при оплате.")}`;
   if(keep){ if(keep.nc!=null)$("#nc").value=keep.nc; if(keep.nm!=null)$("#nm").value=keep.nm; if(keep.ne!=null)$("#ne").value=keep.ne; if(keep.np!=null)$("#np").value=keep.np; }
+  const npack=$("#npack");if(npack){npack.onchange=()=>{S.selectedPromoPackId=+npack.value||null};}
 }
 
 const TEAM_ERR = {not_found:"Пользователь не найден. Пусть сначала откроет приложение, или введите его Telegram ID", forbidden:"Недостаточно прав", owner:"Владельца нельзя убрать из админов"};
@@ -2031,16 +2050,15 @@ function adminTeam(fresh = true) {
 
 
 // ── Рассылка ───────────────────────────────────────────────
-const BC = { text:"", photo:"", photoFid:null, btn:true, total:null, run:null, tab:"manual", sched:null, sedit:null };
+const BC = { text:"", photo:"", btn:true, total:null, run:null, tab:"manual", sched:null, sedit:null };
 const BC_ERR = { empty:"Введите текст сообщения", bad_photo:"Ссылка на фото должна начинаться с https://", too_long:"Текст слишком длинный", forbidden:"Недостаточно прав" };
-// Возвращает file_id из загруженного файла ИЛИ https:// URL введённый вручную
-const bcPhoto = () => {
-  if (BC.photoFid) return BC.photoFid;
-  const v = (BC.photo || "").trim();
-  return /^https:\/\/\S+$/.test(v) ? v : "";
-};
+// Принимаем либо https:// URL либо Telegram file_id (длинная строка без пробелов)
+const bcPhoto = () => { const v = BC.photo.trim(); return (v && (v.startsWith("https://") || v.length > 20)) ? v : ""; };
 const bcLimit = () => bcPhoto() ? 1024 : 4096;
 // Загрузка фото через /api/upload (base64 → Telegram → URL)
+// Загружает файл на сервер, возвращает { url: file_id, preview: tempUrl }
+// url (file_id) — постоянный, используется при отправке через Telegram API
+// preview — временная ссылка только для <img> в UI
 async function uploadPhoto(file) {
   return new Promise((resolve, reject) => {
     if (!file || !file.type.startsWith("image/")) { reject(new Error("not_image")); return; }
@@ -2050,7 +2068,7 @@ async function uploadPhoto(file) {
       try {
         const data = r.result.split(",")[1];
         const j = await api("/api/upload", { method: "POST", body: { data, mime: file.type } });
-        if (j.ok && j.file_id) resolve(j.file_id);
+        if (j.ok && j.url) resolve({ url: j.url, preview: j.preview || j.url });
         else reject(new Error(j.error || "upload_failed"));
       } catch(e) { reject(e); }
     };
@@ -2074,27 +2092,22 @@ function photoPickerHtml(inputId, currentVal, label) {
     </div>
   </label>`;
 }
-// onFileUploaded(fid) — опциональный коллбэк для хранения file_id отдельно от URL
-function initPhotoPicker(inputId, onUrl, onFileUploaded) {
+function initPhotoPicker(inputId, onUrl) {
   const inp = $(`#${inputId}`);
   if (inp) inp.oninput = e => { onUrl(e.target.value); updatePhotoPreview(inputId, e.target.value); };
   const fileInp = document.querySelector(`.ph-file-inp[data-for="${inputId}"]`);
   if (fileInp) fileInp.onchange = async e => {
     const file = e.target.files?.[0]; if (!file) return;
-    const prev = $(`#${inputId}-prev`), imgEl = $(`#${inputId}-img`);
-    const objURL = URL.createObjectURL(file);
-    if (prev) { prev.style.display = ""; if(imgEl) imgEl.src = objURL; }
+    const prev = $(`#${inputId}-prev`), img = $(`#${inputId}-img`);
+    // Показываем локальный превью сразу
+    if (prev && img) { prev.style.display = ""; img.src = URL.createObjectURL(file); }
     toast("Загружаем фото…");
     try {
-      const fid = await uploadPhoto(file);
-      if (onFileUploaded) {
-        // Храним file_id отдельно: input очищаем, URL-валидация не нужна
-        if (inp) inp.value = "";
-        onFileUploaded(fid, objURL);
-      } else {
-        if (inp) inp.value = "";
-        onUrl(fid);
-      }
+      const { url, preview } = await uploadPhoto(file);
+      // В input сохраняем file_id (для отправки), в <img> — preview URL
+      if (inp) inp.value = url;
+      if (img && preview) img.src = preview;
+      onUrl(url);
       toast("Фото загружено ✓");
     } catch(e) {
       const msgs = { not_image:"Не картинка", too_large:"Файл > 10 МБ", forbidden:"Только для админов" };
@@ -2109,8 +2122,8 @@ function initPhotoPicker(inputId, onUrl, onFileUploaded) {
 function updatePhotoPreview(inputId, url) {
   const prev = $(`#${inputId}-prev`), img = $(`#${inputId}-img`);
   if (!prev || !img) return;
-  if (!url) { prev.style.display = "none"; if(img) img.src = ""; return; }
-  if (/^https:\/\/\S+/.test(url)) { img.src = url; prev.style.display = ""; }
+  if (url && /^https:\/\/\S+/.test(url)) { img.src = url; prev.style.display = ""; }
+  else prev.style.display = "none";
 }
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-clearphoto]");
@@ -2119,8 +2132,6 @@ document.addEventListener("click", e => {
   const inp = $(`#${id}`);
   if (inp) { inp.value = ""; inp.dispatchEvent(new Event("input")); }
   updatePhotoPreview(id, "");
-  // Явно чистим file_id и photo для рассылки (кнопка bc-p)
-  if (id === "bc-p") { BC.photoFid = null; BC.photo = ""; bcPreview(); }
 });
 
 // Живой таймер для отображения оставшегося времени доступа к данным
@@ -2215,9 +2226,7 @@ function bcRenderManual() {
     <button class="btn pri" data-act="bcsend" ${real ? "" : "disabled"}>Отправить всем</button>
   </div>`;
   $("#bc-t").oninput = e => { BC.text = e.target.value; bcPreview(); };
-  initPhotoPicker("bc-p",
-    url => { BC.photo = url; BC.photoFid = null; bcPreview(); },
-    (fid, objURL) => { BC.photoFid = fid; BC.photo = ""; bcPreview(); });
+  initPhotoPicker("bc-p", url => { BC.photo = url; bcPreview(); });
   bcPreview(); bcPaint();
 }
 function bcRenderAuto(fresh) {
@@ -2308,12 +2317,8 @@ function bcPreview() {
   const ph = bcPhoto(), t = BC.text.trim(), n = BC.text.length, lim = bcLimit();
   const c = $("#bc-c"); if(c) { c.textContent = n + " / " + lim; c.classList.toggle("bad", n > lim); }
   const pv = $("#bc-pv"); if(!pv) return;
-  // Для file_id берём objectURL из уже показанного превью (для имитации)
-  const phSrc = BC.photoFid
-    ? ($(`#bc-p-img`)?.src || "")
-    : (ph && /^https:\/\//.test(ph) ? ph : "");
   pv.innerHTML = `<div class="tgm">
-    ${phSrc ? `<img class="tgm-img" src="${esc(phSrc)}" alt="">` : ""}
+    ${ph ? `<img class="tgm-img" src="${esc(ph)}" alt="">` : ""}
     <div class="tgm-t">${t ? esc(t).replace(/\n/g, "<br>") : `<span class="mut">Здесь появится текст сообщения</span>`}</div>
     ${BC.btn ? `<div class="tgm-btn">🎮 Открыть магазин</div>` : ""}
   </div>`;
@@ -2322,8 +2327,7 @@ function bcBody() {
   const text = BC.text.trim();
   if(!text) { toast(BC_ERR.empty); return null; }
   if(BC.text.length > bcLimit()) { toast(BC_ERR.too_long + " (" + bcLimit() + " символов)"); return null; }
-  // Фото: ошибка только если ввёден URL но он невалидный (не https://); file_id всегда ок
-  if(!BC.photoFid && BC.photo.trim() && !bcPhoto()) { toast(BC_ERR.bad_photo); return null; }
+  if(BC.photo.trim() && !bcPhoto()) { toast(BC_ERR.bad_photo); return null; }
   return { text, photo: bcPhoto(), button: BC.btn };
 }
 async function bcTest() {
@@ -2825,7 +2829,7 @@ function buyStarsBlock(need) {
 function checkout(p, plan, ext) {
   const raw = p.price.buy;                                      // оригинальная цена без скидок
   const afterDisc = priceOf(p);                                 // цена после скидки набора
-  const d = promoPct(S.promo, p.id);                            // скидка промокода, %
+  const d = promoPct(S.promo);                                  // скидка промокода, %
   const t = Math.max(1, Math.round(afterDisc*(1-d/100)));       // итоговая цена
   const packDisc = p.disc || 0;
   const hasAnyDisc = packDisc > 0 || d > 0;
@@ -2909,6 +2913,9 @@ async function loadServerPacks() {
   if(!tgInit()) return;
   try {
     const packs = await api("/api/packs");
+    const serverIds = new Set(packs.map(sp => sp.id));
+    // Удаляем из локального массива наборы, которых больше нет на сервере (деактивированы/удалены)
+    for(let i = PACKS.length - 1; i >= 0; i--) { if(!serverIds.has(PACKS[i].id)) PACKS.splice(i, 1); }
     packs.forEach(sp => {
       const local = PACKS.find(p => p.id === sp.id);
       const games = sp.games.map(g => g.game);
@@ -3166,13 +3173,14 @@ document.addEventListener("click", e => {
     })();
     return;
   }
-  if(a==="ctype"){S.ctype=b.dataset.t;const bl=S.ctype==="bal";const pk=S.ctype==="pack";const nl=$("#nl");if(nl)nl.textContent=bl?"Сумма на баланс, ₽":"Скидка, %";const np=$("#np");if(np){np.max=bl?10000:100;np.value=bl?100:10;}adminPromo(false);return}
+  if(a==="ctype"){S.ctype=b.dataset.t;if(S.ctype==="pack")S.selectedPromoPackId=PACKS[0]?.id||null;adminPromo(false);return}
   if(a==="cgen"){const ch="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let c="";for(let k=0;k<8;k++)c+=ch[Math.random()*ch.length|0];const el=$("#nc");if(el)el.value=c;return}
   if(a==="ccreate"){
-    const bal=S.ctype==="bal",pk=S.ctype==="pack";
-    const body={action:"create",code:($("#nc")?.value||"").trim().toUpperCase().replace(/[^A-Z0-9А-ЯЁ_-]/g,""),kind:bal?"bal":pk?"pack":"disc",
+    const bal=S.ctype==="bal", isPack=S.ctype==="pack";
+    const packId=isPack?(+$("#npack")?.value||S.selectedPromoPackId||null):null;
+    const body={action:"create",code:($("#nc")?.value||"").trim().toUpperCase().replace(/[^A-Z0-9А-ЯЁ_-]/g,""),kind:bal?"bal":"disc",
       value:Math.floor(+($("#np")?.value)||0),max:Math.max(0,Math.floor(+($("#nm")?.value)||0)),expires:$("#ne")?.value||""};
-    if(pk){const ps=$("#npack");body.pack_id=ps?+ps.value:0;if(!body.pack_id){toast("Выберите набор");return;}}
+    if(isPack && packId) body.pack_id=packId;
     if(body.code.length<3){toast("Код — минимум 3 символа (буквы и цифры)");return}
     b.disabled=true;
     api("/api/x?r=promo",{method:"POST",body}).then(()=>{toast("Промокод "+body.code+" создан");S.pl=null;adminPromo()})
@@ -3383,7 +3391,8 @@ document.addEventListener("click", e => {
     const c=$("#pc")?.value.trim().toUpperCase();
     if(!c){promoClear();checkout(...S._co);return}
     b.disabled=true;
-    promoApply(c).then(res=>{
+    const _coPackId=S._co&&S._co[0]?S._co[0].id:null;
+    promoApply(c,_coPackId).then(res=>{
       if(res.bal){promoClear();toast("На баланс зачислено "+r(res.bal))}
       else if(res.pct){toast("Скидка "+res.pct+"% активирована ✓")}
       else{promoClear();toast(res.err)}

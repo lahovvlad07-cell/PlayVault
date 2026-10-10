@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
   if (req.method === "GET") {
     if (!role) return res.status(403).json({ error: "forbidden" });
-    const rows = await sql`select code, kind, value, pack_id, max_uses, used, active, expires_at, created_at
+    const rows = await sql`select code, kind, value, max_uses, used, active, expires_at, pack_id, created_at
                            from promo_codes order by created_at desc`;
     return res.json(rows);
   }
@@ -20,9 +20,10 @@ export default async function handler(req, res) {
 
     if (b.action === "check" || b.action === "redeem") {
       await saveUser(u);
-      const p = await promoLookup(b.code, u.id);
+      const packId = b.pack_id ? Number(b.pack_id) : null;
+      const p = await promoLookup(b.code, u.id, packId);
       if (p.error) return res.status(400).json({ error: p.error });
-      if (b.action === "check") return res.json({ code: p.code, kind: p.kind, value: p.value });
+      if (b.action === "check") return res.json({ code: p.code, kind: p.kind, value: p.value, pack_id: p.pack_id || null });
       if (p.kind !== "bal") return res.status(400).json({ error: "not_balance" });
       const bal = await sql.begin(async (tx) => {
         if (!(await consumePromo(u.id, p.code, tx))) return null;
@@ -38,14 +39,18 @@ export default async function handler(req, res) {
 
     if (b.action === "create") {
       const code = String(b.code || "").trim().toUpperCase();
-      const kind = b.kind === "bal" ? "bal" : b.kind === "pack" ? "pack" : "disc";
+      const kind = b.kind === "bal" ? "bal" : "disc";
       const value = Math.floor(+b.value || 0);
       const max = Math.max(0, Math.floor(+b.max || 0));
+      // pack_id: только для kind=disc, опционально (null = скидка на все наборы)
+      const packId = (kind === "disc" && b.pack_id) ? Number(b.pack_id) : null;
       if (!CODE_RE.test(code)) return res.status(400).json({ error: "bad_code" });
-      if (kind === "disc" || kind === "pack") {
-        if (value < 1 || value > 100) return res.status(400).json({ error: "bad_value" });
-      } else {
-        if (value < 10 || value > 10000) return res.status(400).json({ error: "bad_value" });
+      if (kind === "disc" ? (value < 1 || value > 100) : (value < 10 || value > 10000))
+        return res.status(400).json({ error: "bad_value" });
+      // Проверяем что такой набор существует
+      if (packId) {
+        const [pk] = await sql`select id from packs where id = ${packId}`;
+        if (!pk) return res.status(400).json({ error: "pack_not_found" });
       }
       let exp = null;
       if (b.expires) {
@@ -53,15 +58,8 @@ export default async function handler(req, res) {
         exp = new Date(b.expires + "T23:59:59+03:00"); // до конца дня по Москве
         if (isNaN(exp) || exp < new Date()) return res.status(400).json({ error: "bad_date" });
       }
-      let packId = null;
-      if (kind === "pack") {
-        packId = Math.floor(+b.pack_id || 0);
-        if (!packId) return res.status(400).json({ error: "bad_value" });
-        const [pk] = await sql`select id from packs where id = ${packId} and active`;
-        if (!pk) return res.status(400).json({ error: "bad_value" });
-      }
-      const [r] = await sql`insert into promo_codes(code, kind, value, pack_id, max_uses, expires_at)
-                            values (${code}, ${kind}, ${value}, ${packId}, ${max}, ${exp}) on conflict do nothing returning code`;
+      const [r] = await sql`insert into promo_codes(code, kind, value, max_uses, expires_at, pack_id)
+                            values (${code}, ${kind}, ${value}, ${max}, ${exp}, ${packId}) on conflict do nothing returning code`;
       if (!r) return res.status(409).json({ error: "exists" });
       return res.json({ ok: true, code });
     }

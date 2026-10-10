@@ -7,3 +7,7 @@ alter table ticket_messages
 -- Автоудаление: удаляем тикеты, закрытые более 14 дней назад
 -- (каскад удалит и ticket_messages через ON DELETE CASCADE)
 -- Запускается кроном ежедневно через /api/cron/steam
+
+-- Промокод на конкретный набор (null = на все наборы)
+alter table promo_codes
+  add column if not exists pack_id int references packs(id) on delete cascade;

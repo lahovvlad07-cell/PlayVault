@@ -124,17 +124,20 @@ export async function rewardRef(buyerId) {
     text: `🎉 Ваш друг купил доступ в PlayVault!\nНа ваш баланс зачислено ${bonus} ₽. Сейчас на балансе: ${got.balance} ₽.` }).catch(() => {});
 }
 
-export async function promoLookup(code, userId) {
+export async function promoLookup(code, userId, packId = null) {
   const c = String(code || "").trim().toUpperCase();
   if (!c) return { error: "empty" };
-  const [p] = await sql`select code, kind, value, pack_id, max_uses, used, active, expires_at from promo_codes where code = ${c}`;
+  const [p] = await sql`select code, kind, value, max_uses, used, active, expires_at, pack_id from promo_codes where code = ${c}`;
   if (!p) return { error: "not_found" };
   if (!p.active) return { error: "inactive" };
   if (p.expires_at && new Date(p.expires_at) < new Date()) return { error: "expired" };
   if (p.max_uses && p.used >= p.max_uses) return { error: "exhausted" };
+  // Проверяем применимость к набору: если промокод привязан к конкретному набору,
+  // он не действует на другие наборы
+  if (p.pack_id && packId && String(p.pack_id) !== String(packId)) return { error: "wrong_pack" };
   const [u] = await sql`select 1 as x from promo_uses where code = ${c} and user_id = ${userId}`;
   if (u) return { error: "used" };
-  return { code: p.code, kind: p.kind, value: p.value, pack_id: p.pack_id ?? null };
+  return { code: p.code, kind: p.kind, value: p.value, pack_id: p.pack_id || null };
 }
 
 export async function consumePromo(userId, code, tx = sql) {

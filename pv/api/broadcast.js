@@ -22,19 +22,21 @@ export default async function handler(req, res) {
   const { action, text, photo, button, after } = req.body || {};
 
   // ── Ручная рассылка ───────────────────────────────────────
+  const cleanPhoto = (v) => { const s = String(v || "").trim(); return (s && (s.startsWith("https://") || s.length > 20)) ? s : null; };
+
   if (action === "test") {
-    const msg = String(text || "").trim(), ph = String(photo || "").trim();
+    const msg = String(text || "").trim(), ph = cleanPhoto(photo);
     if (!msg) return res.status(400).json({ error: "empty" });
-    const r = await send(u.id, msg, ph || null, !!button);
+    const r = await send(u.id, msg, ph, !!button);
     return res.json({ ok: !!r.ok, error: r.ok ? null : r.description });
   }
 
   if (action === "batch") {
-    const msg = String(text || "").trim(), ph = String(photo || "").trim();
+    const msg = String(text || "").trim(), ph = cleanPhoto(photo);
     if (!msg) return res.status(400).json({ error: "empty" });
     const from = Number(after) || 0;
     const rows = await sql`select id from users where id > ${from} and not blocked order by id limit ${BATCH}`;
-    const out = await Promise.all(rows.map(async (r) => [r.id, await send(r.id, msg, ph || null, !!button).catch((e) => ({ ok: false, error_code: 0, description: String(e.message) }))]));
+    const out = await Promise.all(rows.map(async (r) => [r.id, await send(r.id, msg, ph, !!button).catch((e) => ({ ok: false, error_code: 0, description: String(e.message) }))]));
     let sent = 0, failed = 0, blocked = 0, err = null;
     for (const [id, r] of out) {
       if (r.ok) { sent++; continue; }
@@ -60,9 +62,8 @@ export default async function handler(req, res) {
     const mm = Math.max(0, Math.min(59, Number(send_at_min) || 0));
     const minh = Math.max(1, Math.min(8760, Number(min_h) || 24));
     const maxh = Math.max(minh, Math.min(8760, Number(max_h) || 48));
-    // Принимаем https:// URL или Telegram file_id (непустая строка без пробелов)
-    const phTrim = String(ph || "").trim();
-    const photoUrl = phTrim && !/\s/.test(phTrim) ? phTrim : null;
+    const phTrimmed = String(ph || "").trim();
+    const photoUrl = phTrimmed && (phTrimmed.startsWith("https://") || phTrimmed.length > 20) ? phTrimmed : null;
 
     if (id) {
       // Обновление существующего поста — сбрасываем next_send_at чтобы крон пересчитал
