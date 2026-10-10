@@ -47,12 +47,7 @@
   --acink: #fff;
   color-scheme: dark;
 }
-@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){
-  --bg:#f0f4f9;--sf:#fff;--sf2:#e8edf5;--sf3:#dde3ed;
-  --ink:#1a2235;--sub:#5a6a85;--brd:#d0d8e8;
-  --ac:#1a6fad;--ac2:#1560980;--ok:#1e8a46;--warn:#b06010;--hot:#c03030;--acink:#fff;
-  color-scheme:light;
-}}
+/* prefers-color-scheme отключён — тема управляется только data-theme */
 :root[data-theme="light"]{
   --bg:#f0f4f9;--sf:#fff;--sf2:#e8edf5;--sf3:#dde3ed;
   --ink:#1a2235;--sub:#5a6a85;--brd:#d0d8e8;
@@ -671,6 +666,8 @@ button:focus-visible{outline:2px solid var(--ac)}
 .hd-r{display:flex;align-items:center;gap:8px}
 .tgch{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#2aabee;color:#fff;border:0;cursor:pointer;flex:none;transition:transform .15s,opacity .15s}
 .tgch:active{transform:scale(.94);opacity:.9}
+#theme-tog{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--sf2);border:1px solid var(--brd);cursor:pointer;flex:none;font-size:17px;transition:background .15s,transform .15s}
+#theme-tog:active{transform:scale(.94)}
 
 /* ── Hero v2 ── */
 .hv2{padding:20px 18px 18px;border:1px solid rgba(91,163,217,.22);background:radial-gradient(120% 120% at 100% 0%,rgba(64,144,200,.42) 0%,transparent 58%),linear-gradient(150deg,#1b3a63 0%,#0e1d36 62%,#0f1726 100%)}
@@ -747,6 +744,7 @@ button:focus-visible{outline:2px solid var(--ac)}
   <header>
     <div class="logo">Play<span>Vault</span></div>
     <div class="hd-r">
+      <button id="theme-tog" aria-label="Сменить тему"></button>
       <button class="tgch" data-act="tgch" aria-label="Telegram-канал PlayVault">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3a1.1 1.1 0 0 0-1.5-1L2.7 10.2c-.9.4-.9 1.6 0 1.9l4.3 1.4 1.7 5.3c.2.7 1.1.9 1.6.4l2.4-2.3 4.4 3.2c.6.5 1.5.1 1.7-.6l3.1-15.2zM9.3 13.3l8.1-5-6.3 6.1-.3 3.1-1.5-4.2z"/></svg>
       </button>
@@ -1403,7 +1401,9 @@ function packRow(p) {
 }
 
 function recBlock() {
-  const g = S.rec, p = PACKS.find(x=>x.games.includes(g));
+  // Если S.rec не найден ни в одном наборе — берём случайную игру из первого набора
+  let g = S.rec, p = PACKS.find(x=>x.games.includes(g));
+  if(!p && PACKS.length) { p = PACKS[0]; g = p.games[Math.random()*p.games.length|0]; }
   if(!p) return "";
   const appId = APP[g];
   return `<div class="sec-head"><h2>Рекомендуем</h2></div>
@@ -3671,11 +3671,29 @@ try {
   if(w){
     w.ready(); w.expand();
     w.disableVerticalSwipes?.();
-    // Apply Telegram theme if available
-    const tp=w.themeParams;
-    if(tp && w.colorScheme==="light") document.documentElement.setAttribute("data-theme","light");
+    // Telegram тему НЕ применяем автоматически — пользователь управляет сам
   }
 } catch(e){}
+
+// ── Тема: по умолчанию тёмная, переключатель с памятью ──────────
+(function initTheme(){
+  const saved = localStorage.getItem("pv_theme");
+  const theme = saved || "dark";
+  document.documentElement.setAttribute("data-theme", theme);
+  const btn = document.getElementById("theme-tog");
+  const update = () => {
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    if(btn) btn.textContent = isDark ? "☀️" : "🌙";
+  };
+  update();
+  if(btn) btn.onclick = () => {
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    const next = isDark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("pv_theme", next);
+    update();
+  };
+})();
 
 // Если уже есть кэшированные наборы — показываем UI сразу и убираем splash
 if(PACKS.length) { render(); hideSplash(); } else { render(); }
