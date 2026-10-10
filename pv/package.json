@@ -1,0 +1,1 @@
+{"name":"steam-library-miniapp","private":true,"type":"module","dependencies":{"postgres":"^3.4.5"}}
