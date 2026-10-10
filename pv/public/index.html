@@ -2152,6 +2152,9 @@ async function uploadPhoto(file) {
   });
 }
 // Показываем поле загрузки + ввода URL для выбора фото в рассылке/авторассылке
+// file_id → локальный blob-URL для превью (по file_id картинку в браузере не показать)
+const PH_LOCAL = {};
+const phSrc = v => PH_LOCAL[v] || (/^https:\/\/\S+/.test(v||"") ? v : "");
 function photoPickerHtml(inputId, currentVal, label) {
   return `<label class="pf-label">${label || "Фото, по желанию"}
     <div style="display:flex;gap:8px;align-items:center">
@@ -2175,10 +2178,12 @@ function initPhotoPicker(inputId, onUrl) {
     const file = e.target.files?.[0]; if (!file) return;
     const prev = $(`#${inputId}-prev`), img = $(`#${inputId}-img`);
     // Показываем локальный превью сразу
-    if (prev && img) { prev.style.display = ""; img.src = URL.createObjectURL(file); }
+    const localUrl = URL.createObjectURL(file);
+    if (prev && img) { prev.style.display = ""; img.src = localUrl; }
     toast("Загружаем фото…");
     try {
       const { url, preview } = await uploadPhoto(file);
+      PH_LOCAL[url] = localUrl;
       // В input сохраняем file_id (для отправки), в <img> — preview URL
       if (inp) inp.value = url;
       if (img && preview) img.src = preview;
@@ -2197,7 +2202,8 @@ function initPhotoPicker(inputId, onUrl) {
 function updatePhotoPreview(inputId, url) {
   const prev = $(`#${inputId}-prev`), img = $(`#${inputId}-img`);
   if (!prev || !img) return;
-  if (url && /^https:\/\/\S+/.test(url)) { img.src = url; prev.style.display = ""; }
+  const src = phSrc(url);
+  if (src) { img.src = src; prev.style.display = ""; }
   else prev.style.display = "none";
 }
 document.addEventListener("click", e => {
@@ -2393,7 +2399,7 @@ function bcPreview() {
   const c = $("#bc-c"); if(c) { c.textContent = n + " / " + lim; c.classList.toggle("bad", n > lim); }
   const pv = $("#bc-pv"); if(!pv) return;
   pv.innerHTML = `<div class="tgm">
-    ${ph ? `<img class="tgm-img" src="${esc(ph)}" alt="">` : ""}
+    ${ph ? (phSrc(ph) ? `<img class="tgm-img" src="${esc(phSrc(ph))}" alt="">` : `<div class="tgm-t mut">📷 Фото прикреплено</div>`) : ""}
     <div class="tgm-t">${t ? esc(t).replace(/\n/g, "<br>") : `<span class="mut">Здесь появится текст сообщения</span>`}</div>
     ${BC.btn ? `<div class="tgm-btn">🎮 Открыть магазин</div>` : ""}
   </div>`;
