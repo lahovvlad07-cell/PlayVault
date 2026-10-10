@@ -379,6 +379,8 @@ h3{font-size:15px;font-weight:700}
 .chat{display:flex;flex-direction:column;gap:8px;padding:4px 0}
 .bub{max-width:84%;padding:10px 12px;border-radius:15px;font-size:14px;display:flex;flex-direction:column;gap:3px;white-space:pre-wrap;word-break:break-word}
 .bub small{font-size:11px;opacity:.6;font-weight:600}
+.bub-checks{display:inline-flex;align-items:center;gap:1px;margin-left:3px;vertical-align:middle}
+.bub-checks svg{width:14px;height:14px;opacity:.85}
 .bub.me{align-self:flex-end;background:var(--ac);color:#fff;border-bottom-right-radius:4px}
 .bub.th{align-self:flex-start;background:var(--sf2);border:1px solid var(--brd);border-bottom-left-radius:4px}
 .compose{display:flex;gap:8px;align-items:flex-end;position:sticky;bottom:60px;background:var(--bg);padding:8px 0}
@@ -1832,11 +1834,21 @@ function chat(adm) {
     </div>
     <span class="tag ${op?'ok':''}">${op?"Открыт":"Закрыт"}</span>
   </div>
-  <div class="chat">${t.msgs.map(m=>`<div class="bub ${m.f===me?"me":"th"}">
-    ${m.ph?`<img src="${esc(m.ph)}" style="max-width:100%;border-radius:10px;display:block;margin-bottom:${m.t?"6px":"0"}" loading="lazy" onerror="this.style.display='none'">`:``}
+  <div class="chat">${(()=>{
+    // Индекс последнего своего сообщения (для галочек)
+    const lastMineIdx = t.msgs.reduce((acc,m,i)=>m.f===me?i:acc,-1);
+    // Прочитано ли: если я пользователь — смотрим unread_admin (false = прочитал); если я админ — unread_user
+    const isRead = adm ? !t.uu : !t.ua;
+    // SVG галочка (одна)
+    const chk = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg>`;
+    // Двойная галочка
+    const dblChk = `<svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/><polyline points="8,8 12,12 20,4"/></svg>`;
+    return t.msgs.map((m,i)=>`<div class="bub ${m.f===me?"me":"th"}">
+    ${m.ph?`<img src="${esc(tkPhotoSrc(m.ph))}" data-fileid="${/^[A-Za-z0-9_\-]{20,}$/.test(m.ph)&&!m.ph.startsWith("http")?esc(m.ph):""}" style="max-width:100%;border-radius:10px;display:block;margin-bottom:${m.t?"6px":"0"}" loading="lazy" onerror="tkImgErr(this)">`:``}
     ${m.t?`<div>${esc(m.t)}</div>`:""}
-    <small>${m.f==="me"?(adm?"Клиент":"Вы"):"Поддержка"} · ${tm(m.ts)}</small>
-  </div>`).join("")}</div>
+    <small>${m.f==="me"?(adm?"Клиент":"Вы"):"Поддержка"} · ${tm(m.ts)}${i===lastMineIdx&&m.f===me?`<span class="bub-checks" title="${isRead?"Прочитано":"Доставлено"}">${isRead?dblChk:chk}</span>`:""}</small>
+  </div>`).join("");
+  })()}</div>
   ${op?`<div class="compose">
     <label id="tm-attach" title="Прикрепить фото" style="cursor:pointer;display:flex;align-items:center;padding:0 4px;color:var(--sub);flex:none">
       <input type="file" accept="image/*" style="display:none" id="tm-file">
@@ -2097,10 +2109,28 @@ const BC_ERR = { empty:"Введите текст сообщения", bad_photo
 // Принимаем либо https:// URL либо Telegram file_id (длинная строка без пробелов)
 const bcPhoto = () => { const v = BC.photo.trim(); return (v && (v.startsWith("https://") || v.length > 20)) ? v : ""; };
 const bcLimit = () => bcPhoto() ? 1024 : 4096;
-// Загрузка фото через /api/upload (base64 → Telegram → URL)
-// Загружает файл на сервер, возвращает { url: file_id, preview: tempUrl }
-// url (file_id) — постоянный, используется при отправке через Telegram API
-// preview — временная ссылка только для <img> в UI
+// Возвращает src для <img>: https:// URL оставляем как есть,
+// legacy file_id (строка без http) показываем через placeholder — реальный URL подтянется в tkImgErr
+function tkPhotoSrc(ph) {
+  if (!ph) return "";
+  if (ph.startsWith("http")) return ph;
+  // file_id: используем прозрачный placeholder, реальный URL подтянется ленивой загрузкой
+  return "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+}
+// Если <img> упал (протухший URL или placeholder для file_id) — пробуем резолвить file_id
+async function tkImgErr(img) {
+  const fid = img.dataset.fileid;
+  if (!fid || img._tkRetried) { img.style.display = "none"; return; }
+  img._tkRetried = true;
+  try {
+    const j = await api("/api/upload?file_id=" + encodeURIComponent(fid));
+    if (j.ok && j.url) { img.src = j.url; return; }
+  } catch(_) {}
+  img.style.display = "none";
+}
+
+// Загрузка фото через /api/upload (base64 → Telegram → https:// URL)
+// Возвращает { url: httpsUrl, preview: httpsUrl, fileId: telegramFileId }
 async function uploadPhoto(file) {
   return new Promise((resolve, reject) => {
     if (!file || !file.type.startsWith("image/")) { reject(new Error("not_image")); return; }

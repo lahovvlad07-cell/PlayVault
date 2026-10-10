@@ -60,7 +60,10 @@ export default async function handler(req, res) {
 
   if (b.action === "reply") {
     const body = clip(b.body, 2000);
-    const photo = typeof b.photo === "string" && b.photo.startsWith("https://") ? b.photo.slice(0, 500) : null;
+    // Принимаем и прямые https:// URL, и Telegram file_id (длинная строка без пробелов, не URL)
+    const isValidPhoto = typeof b.photo === "string" &&
+      (b.photo.startsWith("https://") || /^[A-Za-z0-9_\-]{20,}$/.test(b.photo));
+    const photo = isValidPhoto ? b.photo.slice(0, 500) : null;
     if (!body && !photo) return res.status(400).json({ error: "bad_request" });
     if (t.status === "closed" && !adm) return res.status(409).json({ error: "closed" });
     await sql.begin(async (tx) => {
