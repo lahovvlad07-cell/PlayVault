@@ -1264,7 +1264,7 @@ const S = {
   orders:[], fav:loadFav(), bal:0, spent:0, promo:null, q:"", starsRate:0.85, selectedPromoPackId:null, // starsRate подгружается из настроек
  
   tickets:[], tk:null, rec:"Ведьмак 3: Дикая Охота — Обновлённое издание",
-  wantLog:[], _co:null, _bad:null, _ar:[], _timers:{}, _hiddenOrders:new Set()
+  wantLog:[], _co:null, _bad:null, _ar:[], _timers:{}, _hiddenOrders:new Set(loadHiddenOrders())
 };
 
 // ═══════════════════════════════════════════
@@ -1312,9 +1312,11 @@ const closeSheet = () => { $("#sheet").classList.remove("open"); $("#sb").classL
 
 const unreadU = () => S.tickets.filter(t=>t.uu).length;
 const getT = () => (S.tab==="atk" ? S.atickets : S.tickets).find(t=>t.id===S.tk);
-const mapT = t => ({id:t.id, subj:t.subject, st:t.status, ts:+new Date(t.created_at), uu:t.unread_user, ua:t.unread_admin,
+const mapT = t => ({id:t.id, up:+new Date(t.updated_at||t.created_at), subj:t.subject, st:t.status, ts:+new Date(t.created_at), uu:t.unread_user, ua:t.unread_admin,
   who: t.username ? "@"+t.username : (t.first_name || ("id"+t.user_id)),
   msgs:t.msgs.map(m=>({f:m.from_admin?"sup":"me", t:m.body, ph:m.photo||null, ts:+new Date(m.created_at)}))});
+// Закрытые обращения удаляются через 14 дней после закрытия
+const tkDel = t => { if(t.st==="open") return ""; const n = Math.max(0, 14 - Math.floor((Date.now()-t.up)/864e5)); return n>0 ? `удалится через ${n} дн.` : "удалится сегодня"; };
 const tSig = L => L.map(t=>t.id+":"+t.st+":"+t.msgs.length+":"+(t.uu?1:0)+(t.ua?1:0)).join("|");
 async function loadTickets(adm){
   if(!tgInit()) return false;
@@ -1594,13 +1596,13 @@ function mine() {
   V.innerHTML = tkBtn() + S.orders.map((o, i) => {
     const left = o.exp ? Math.max(0, Math.ceil((o.exp-Date.now())/864e5)) : null;
     const hidden = S._hiddenOrders.has(o.id);
-    // Счётчик 30 дней
-    const daysLeft = o.created_at ? Math.max(0, 30 - Math.floor((Date.now()-new Date(o.created_at).getTime())/864e5)) : null;
+    // Счётчик 14 дней (срок гарантии)
+    const daysLeft = o.created_at ? Math.max(0, 14 - Math.floor((Date.now()-new Date(o.created_at).getTime())/864e5)) : null;
 
     if(hidden) return `<div class="card" style="flex-direction:row;align-items:center;gap:12px">
       <div style="flex:1;min-width:0">
         <div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(o.p.name)}</div>
-        <div class="mut" style="font-size:12px">Заказ №${o.n} · скрыто</div>
+        <div class="mut" style="font-size:12px">Заказ №${o.n} · скрыто${daysLeft!==null ? (o.aged ? " · данные скрыты (14 дн.)" : ` · данные ещё <b class="cred-timer" style="color:var(--ink)" data-until="${new Date(o.created_at).getTime()+14*864e5}">${daysLeft} дн.</b>`) : ""}</div>
       </div>
       <button class="btn sec sm" data-act="hideorder" data-i="${i}">Показать</button>
     </div>`;
@@ -1615,10 +1617,10 @@ function mine() {
       </div>
       ${o.exp?`<div class="bar"><i style="width:${Math.min(100,left/(o.span||30)*100)}%"></i></div>`:''}
       ${daysLeft!==null ? `<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut)">
-        <span>Данные доступны ещё <b class="cred-timer" style="color:var(--ink)" data-until="${new Date(o.created_at).getTime()+30*864e5}">${daysLeft} дн.</b></span>
+        <span>Данные доступны ещё <b class="cred-timer" style="color:var(--ink)" data-until="${new Date(o.created_at).getTime()+14*864e5}">${daysLeft} дн.</b></span>
         <button data-act="credhint" style="width:16px;height:16px;border-radius:50%;border:1.5px solid var(--mut);color:var(--mut);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0;background:transparent;flex-shrink:0">?</button>
       </div>` : ''}
-      ${o.aged ? `<div style="background:var(--sf2);border:1px solid var(--brd);border-radius:11px;padding:12px 14px;font-size:13px;color:var(--mut);text-align:center">⏳ Данные для входа скрыты — прошло 30 дней. Доступ к аккаунту сохраняется.</div>` : `
+      ${o.aged ? `<div style="background:var(--sf2);border:1px solid var(--brd);border-radius:11px;padding:12px 14px;font-size:13px;color:var(--mut);text-align:center">⏳ Данные для входа скрыты — прошло 14 дней. Доступ к аккаунту сохраняется.</div>` : `
       <div class="cred">
         <div><small>Логин</small><code>${esc(o.p.login)}</code></div>
         <button class="ico" data-act="cl" data-i="${i}">Копировать</button>
@@ -1630,6 +1632,7 @@ function mine() {
           <button class="ico" data-act="sp" data-i="${i}" id="spb${i}">Показать</button>
         </div>
       </div>
+      <div class="mut" style="font-size:12px;margin:-2px 2px 0">💡 Пароль может выглядеть как ссылка — это не ошибка. Копируйте его целиком кнопкой «Копировать» и вставляйте в Steam как обычный пароль.</div>
       <div id="sg${i}"></div>
       ${o.p.extra_service ? `<div class="cred-sep"><span class="tag" style="font-size:12px">${o.p.extra_service==="uplay"?"Ubisoft Connect (Uplay)":o.p.extra_service}</span></div>
       <div class="cred">
@@ -1793,6 +1796,8 @@ function tkBtn() {
   </button>`;
 }
 
+function loadHiddenOrders(){ try{ return JSON.parse(localStorage.getItem("pv_hidden_orders")||"[]"); }catch(_){ return []; } }
+function saveHiddenOrders(){ try{ localStorage.setItem("pv_hidden_orders", JSON.stringify([...S._hiddenOrders])); }catch(_){} }
 function tickets() {
   const V = $("#view");
   V.innerHTML = `<button class="back" data-act="mine">Мои доступы</button>
@@ -1800,7 +1805,7 @@ function tickets() {
   ${S.tickets.length ? S.tickets.map(t=>{const l=t.msgs[t.msgs.length-1];return `<button class="tk" data-act="topen" data-id="${t.id}">
     <div class="row"><b style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${esc(t.subj)}</b><span class="tag ${t.st==='open'?'ok':''}">${t.st==='open'?'Открыт':'Закрыт'}</span></div>
     <div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.f==="me"?"Вы: ":"Поддержка: "}${esc(l.t)}</div>
-    <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}</span>${t.uu?'<span class="disc-badge">новый ответ</span>':''}</div>
+    <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}${t.st!=='open'?' · 🗑 '+tkDel(t):''}</span>${t.uu?'<span class="disc-badge">новый ответ</span>':''}</div>
   </button>`}).join("") : `<div class="card empty">
     <h3>Обращений пока нет</h3>
     <div class="mut">Если что-то не работает или есть вопрос — создайте обращение</div>
@@ -1832,6 +1837,7 @@ function chat(adm) {
     <div style="min-width:0">
       <h2 style="font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.subj)}</h2>
       <div class="mut">№${t.id} · ${adm?esc(t.who)+" · ":""}${tm(t.ts)}</div>
+      <div class="mut" style="font-size:12px;margin-top:2px">${op ? "🗑 После закрытия обращение удаляется через 14 дней" : "🗑 Обращение "+tkDel(t)+" · можно открыть заново"}</div>
     </div>
     <span class="tag ${op?'ok':''}">${op?"Открыт":"Закрыт"}</span>
   </div>
@@ -2848,12 +2854,10 @@ async function loadOrders() {
   if(!tgInit()) return;
   try {
     const rows = await api("/api/orders");
-    const hiddenOrders = JSON.parse(sessionStorage.getItem("pv_hidden_orders")||"[]");
-    const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+    const CRED_TTL = 14 * 24 * 60 * 60 * 1000;
     S.orders = rows
-      .filter(r => !hiddenOrders.includes(r.id))
       .map(r => {
-        const aged = r.created_at && (Date.now() - new Date(r.created_at).getTime()) > THIRTY_DAYS;
+        const aged = r.created_at && (Date.now() - new Date(r.created_at).getTime()) > CRED_TTL;
         return {n:r.id, id:r.id, plan:"buy", exp:null, span:0, created_at:r.created_at, aged,
           p: Object.assign({}, PACKS.find(x => x.id === r.pack_id) || {}, {
             name:r.name,
@@ -3154,7 +3158,7 @@ document.addEventListener("click", e => {
     sheet(`<div style="text-align:center;padding-bottom:4px">
       <div style="font-size:22px;margin-bottom:6px">🎧</div>
       <h2 style="font-size:19px">Поддержка</h2>
-      <div class="mut" style="margin-top:4px;font-size:13px">Обычно отвечаем в течение часа</div>
+      <div class="mut" style="margin-top:4px;font-size:13px">Обычно отвечаем в течение 24 часов</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
       ${CATS.map(c=>`<button class="kpi" style="align-items:flex-start;cursor:pointer" data-act="tcat" data-cat="${c.id}">
@@ -3630,11 +3634,12 @@ document.addEventListener("click", e => {
   if(a==="hideorder"){
     if(S._hiddenOrders.has(o.id)) S._hiddenOrders.delete(o.id);
     else S._hiddenOrders.add(o.id);
+    saveHiddenOrders();
     render();
     return;
   }
   if(a==="credhint"){
-    toast("Данные для входа отображаются 30 дней с момента покупки. Сохраните логин и пароль — потом они будут скрыты. Доступ к аккаунту при этом не пропадёт.");
+    toast("Данные для входа отображаются 14 дней с момента покупки (срок гарантии). Сохраните логин и пароль — потом они будут скрыты. Доступ к аккаунту при этом не пропадёт.");
     return;
   }
   if(a==="sup"){S.tab="tickets";render();scrollTo(0,0);return}
