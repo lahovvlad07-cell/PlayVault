@@ -73,6 +73,21 @@ export const tg = (method, body) =>
     method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body),
   }).then((r) => r.json());
 
+// Рассылки: [текст](https://…) → скрытая ссылка, **текст** → жирный. Остальное экранируется.
+export const richText = (text) =>
+  String(text ?? "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/\[([^\]\n]+)\]\(((?:https?|tg):\/\/[^\s)"]+)\)/g, '<a href="$2">$1</a>')
+    .replace(/\*\*([^*\n]+)\*\*/g, "<b>$1</b>");
+
+// Отправка с разметкой; если Telegram не принял разметку — шлём тот же текст как есть
+export const tgRich = async (method, body) => {
+  const f = method === "sendPhoto" ? "caption" : "text";
+  const r = await tg(method, { ...body, [f]: richText(body[f]), parse_mode: "HTML" });
+  if (!r.ok && /parse entities/i.test(r.description || "")) return tg(method, body);
+  return r;
+};
+
 export const APP_URL = () => (process.env.APP_URL || "https://playvault-ten.vercel.app").replace(/\/$/, "");
 export const REF_BONUS = () => { const n = Number(process.env.REF_BONUS); return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 20; };
 // Асинхронная версия: читает из таблицы settings, fallback — env/дефолт 20

@@ -2290,6 +2290,7 @@ function bcRenderManual() {
   el.innerHTML = `
   <div class="card">
     <h3>Сообщение</h3>
+    ${fmtBar("bc-t")}
     <textarea class="area" id="bc-t" placeholder="Что хотите сообщить пользователям? Например: «Новый набор уже в магазине — скидка 20% до воскресенья 🔥»" style="min-height:130px;max-height:260px">${esc(BC.text)}</textarea>
     <div class="bc-count" id="bc-c"></div>
     ${photoPickerHtml("bc-p", BC.photo, "Фото, по желанию")}
@@ -2318,6 +2319,7 @@ function bcRenderAuto(fresh) {
   el.innerHTML = `
   <div class="card">
     ${aCardH("plus", editRow ? "Редактировать пост" : "Новый авто-пост", editRow ? `<button class="btn sec sm" data-act="bcseclear">Отмена</button>` : "")}
+    ${fmtBar("bse-t")}
     <textarea class="area" id="bse-t" placeholder="Текст сообщения…" style="min-height:110px;max-height:220px">${esc(editRow?.text||"")}</textarea>
     ${photoPickerHtml("bse-p", editRow?.photo||"", "Фото, по желанию")}
     <div class="tgl-row" style="margin-top:8px">
@@ -2394,13 +2396,56 @@ function bcRenderAuto(fresh) {
   if(bseB) bseB.onclick = () => { const on=!bseB.classList.contains("on"); bseB.classList.toggle("on",on); bseB.setAttribute("aria-checked",String(on)); };
   initPhotoPicker("bse-p", url => {});
 }
+// Панель форматирования: выделить слово → «🔗 Ссылка» → вставить адрес (как в Telegram)
+const fmtBar = id => `<div class="fmt-bar" data-for="${id}" style="margin:0 0 8px">
+  <div style="display:flex;gap:8px">
+    <button type="button" class="btn sec sm" data-fmt="b" style="font-weight:800">Ж</button>
+    <button type="button" class="btn sec sm" data-fmt="link">🔗 Ссылка</button>
+  </div>
+  <div class="fmt-link" style="display:none;gap:8px;margin-top:8px;align-items:center">
+    <input class="fmt-url" placeholder="Вставьте ссылку: https://…" inputmode="url" autocomplete="off" style="flex:1">
+    <button type="button" class="btn pri sm" data-fmt="ok">OK</button>
+    <button type="button" class="btn sec sm" data-fmt="cancel">✕</button>
+  </div>
+</div>`;
+document.addEventListener("mousedown", e => { if (e.target.closest("[data-fmt]")) e.preventDefault(); });
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-fmt]"); if (!b) return;
+  const bar = b.closest(".fmt-bar"), ta = $(`#${bar.dataset.for}`);
+  const row = bar.querySelector(".fmt-link"), inp = bar.querySelector(".fmt-url");
+  const wrap = (a, z) => {
+    const { s0, s1 } = bar._sel;
+    ta.value = ta.value.slice(0, s0) + a + ta.value.slice(s0, s1) + z + ta.value.slice(s1);
+    ta.dispatchEvent(new Event("input"));
+  };
+  const k = b.dataset.fmt;
+  if (k === "cancel") { row.style.display = "none"; inp.value = ""; return; }
+  if (k === "ok") {
+    let u = inp.value.trim();
+    if (/^@\w+$/.test(u)) u = "https://t.me/" + u.slice(1);
+    else if (u && !/^(https?|tg):\/\//i.test(u)) u = "https://" + u;
+    if (!/^(https?|tg):\/\/[^\s)"]+$/i.test(u)) { toast("Неверная ссылка"); return; }
+    const { s0, s1 } = bar._sel;
+    ta.value = ta.value.slice(0, s0) + "[" + ta.value.slice(s0, s1) + "](" + u + ")" + ta.value.slice(s1);
+    ta.dispatchEvent(new Event("input"));
+    row.style.display = "none"; inp.value = ""; return;
+  }
+  const s0 = ta.selectionStart, s1 = ta.selectionEnd;
+  if (s0 === s1) { toast("Сначала выделите слово в тексте"); return; }
+  bar._sel = { s0, s1 };
+  if (k === "b") wrap("**", "**");
+  else { row.style.display = "flex"; inp.focus(); }
+});
+const bcRich = t => esc(t)
+  .replace(/\[([^\]\n]+)\]\(((?:https?|tg):\/\/[^\s)"]+)\)/g, '<span style="color:#5aa9e6">$1</span>')
+  .replace(/\*\*([^*\n]+)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>");
 function bcPreview() {
   const ph = bcPhoto(), t = BC.text.trim(), n = BC.text.length, lim = bcLimit();
   const c = $("#bc-c"); if(c) { c.textContent = n + " / " + lim; c.classList.toggle("bad", n > lim); }
   const pv = $("#bc-pv"); if(!pv) return;
   pv.innerHTML = `<div class="tgm">
     ${ph ? (phSrc(ph) ? `<img class="tgm-img" src="${esc(phSrc(ph))}" alt="">` : `<div class="tgm-t mut">📷 Фото прикреплено</div>`) : ""}
-    <div class="tgm-t">${t ? esc(t).replace(/\n/g, "<br>") : `<span class="mut">Здесь появится текст сообщения</span>`}</div>
+    <div class="tgm-t">${t ? bcRich(t) : `<span class="mut">Здесь появится текст сообщения</span>`}</div>
     ${BC.btn ? `<div class="tgm-btn">🎮 Открыть магазин</div>` : ""}
   </div>`;
 }

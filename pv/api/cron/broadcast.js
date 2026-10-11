@@ -1,4 +1,4 @@
-import { sql, tg, APP_URL } from "../../lib/core.js";
+import { sql, tgRich, APP_URL } from "../../lib/core.js";
 
 // Авторассылка. Запускается ВНЕШНИМ сервисом cron-job.org (НЕ Vercel cron).
 // Причина: Vercel Hobby позволяет только 1 крон в сутки; cron-job.org бесплатен и гибок.
@@ -19,8 +19,8 @@ async function sendToAll(text, photo, button) {
     ? { inline_keyboard: [[{ text: "🎮 Открыть магазин", web_app: { url: APP_URL() } }]] }
     : undefined;
   const send = (id) => photo
-    ? tg("sendPhoto", { chat_id: id, photo, caption: text, reply_markup })
-    : tg("sendMessage", { chat_id: id, text, reply_markup, disable_web_page_preview: true });
+    ? tgRich("sendPhoto", { chat_id: id, photo, caption: text, reply_markup })
+    : tgRich("sendMessage", { chat_id: id, text, reply_markup, disable_web_page_preview: true });
 
   let sent = 0, failed = 0, blocked = 0, after = 0;
   for (;;) {

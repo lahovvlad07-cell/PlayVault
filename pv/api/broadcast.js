@@ -1,12 +1,12 @@
-import { sql, tgUser, getRole, tg, APP_URL } from "../lib/core.js";
+import { sql, tgUser, getRole, tgRich, APP_URL } from "../lib/core.js";
 
 const BATCH = 15;
 
 const send = (id, text, photo, button) => {
   const reply_markup = button ? { inline_keyboard: [[{ text: "🎮 Открыть магазин", web_app: { url: APP_URL() } }]] } : undefined;
   return photo
-    ? tg("sendPhoto", { chat_id: id, photo, caption: text, reply_markup })
-    : tg("sendMessage", { chat_id: id, text, reply_markup, disable_web_page_preview: true });
+    ? tgRich("sendPhoto", { chat_id: id, photo, caption: text, reply_markup })
+    : tgRich("sendMessage", { chat_id: id, text, reply_markup, disable_web_page_preview: true });
 };
 
 export default async function handler(req, res) {
