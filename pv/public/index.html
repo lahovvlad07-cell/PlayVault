@@ -1160,6 +1160,7 @@ function rankS(list,q){const vs=variants(q);return list.map(g=>[g,scoreG(g,vs)])
 const ALLG = () => [...new Set(PACKS.flatMap(p=>p.games))];
 
 // ── PACKS localStorage cache ──────────────────────────────────────
+try { const ex = JSON.parse(localStorage.getItem("pv_app_extra")||"{}"); for(const k in ex) if(!APP[k]) APP[k] = ex[k]; } catch(_) {}
 const PACKS_CACHE_KEY = "pv_packs_v1";
 function savePACKS() {
   try { localStorage.setItem(PACKS_CACHE_KEY, JSON.stringify(PACKS)); } catch(e) {}
@@ -3041,6 +3042,10 @@ async function loadServerPacks() {
   if(!tgInit()) return;
   try {
     const packs = await api("/api/packs");
+    // appid игр из базы: добавляем в APP те, которых нет в зашитом списке (иначе у новых игр нет картинок)
+    let extra = false;
+    packs.forEach(sp => (sp.games||[]).forEach(g => { if(g.appid && !APP[g.game]) { APP[g.game] = g.appid; extra = true; } }));
+    if(extra) { try { localStorage.setItem("pv_app_extra", JSON.stringify(Object.fromEntries(Object.entries(APP).filter(([,v])=>v)))); } catch(_) {} }
     const serverIds = new Set(packs.map(sp => sp.id));
     // Удаляем из локального массива наборы, которых больше нет на сервере (деактивированы/удалены)
     for(let i = PACKS.length - 1; i >= 0; i--) { if(!serverIds.has(PACKS[i].id)) PACKS.splice(i, 1); }
