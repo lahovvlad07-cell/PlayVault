@@ -63,6 +63,26 @@ export default async function handler(req, res) {
       if (!r) return res.status(409).json({ error: "exists" });
       return res.json({ ok: true, code });
     }
+    if (b.action === "extend") {
+      // Продлить: новая дата окончания и/или больше активаций; код заодно снова включается
+      const code = String(b.code || "");
+      const [cur] = await sql`select code, max_uses from promo_codes where code = ${code}`;
+      if (!cur) return res.status(404).json({ error: "not_found" });
+      let exp;
+      if (b.expires === null || b.expires === "") exp = undefined;
+      else if (b.expires === "none") exp = null;
+      else {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(b.expires || "")) return res.status(400).json({ error: "bad_date" });
+        exp = new Date(b.expires + "T23:59:59+03:00");
+        if (isNaN(exp) || exp < new Date()) return res.status(400).json({ error: "bad_date" });
+      }
+      const add = Math.max(0, Math.min(100000, Math.floor(+b.add_uses || 0)));
+      if (exp === undefined && !add) return res.status(400).json({ error: "bad_value" });
+      if (exp !== undefined) await sql`update promo_codes set expires_at = ${exp}, active = true where code = ${code}`;
+      if (add && cur.max_uses > 0) await sql`update promo_codes set max_uses = max_uses + ${add}, active = true where code = ${code}`;
+      const [r] = await sql`select code, max_uses, used, expires_at, active from promo_codes where code = ${code}`;
+      return res.json({ ok: true, ...r });
+    }
     if (b.action === "toggle") {
       const [r] = await sql`update promo_codes set active = not active where code = ${String(b.code)} returning active`;
       return r ? res.json({ ok: true, active: r.active }) : res.status(404).json({ error: "not_found" });

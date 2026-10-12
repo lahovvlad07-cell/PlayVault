@@ -2097,6 +2097,7 @@ function adminPromo(fresh = true) {
           <div class="mut" style="font-size:12px">${c.kind==="bal"?"Активирован":"Использован"}: ${c.used}${c.max_uses?" из "+c.max_uses:""}${c.expires_at?" · до "+dateRu(c.expires_at):""}</div>
         </div>
         <div class="wact">
+          <button class="sq" data-act="cext" data-c="${esc(c.code)}" aria-label="Продлить" title="Продлить" style="font-size:15px">⏱</button>
           <button class="sq" data-act="ctog" data-c="${esc(c.code)}" aria-label="Включить или отключить" title="${c.active?"Отключить":"Включить"}">${ico(c.active?"pause":"play",15)}</button>
           <button class="sq" data-act="cdel" data-c="${esc(c.code)}" aria-label="Удалить" style="color:var(--hot)">${ico("trash",15)}</button>
         </div>
@@ -3342,6 +3343,29 @@ document.addEventListener("click", e => {
     b.disabled=true;
     api("/api/x?r=promo",{method:"POST",body}).then(()=>{toast("Промокод "+body.code+" создан");S.pl=null;adminPromo()})
       .catch(e=>{b.disabled=false;toast(PROMO_ADM_ERR[e.message]||("Не удалось создать: "+e.message+detailOf(e)))});
+    return;
+  }
+  if(a==="cext"){
+    const c=(S.pl||[]).find(x=>x.code===b.dataset.c); if(!c)return;
+    const cur=c.expires_at?new Date(c.expires_at):null, base=(cur&&cur>new Date())?cur:new Date();
+    const d=new Date(base.getTime()+7*864e5), ds=d.toISOString().slice(0,10);
+    sheet(`<h2>Продлить промокод</h2>
+    <div class="mut">${esc(c.code)} · ${c.expires_at?"сейчас до "+dateRu(c.expires_at):"срока нет"} · использовано ${c.used}${c.max_uses?" из "+c.max_uses:""}</div>
+    <div class="pf-grid" style="margin-top:10px">
+      <label class="wide">Новая дата окончания<input id="cx-d" type="date" value="${ds}"></label>
+      ${c.max_uses?`<label class="wide">Добавить активаций<input id="cx-n" type="number" min="0" value="0"></label>`:""}
+    </div>
+    <div class="row" style="gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn pri" data-act="cextok" data-c="${esc(c.code)}">Продлить</button>
+      ${c.expires_at?`<button class="btn sec" data-act="cextok" data-c="${esc(c.code)}" data-none="1">Убрать срок</button>`:""}
+    </div>`);
+    return;
+  }
+  if(a==="cextok"){
+    const none=!!b.dataset.none, expires=none?"none":($("#cx-d")?.value||null), add=+($("#cx-n")?.value||0);
+    api("/api/x?r=promo",{method:"POST",body:{action:"extend",code:b.dataset.c,expires,add_uses:add}})
+      .then(()=>{closeSheet();toast("Промокод продлён");adminPromo()})
+      .catch(e=>toast(e.message==="bad_date"?"Выберите дату в будущем":e.message==="bad_value"?"Укажите дату или число активаций":"Ошибка: "+e.message+detailOf(e)));
     return;
   }
   if(a==="ctog"){api("/api/x?r=promo",{method:"POST",body:{action:"toggle",code:b.dataset.c}}).then(()=>adminPromo()).catch(e=>toast("Ошибка: "+e.message+detailOf(e)));return}
