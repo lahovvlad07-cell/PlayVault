@@ -362,6 +362,19 @@ h3{font-size:15px;font-weight:700}
 .hw b{display:block;font-size:14px;font-weight:700;margin-top:2px}
 .hw .mut{margin-top:2px;font-size:13px}
 
+/* ── Reviews ── */
+.rv-scroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;padding-bottom:4px;margin:0 -16px;padding-left:16px;padding-right:16px}
+.rv-scroll::-webkit-scrollbar{display:none}
+.rv-card{flex:none;width:220px;background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;scroll-snap-align:start}
+.rv-top{display:flex;align-items:center;gap:10px}
+.rv-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--ac),#2b6f9e);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0}
+.rv-who{display:flex;flex-direction:column;gap:1px;min-width:0}
+.rv-name{font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv-when{font-size:11px;color:var(--sub)}
+.rv-stars{display:flex;gap:2px;font-size:14px;line-height:1}
+.rv-text{font-size:13px;color:var(--sub);line-height:1.45}
+.rv-tag{display:inline-block;font-size:11px;font-weight:700;color:var(--ok);background:rgba(92,184,122,.12);border:1px solid rgba(92,184,122,.25);border-radius:8px;padding:3px 8px;align-self:flex-start}
+
 /* ── Tickets ── */
 .tk{display:flex;flex-direction:column;gap:6px;text-align:left;width:100%;background:var(--sf);border:1px solid var(--brd);border-radius:14px;padding:14px;transition:background .15s}
 .tk:hover{background:var(--sf2)}
@@ -1496,6 +1509,27 @@ function popularRow(title) {
   <div class="hs-wrap"><button class="hs-arr l" data-act="hsl" aria-label="Назад">‹</button><div class="hs">${items}</div><button class="hs-arr r" data-act="hsr" aria-label="Вперёд">›</button></div>`;
 }
 
+function reviewsBlock() {
+  const reviews = [
+    { user: "SNDY33", init: "S", stars: 5, text: "Тг канал вобще имба много игр и играешь с кайфом покупайте не пожалеете", tag: "Ultimate Collection", when: "14 окт., 16:29" },
+  ];
+  if (!reviews.length) return "";
+  const cards = reviews.map(r => `<div class="rv-card">
+    <div class="rv-top">
+      <div class="rv-av">${r.init}</div>
+      <div class="rv-who">
+        <div class="rv-name">${esc(r.user)}</div>
+        <div class="rv-when">${r.when}</div>
+      </div>
+    </div>
+    <div class="rv-stars">${"★".repeat(r.stars)}${"☆".repeat(5-r.stars)}</div>
+    <div class="rv-text">${esc(r.text)}</div>
+    <span class="rv-tag">${esc(r.tag)}</span>
+  </div>`).join("");
+  return `<div class="sec-head"><h2>Отзывы</h2><span class="mut">${reviews.length} отзыв</span></div>
+  <div class="rv-scroll">${cards}</div>`;
+}
+
 function home() {
   const ng = ALLG().length;
   const minPrice = r(Math.min(...PACKS.map(priceOf)));
@@ -1521,7 +1555,8 @@ function home() {
   <div class="sec-head"><h2 id="packs-h">Наборы</h2></div>
   ${PACKS.map(packRow).join("")}
   ${popularRow("Популярные игры")}
-  ${howBlock()}`;
+  ${howBlock()}
+  ${reviewsBlock()}`;
 }
 
 function shop() {
