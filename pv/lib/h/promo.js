@@ -45,7 +45,7 @@ export default async function handler(req, res) {
       // pack_id: только для kind=disc, опционально (null = скидка на все наборы)
       const packId = (kind === "disc" && b.pack_id) ? Number(b.pack_id) : null;
       if (!CODE_RE.test(code)) return res.status(400).json({ error: "bad_code" });
-      if (kind === "disc" ? (value < 1 || value > 100) : (value < 10 || value > 10000))
+      if (kind === "disc" ? (value < 1 || value > 100) : (value < 1 || value > 10000))
         return res.status(400).json({ error: "bad_value" });
       // Проверяем что такой набор существует
       if (packId) {
