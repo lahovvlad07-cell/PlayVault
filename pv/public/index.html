@@ -1770,7 +1770,8 @@ function refCard() {
     <div class="mut">За каждого друга, купившего доступ, вы получите ${bonus} ₽ на баланс — и уведомление в бота.</div>
     ${link ? `<div class="cred"><code>${esc(link.replace("https://",""))}</code></div>
     <div class="ref-actions"><button class="btn sec" data-act="ref">Копировать</button><button class="btn pri" data-act="refshare">Поделиться</button></div>
-    <div class="ref-stats"><div><b>${ME.friends||0}</b><span>приглашено</span></div><div><b>${ME.bought||0}</b><span>купили</span></div></div>`
+    <div class="ref-stats"><div><b>${ME.friends||0}</b><span>приглашено</span></div><div><b>${ME.bought||0}</b><span>купили</span></div></div>
+    <div class="mut" style="font-size:12px;margin-top:4px">⚠️ Бонус начисляется, если друг перешёл по вашей ссылке до покупки и оплатил набор звёздами или с баланса (пополненного звёздами).</div>`
     : `<div class="mut">${tgInit() ? "Загружаем вашу ссылку…" : "Откройте приложение в Telegram — там появится ваша личная ссылка."}</div>`}
   </div>`;
 }
