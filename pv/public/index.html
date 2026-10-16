@@ -363,17 +363,29 @@ h3{font-size:15px;font-weight:700}
 .hw .mut{margin-top:2px;font-size:13px}
 
 /* ── Reviews ── */
-.rv-scroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;padding-bottom:4px;margin:0 -16px;padding-left:16px;padding-right:16px}
-.rv-scroll::-webkit-scrollbar{display:none}
-.rv-card{flex:none;width:220px;background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;scroll-snap-align:start}
-.rv-top{display:flex;align-items:center;gap:10px}
-.rv-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--ac),#2b6f9e);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0}
+.rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rv-card{background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.rv-top{display:flex;align-items:center;gap:8px}
+.rv-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--ac),#2b6f9e);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
 .rv-who{display:flex;flex-direction:column;gap:1px;min-width:0}
-.rv-name{font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rv-when{font-size:11px;color:var(--sub)}
-.rv-stars{display:flex;gap:2px;font-size:14px;line-height:1}
-.rv-text{font-size:13px;color:var(--sub);line-height:1.45}
-.rv-tag{display:inline-block;font-size:11px;font-weight:700;color:var(--ok);background:rgba(92,184,122,.12);border:1px solid rgba(92,184,122,.25);border-radius:8px;padding:3px 8px;align-self:flex-start}
+.rv-name{font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv-when{font-size:10px;color:var(--sub)}
+.rv-stars{display:flex;gap:1px;font-size:13px;line-height:1;color:#f5a623}
+.rv-text{font-size:12px;color:var(--sub);line-height:1.45;flex:1}
+.rv-tag{display:inline-block;font-size:10px;font-weight:700;color:var(--ok);background:rgba(92,184,122,.12);border:1px solid rgba(92,184,122,.25);border-radius:8px;padding:2px 7px;align-self:flex-start}
+/* write review */
+.rv-write{background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.rv-write h4{font-size:14px;font-weight:700;margin:0}
+.rv-star-pick{display:flex;gap:6px;font-size:26px;cursor:pointer;line-height:1;color:var(--brd)}
+.rv-star-pick span{transition:color .15s}
+.rv-star-pick span.on{color:#f5a623}
+.rv-write textarea{width:100%;min-height:72px;background:var(--sf2);border:1px solid var(--brd);border-radius:10px;padding:9px 11px;font-size:13px;color:var(--ink);resize:none;font-family:inherit;line-height:1.45;box-sizing:border-box}
+.rv-write textarea::placeholder{color:var(--sub)}
+.rv-write select{width:100%;background:var(--sf2);border:1px solid var(--brd);border-radius:10px;padding:9px 11px;font-size:13px;color:var(--ink);font-family:inherit;appearance:none;-webkit-appearance:none;cursor:pointer}
+.rv-write select option{background:var(--sf2)}
+.rv-more-btn{width:100%;margin-top:8px;font-size:13px;color:var(--ac);background:none;border:1px solid var(--brd);border-radius:12px;padding:9px;cursor:pointer;font-weight:600}
+.rv-del-btn{margin-left:auto;flex-shrink:0;background:none;border:none;color:var(--sub);font-size:14px;cursor:pointer;padding:2px 4px;border-radius:6px;line-height:1}
+.rv-del-btn:hover{color:var(--hot);background:rgba(255,80,80,.08)}
 
 /* ── Tickets ── */
 .tk{display:flex;flex-direction:column;gap:6px;text-align:left;width:100%;background:var(--sf);border:1px solid var(--brd);border-radius:14px;padding:14px;transition:background .15s}
@@ -1430,6 +1442,7 @@ function packRow(p) {
       <div class="ptags">
         ${p.disc?`<span class="disc-badge">−${p.disc}%</span>`:""}
         <span class="tag">${p.count} игр</span>
+        ${p.buyers>0?`<span class="tag" style="color:var(--ok)">👥 ${p.buyers} купили</span>`:""}
         ${(p.tags||[]).slice(0,1).map(t=>`<span class="tag">${t}</span>`).join("")}
         ${warn?`<span class="tag warn">осталось ${p.stock}</span>`:""}
       </div>
@@ -1509,28 +1522,151 @@ function popularRow(title) {
   <div class="hs-wrap"><button class="hs-arr l" data-act="hsl" aria-label="Назад">‹</button><div class="hs">${items}</div><button class="hs-arr r" data-act="hsr" aria-label="Вперёд">›</button></div>`;
 }
 
-function reviewsBlock() {
-  const reviews = [
-    { user: "SNDY33", init: "S", stars: 5, text: "Тг канал вобще имба много игр и играешь с кайфом покупайте не пожалеете", tag: "Ultimate Collection", when: "14 окт., 16:29" },
-  ];
-  if (!reviews.length) return "";
-  const cards = reviews.map(r => `<div class="rv-card">
+// ── Reviews (Supabase-backed) ──
+const RV_SEED = [
+  { username:"SNDY33", pack_name:"Ultimate Collection", stars:5,
+    text:"Тг канал вобще имба много игр и играешь с кайфом покупайте не пожалеете",
+    created_at:"2026-10-14T16:29:00Z", _seed:true },
+];
+let S_reviews = null; // кеш: null = не загружено, [] = загружено но пусто
+
+async function rvFetch() {
+  try {
+    const rows = await api("/api/x?r=reviews");
+    S_reviews = rows;
+  } catch(_) {
+    if (!S_reviews) S_reviews = [];
+  }
+}
+function rvAll() {
+  const list = S_reviews || [];
+  // Добавляем seed-отзывы если их нет в базе (по username+pack_name)
+  const keys = new Set(list.map(r => (r.username||"") + "|" + r.pack_name));
+  const seeds = RV_SEED.filter(r => !keys.has(r.username + "|" + r.pack_name));
+  return [...seeds, ...list];
+}
+const RV_PAGE = 4;
+function rvCountLabel(n) {
+  if (n % 10 === 1 && n % 100 !== 11) return n + " отзыв";
+  if ([2,3,4].includes(n%10) && ![12,13,14].includes(n%100)) return n + " отзыва";
+  return n + " отзывов";
+}
+function rvFmtDate(s) {
+  if (!s) return "";
+  const d = new Date(s);
+  if (isNaN(d)) return "";
+  const months = ["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
+  return d.getDate() + " " + months[d.getMonth()] + "., " + String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+}
+function rvCard(r, isAdmin) {
+  const name = r.username || "Аноним";
+  const init = name[0].toUpperCase();
+  const deleteBtn = isAdmin && r.id ? `<button class="rv-del-btn" data-rv-del="${r.id}" title="Удалить отзыв">✕</button>` : "";
+  return `<div class="rv-card" data-rv-id="${r.id||""}">
     <div class="rv-top">
-      <div class="rv-av">${r.init}</div>
+      <div class="rv-av">${esc(init)}</div>
       <div class="rv-who">
-        <div class="rv-name">${esc(r.user)}</div>
-        <div class="rv-when">${r.when}</div>
+        <div class="rv-name">${esc(name)}</div>
+        <div class="rv-when">${esc(rvFmtDate(r.created_at))}</div>
       </div>
+      ${deleteBtn}
     </div>
     <div class="rv-stars">${"★".repeat(r.stars)}${"☆".repeat(5-r.stars)}</div>
     <div class="rv-text">${esc(r.text)}</div>
-    <span class="rv-tag">${esc(r.tag)}</span>
-  </div>`).join("");
-  return `<div class="sec-head"><h2>Отзывы</h2><span class="mut">${reviews.length} отзыв</span></div>
-  <div class="rv-scroll">${cards}</div>`;
+    <span class="rv-tag">${esc(r.pack_name)}</span>
+  </div>`;
+}
+function rvWriteForm() {
+  if (!S.orders?.length) return "";
+  // pack_id → name из купленных
+  const boughtPacks = [];
+  const seen = new Set();
+  (S.orders||[]).forEach(o => {
+    const pid = o.p?.id, pname = o.p?.name;
+    if (pid && pname && !seen.has(pid)) { seen.add(pid); boughtPacks.push({id:pid, name:pname}); }
+  });
+  if (!boughtPacks.length) return "";
+  // Скрываем набор если уже оставил отзыв (ищем в S_reviews по user_id = ME.id)
+  const myReviewed = new Set((S_reviews||[]).filter(r => r.user_id === ME.id).map(r => r.pack_id));
+  const available = boughtPacks.filter(p => !myReviewed.has(p.id));
+  if (!available.length) return "";
+  const opts = available.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join("");
+  return `<div class="rv-write" id="rv-write-box">
+    <h4>✍️ Написать отзыв</h4>
+    <div class="rv-star-pick" id="rv-star-pick">
+      <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span><span data-s="4">★</span><span data-s="5">★</span>
+    </div>
+    <select id="rv-pack-sel">${opts}</select>
+    <textarea id="rv-text-inp" placeholder="Напишите пару слов о наборе…" maxlength="300"></textarea>
+    <button class="btn pri" id="rv-submit-btn">Опубликовать</button>
+  </div>`;
+}
+function reviewsBlock(showAll) {
+  const all = rvAll();
+  const adm = isAdmin();
+  const visible = showAll ? all : all.slice(0, RV_PAGE);
+  const hasMore = !showAll && all.length > RV_PAGE;
+  const form = rvWriteForm();
+  const grid = visible.length ? `<div class="rv-grid">${visible.map(r => rvCard(r, adm)).join("")}</div>` : "";
+  const moreBtn = hasMore ? `<button class="rv-more-btn" id="rv-more-btn">Показать ещё · ${all.length - RV_PAGE}</button>` : "";
+  const loading = !S_reviews ? `<div class="mut" style="text-align:center;padding:12px 0;font-size:13px">Загружаем отзывы…</div>` : "";
+  return `<div class="sec-head"><h2>Отзывы</h2><span class="mut">${rvCountLabel(all.length)}</span></div>
+  ${form}${loading}${grid}${moreBtn}`;
+}
+function rvInitInteractive(showAll) {
+  let pickedStars = 0;
+  const picker = $("#rv-star-pick");
+  if (picker) {
+    const spans = picker.querySelectorAll("span");
+    const paint = n => spans.forEach((s,i) => s.classList.toggle("on", i < n));
+    spans.forEach(s => {
+      s.onmouseenter = () => paint(+s.dataset.s);
+      s.onmouseleave = () => paint(pickedStars);
+      s.onclick = () => { pickedStars = +s.dataset.s; paint(pickedStars); };
+      s.ontouchend = e => { e.preventDefault(); pickedStars = +s.dataset.s; paint(pickedStars); };
+    });
+  }
+  const btn = $("#rv-submit-btn");
+  if (btn) btn.onclick = async () => {
+    const text = ($("#rv-text-inp")?.value || "").trim();
+    const packId = Number($("#rv-pack-sel")?.value);
+    if (!pickedStars) { toast("Поставьте оценку ★"); return; }
+    if (text.length < 3) { toast("Напишите немного больше"); return; }
+    if (!packId) { toast("Выберите набор"); return; }
+    btn.disabled = true; btn.textContent = "Публикуем…";
+    try {
+      await api("/api/x?r=reviews", { method:"POST", body:{ action:"create", pack_id:packId, stars:pickedStars, text }});
+      toast("Отзыв опубликован ✓");
+      S_reviews = null;
+      await rvFetch();
+      const sy = window.scrollY; home(); window.scrollTo(0, sy);
+      requestAnimationFrame(() => rvInitInteractive(showAll));
+    } catch(e) {
+      const msgs = { not_bought:"Только для покупателей", auth:"Нужна авторизация" };
+      toast(msgs[e.message] || "Ошибка: " + (e.message||""));
+      btn.disabled = false; btn.textContent = "Опубликовать";
+    }
+  };
+  const moreBtn = $("#rv-more-btn");
+  if (moreBtn) moreBtn.onclick = () => {
+    const sy = window.scrollY; home(true); window.scrollTo(0, sy);
+    requestAnimationFrame(() => rvInitInteractive(true));
+  };
+  // Удаление (для админа)
+  document.querySelectorAll("[data-rv-del]").forEach(b => {
+    b.onclick = async () => {
+      if (!confirm("Удалить отзыв?")) return;
+      try {
+        await api("/api/x?r=reviews", { method:"POST", body:{ action:"delete", id:+b.dataset.rvDel }});
+        S_reviews = null; await rvFetch();
+        const sy = window.scrollY; home(showAll); window.scrollTo(0, sy);
+        requestAnimationFrame(() => rvInitInteractive(showAll));
+      } catch(e) { toast("Ошибка: " + e.message); }
+    };
+  });
 }
 
-function home() {
+function home(showAll) {
   const ng = ALLG().length;
   const minPrice = r(Math.min(...PACKS.map(priceOf)));
   const pn = PACKS.length, pw = [2,3,4].includes(pn%10)&&![12,13,14].includes(pn%100)?"набора":pn%10===1&&pn%100!==11?"набор":"наборов";
@@ -1556,7 +1692,8 @@ function home() {
   ${PACKS.map(packRow).join("")}
   ${popularRow("Популярные игры")}
   ${howBlock()}
-  ${reviewsBlock()}`;
+  ${reviewsBlock(showAll)}`;
+  requestAnimationFrame(() => rvInitInteractive(showAll));
 }
 
 function shop() {
@@ -1765,15 +1902,58 @@ function copyText(text, msg) {
 }
 function refCard() {
   const link = refLink(), bonus = ME.bonus ?? 20;
+  const qrId = "ref-qr-canvas";
   return `<div class="card ref">
     <h3>Пригласить друга</h3>
     <div class="mut">За каждого друга, купившего доступ, вы получите ${bonus} ₽ на баланс — и уведомление в бота.</div>
     ${link ? `<div class="cred"><code>${esc(link.replace("https://",""))}</code></div>
     <div class="ref-actions"><button class="btn sec" data-act="ref">Копировать</button><button class="btn pri" data-act="refshare">Поделиться</button></div>
     <div class="ref-stats"><div><b>${ME.friends||0}</b><span>приглашено</span></div><div><b>${ME.bought||0}</b><span>купили</span></div></div>
-    <div class="mut" style="font-size:12px;margin-top:4px">⚠️ Бонус начисляется, если друг перешёл по вашей ссылке до покупки и оплатил набор звёздами или с баланса (пополненного звёздами).</div>`
+    <div class="mut" style="font-size:12px;margin-top:4px">⚠️ Бонус начисляется, если друг перешёл по вашей ссылке до покупки и оплатил набор звёздами или с баланса (пополненного звёздами).</div>
+    <div style="margin-top:4px">
+      <button class="btn sec sm" id="ref-qr-toggle" style="font-size:12px">QR-код</button>
+      <div id="ref-qr-box" style="display:none;margin-top:10px;text-align:center">
+        <canvas id="${qrId}" style="border-radius:10px;background:#fff;padding:8px;width:140px;height:140px"></canvas>
+        <div class="mut" style="font-size:11px;margin-top:4px">Покажи другу — он откроет бота</div>
+      </div>
+    </div>`
     : `<div class="mut">${tgInit() ? "Загружаем вашу ссылку…" : "Откройте приложение в Telegram — там появится ваша личная ссылка."}</div>`}
   </div>`;
+}
+// QR-код через qrcode.js (загружается из CDN один раз)
+let _qrLib = null;
+async function loadQR() {
+  if (_qrLib) return _qrLib;
+  if (window.QRCode) { _qrLib = window.QRCode; return _qrLib; }
+  await new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+    s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+  _qrLib = window.QRCode;
+  return _qrLib;
+}
+function initRefQR() {
+  const btn = $("#ref-qr-toggle");
+  const box = $("#ref-qr-box");
+  if (!btn || !box) return;
+  let drawn = false;
+  btn.onclick = async () => {
+    const open = box.style.display !== "none";
+    box.style.display = open ? "none" : "block";
+    btn.textContent = open ? "QR-код" : "Скрыть QR";
+    if (!open && !drawn) {
+      drawn = true;
+      const link = refLink();
+      if (!link) return;
+      try {
+        const QRCode = await loadQR();
+        const canvas = $("#ref-qr-canvas");
+        if (canvas) new QRCode(canvas, { text: link, width: 140, height: 140, colorDark:"#000", colorLight:"#fff", correctLevel: QRCode.CorrectLevel.M });
+      } catch(e) { box.innerHTML = `<div class="mut" style="font-size:12px">Не удалось загрузить QR</div>`; }
+    }
+  };
 }
 
 function me() {
@@ -1836,6 +2016,7 @@ function me() {
     </div>
   </div>
   ${isAdmin() ? `<button class="btn sec" data-act="adm">Админ-панель</button>` : ''}`;
+  requestAnimationFrame(initRefQR);
 }
 
 function tkBtn() {
@@ -2194,23 +2375,37 @@ async function tkImgErr(img) {
 }
 
 // Загрузка фото через /api/upload (base64 → Telegram → https:// URL)
-// Возвращает { url: httpsUrl, preview: httpsUrl, fileId: telegramFileId }
-async function uploadPhoto(file) {
+// Возвращает { url: fileId, preview: null }
+// iOS Telegram WebApp bug fix: файл с камеры может быть пустым через FileReader —
+// рисуем через Image+Canvas, это гарантирует корректный decode перед base64-кодированием
+function fileToCanvas(file) {
   return new Promise((resolve, reject) => {
-    if (!file || !file.type.startsWith("image/")) { reject(new Error("not_image")); return; }
-    if (file.size > 10 * 1024 * 1024) { reject(new Error("too_large")); return; }
-    const r = new FileReader();
-    r.onload = async () => {
-      try {
-        const data = r.result.split(",")[1];
-        const j = await api("/api/upload", { method: "POST", body: { data, mime: file.type } });
-        if (j.ok && (j.fileId || j.url)) resolve({ url: j.fileId || j.url, preview: null });
-        else reject(new Error(j.error || "upload_failed"));
-      } catch(e) { reject(e); }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 1600;
+      let w = img.naturalWidth, h = img.naturalHeight;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      c.getContext("2d").drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL("image/jpeg", 0.88).split(",")[1]);
     };
-    r.onerror = () => reject(new Error("read_failed"));
-    r.readAsDataURL(file);
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("decode_failed")); };
+    img.src = url;
   });
+}
+async function uploadPhoto(file) {
+  if (!file || !file.type.startsWith("image/")) throw new Error("not_image");
+  if (file.size > 10 * 1024 * 1024) throw new Error("too_large");
+  const data = await fileToCanvas(file);
+  const j = await api("/api/upload", { method: "POST", body: { data, mime: "image/jpeg" } });
+  if (j.ok && (j.fileId || j.url)) return { url: j.fileId || j.url, preview: null };
+  throw new Error(j.error || "upload_failed");
 }
 // Показываем поле загрузки + ввода URL для выбора фото в рассылке/авторассылке
 // file_id → локальный blob-URL для превью (по file_id картинку в браузере не показать)
@@ -3872,6 +4067,7 @@ if(PACKS.length) { render(); hideSplash(); } else { render(); }
 loadSteamPrices();
 loadMe();
 loadOrders().then(() => { if(S.tab === "mine") render(); });
+rvFetch().then(() => { if(S.tab === "shop" || !S.tab) render(); });
 loadSettings();
 // loadServerPacks всегда скрывает splash когда завершится (успех или ошибка)
 loadServerPacks();

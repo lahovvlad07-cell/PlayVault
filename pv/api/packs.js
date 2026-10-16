@@ -3,13 +3,15 @@ import { sql, tgUser, getRole } from "../lib/core.js";
 export default async function handler(req, res) {
   // GET — публичный: наборы + игры + слоты
   if (req.method === "GET") {
-    const packs = await sql`select * from packs where active order by id`;
-    const games = await sql`select pack_id, game, appid from pack_games order by game`;
-    const acc   = await sql`select pack_id, max_slots, max_slots - used as free from accounts`;
-    const gmap  = {}, smap = {};
+    const packs   = await sql`select * from packs where active order by id`;
+    const games   = await sql`select pack_id, game, appid from pack_games order by game`;
+    const acc     = await sql`select pack_id, max_slots, max_slots - used as free from accounts`;
+    const buyers  = await sql`select pack_id, count(distinct user_id)::int as buyers from orders where status = 'paid' group by pack_id`;
+    const gmap  = {}, smap = {}, bmap = {};
     games.forEach(g => { (gmap[g.pack_id] = gmap[g.pack_id] || []).push({ game: g.game, appid: g.appid }); });
     acc.forEach(a => { smap[a.pack_id] = { total: a.max_slots, free: a.free }; });
-    return res.json(packs.map(p => ({ ...p, games: gmap[p.id] || [], slots: smap[p.id] || { total: 0, free: 0 } })));
+    buyers.forEach(b => { bmap[b.pack_id] = b.buyers; });
+    return res.json(packs.map(p => ({ ...p, games: gmap[p.id] || [], slots: smap[p.id] || { total: 0, free: 0 }, buyers: bmap[p.id] || 0 })));
   }
 
   // Всё остальное — только admin/owner
