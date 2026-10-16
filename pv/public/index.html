@@ -1576,93 +1576,114 @@ function rvCard(r, isAdmin) {
     <span class="rv-tag">${esc(r.pack_name)}</span>
   </div>`;
 }
-function rvWriteForm() {
-  if (!S.orders?.length) return "";
-  // pack_id → name из купленных
+function rvCanWrite() {
+  // Есть ли купленные наборы без отзыва?
+  if (!S.orders?.length) return false;
+  const boughtIds = new Set((S.orders||[]).map(o => o.p?.id).filter(Boolean));
+  const reviewedIds = new Set((S_reviews||[]).filter(r => r.user_id === ME.id).map(r => r.pack_id));
+  return [...boughtIds].some(id => !reviewedIds.has(id));
+}
+function openReviewSheet() {
   const boughtPacks = [];
   const seen = new Set();
   (S.orders||[]).forEach(o => {
     const pid = o.p?.id, pname = o.p?.name;
     if (pid && pname && !seen.has(pid)) { seen.add(pid); boughtPacks.push({id:pid, name:pname}); }
   });
-  if (!boughtPacks.length) return "";
-  // Скрываем набор если уже оставил отзыв (ищем в S_reviews по user_id = ME.id)
-  const myReviewed = new Set((S_reviews||[]).filter(r => r.user_id === ME.id).map(r => r.pack_id));
-  const available = boughtPacks.filter(p => !myReviewed.has(p.id));
-  if (!available.length) return "";
+  const reviewedIds = new Set((S_reviews||[]).filter(r => r.user_id === ME.id).map(r => r.pack_id));
+  const available = boughtPacks.filter(p => !reviewedIds.has(p.id));
+  if (!available.length) { toast("Вы уже оставили отзыв на все свои наборы"); return; }
   const opts = available.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join("");
-  return `<div class="rv-write" id="rv-write-box">
-    <h4>✍️ Написать отзыв</h4>
-    <div class="rv-star-pick" id="rv-star-pick">
-      <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span><span data-s="4">★</span><span data-s="5">★</span>
+
+  sheet(`
+    <h2 style="margin-bottom:16px">Написать отзыв</h2>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div>
+        <div style="font-size:12px;color:var(--sub);margin-bottom:6px;font-weight:600">ОЦЕНКА</div>
+        <div id="rv-star-pick" style="display:flex;gap:8px;font-size:34px;cursor:pointer;line-height:1;color:var(--brd);user-select:none">
+          <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span><span data-s="4">★</span><span data-s="5">★</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--sub);margin-bottom:6px;font-weight:600">НАБОР</div>
+        <select id="rv-pack-sel" style="width:100%;background:var(--sf2);border:1px solid var(--brd);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--ink);font-family:inherit;appearance:none;-webkit-appearance:none;cursor:pointer">${opts}</select>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--sub);margin-bottom:6px;font-weight:600">КОММЕНТАРИЙ</div>
+        <textarea id="rv-text-inp" placeholder="Напишите пару слов о наборе…" maxlength="300"
+          style="width:100%;min-height:80px;background:var(--sf2);border:1px solid var(--brd);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--ink);resize:none;font-family:inherit;line-height:1.45;box-sizing:border-box"></textarea>
+      </div>
+      <button class="btn pri" id="rv-submit-btn" style="margin-top:4px">Опубликовать</button>
     </div>
-    <select id="rv-pack-sel">${opts}</select>
-    <textarea id="rv-text-inp" placeholder="Напишите пару слов о наборе…" maxlength="300"></textarea>
-    <button class="btn pri" id="rv-submit-btn">Опубликовать</button>
-  </div>`;
-}
-function reviewsBlock(showAll) {
-  const all = rvAll();
-  const adm = isAdmin();
-  const visible = showAll ? all : all.slice(0, RV_PAGE);
-  const hasMore = !showAll && all.length > RV_PAGE;
-  const form = rvWriteForm();
-  const grid = visible.length ? `<div class="rv-grid">${visible.map(r => rvCard(r, adm)).join("")}</div>` : "";
-  const moreBtn = hasMore ? `<button class="rv-more-btn" id="rv-more-btn">Показать ещё · ${all.length - RV_PAGE}</button>` : "";
-  const loading = !S_reviews ? `<div class="mut" style="text-align:center;padding:12px 0;font-size:13px">Загружаем отзывы…</div>` : "";
-  return `<div class="sec-head"><h2>Отзывы</h2><span class="mut">${rvCountLabel(all.length)}</span></div>
-  ${form}${loading}${grid}${moreBtn}`;
-}
-function rvInitInteractive(showAll) {
+  `);
+
+  // Инициализируем звёзды — sheet уже в DOM
   let pickedStars = 0;
-  const picker = $("#rv-star-pick");
-  if (picker) {
-    const spans = picker.querySelectorAll("span");
-    const paint = n => spans.forEach((s,i) => s.classList.toggle("on", i < n));
-    spans.forEach(s => {
-      s.onmouseenter = () => paint(+s.dataset.s);
-      s.onmouseleave = () => paint(pickedStars);
-      s.onclick = () => { pickedStars = +s.dataset.s; paint(pickedStars); };
-      s.ontouchend = e => { e.preventDefault(); pickedStars = +s.dataset.s; paint(pickedStars); };
-    });
-  }
-  const btn = $("#rv-submit-btn");
-  if (btn) btn.onclick = async () => {
-    const text = ($("#rv-text-inp")?.value || "").trim();
-    const packId = Number($("#rv-pack-sel")?.value);
+  const picker = document.getElementById("rv-star-pick");
+  const spans = picker.querySelectorAll("span");
+  const paint = n => spans.forEach((s, i) => { s.style.color = i < n ? "#f5a623" : "var(--brd)"; });
+  spans.forEach(s => {
+    const n = +s.dataset.s;
+    s.addEventListener("click",     () => { pickedStars = n; paint(n); });
+    s.addEventListener("touchend",  e  => { e.preventDefault(); pickedStars = n; paint(n); });
+    s.addEventListener("mouseenter",() => paint(n));
+    s.addEventListener("mouseleave",() => paint(pickedStars));
+  });
+
+  document.getElementById("rv-submit-btn").addEventListener("click", async () => {
+    const text = (document.getElementById("rv-text-inp")?.value || "").trim();
+    const packId = Number(document.getElementById("rv-pack-sel")?.value);
+    const btn = document.getElementById("rv-submit-btn");
     if (!pickedStars) { toast("Поставьте оценку ★"); return; }
     if (text.length < 3) { toast("Напишите немного больше"); return; }
     if (!packId) { toast("Выберите набор"); return; }
     btn.disabled = true; btn.textContent = "Публикуем…";
     try {
       await api("/api/x?r=reviews", { method:"POST", body:{ action:"create", pack_id:packId, stars:pickedStars, text }});
+      closeSheet();
       toast("Отзыв опубликован ✓");
       S_reviews = null;
       await rvFetch();
       const sy = window.scrollY; home(); window.scrollTo(0, sy);
-      requestAnimationFrame(() => rvInitInteractive(showAll));
     } catch(e) {
       const msgs = { not_bought:"Только для покупателей", auth:"Нужна авторизация" };
       toast(msgs[e.message] || "Ошибка: " + (e.message||""));
       btn.disabled = false; btn.textContent = "Опубликовать";
     }
-  };
-  const moreBtn = $("#rv-more-btn");
-  if (moreBtn) moreBtn.onclick = () => {
+  });
+}
+function reviewsBlock(showAll) {
+  const all = rvAll();
+  const adm = isAdmin();
+  const visible = showAll ? all : all.slice(0, RV_PAGE);
+  const hasMore = !showAll && all.length > RV_PAGE;
+  const canWrite = rvCanWrite();
+  const writeBtn = canWrite ? `<button class="btn sec" id="rv-open-btn" style="width:100%;margin-bottom:12px">✍️ Написать отзыв</button>` : "";
+  const grid = visible.length ? `<div class="rv-grid">${visible.map(r => rvCard(r, adm)).join("")}</div>` : "";
+  const moreBtn = hasMore ? `<button class="rv-more-btn" id="rv-more-btn">Показать ещё · ${all.length - RV_PAGE}</button>` : "";
+  const loading = !S_reviews ? `<div class="mut" style="text-align:center;padding:12px 0;font-size:13px">Загружаем отзывы…</div>` : "";
+  return `<div class="sec-head"><h2>Отзывы</h2><span class="mut">${rvCountLabel(all.length)}</span></div>
+  ${writeBtn}${loading}${grid}${moreBtn}`;
+}
+function rvInitInteractive(showAll) {
+  const openBtn = document.getElementById("rv-open-btn");
+  if (openBtn) openBtn.addEventListener("click", openReviewSheet);
+
+  const moreBtn = document.getElementById("rv-more-btn");
+  if (moreBtn) moreBtn.addEventListener("click", () => {
     const sy = window.scrollY; home(true); window.scrollTo(0, sy);
-    requestAnimationFrame(() => rvInitInteractive(true));
-  };
+  });
+
   // Удаление (для админа)
   document.querySelectorAll("[data-rv-del]").forEach(b => {
-    b.onclick = async () => {
+    b.addEventListener("click", async () => {
       if (!confirm("Удалить отзыв?")) return;
       try {
         await api("/api/x?r=reviews", { method:"POST", body:{ action:"delete", id:+b.dataset.rvDel }});
         S_reviews = null; await rvFetch();
         const sy = window.scrollY; home(showAll); window.scrollTo(0, sy);
-        requestAnimationFrame(() => rvInitInteractive(showAll));
       } catch(e) { toast("Ошибка: " + e.message); }
-    };
+    });
   });
 }
 
@@ -1902,7 +1923,6 @@ function copyText(text, msg) {
 }
 function refCard() {
   const link = refLink(), bonus = ME.bonus ?? 20;
-  const qrId = "ref-qr-canvas";
   return `<div class="card ref">
     <h3>Пригласить друга</h3>
     <div class="mut">За каждого друга, купившего доступ, вы получите ${bonus} ₽ на баланс — и уведомление в бота.</div>
@@ -1913,8 +1933,8 @@ function refCard() {
     <div style="margin-top:4px">
       <button class="btn sec sm" id="ref-qr-toggle" style="font-size:12px">QR-код</button>
       <div id="ref-qr-box" style="display:none;margin-top:10px;text-align:center">
-        <canvas id="${qrId}" style="border-radius:10px;background:#fff;padding:8px;width:140px;height:140px"></canvas>
-        <div class="mut" style="font-size:11px;margin-top:4px">Покажи другу — он откроет бота</div>
+        <div id="ref-qr-wrap" style="border-radius:10px;background:#fff;padding:8px;display:inline-block;line-height:0"></div>
+        <div class="mut" style="font-size:11px;margin-top:6px">Покажи другу — он откроет бота</div>
       </div>
     </div>`
     : `<div class="mut">${tgInit() ? "Загружаем вашу ссылку…" : "Откройте приложение в Telegram — там появится ваша личная ссылка."}</div>`}
@@ -1935,23 +1955,43 @@ async function loadQR() {
   return _qrLib;
 }
 function initRefQR() {
-  const btn = $("#ref-qr-toggle");
-  const box = $("#ref-qr-box");
+  const btn = document.getElementById("ref-qr-toggle");
+  const box = document.getElementById("ref-qr-box");
   if (!btn || !box) return;
   let drawn = false;
   btn.onclick = async () => {
-    const open = box.style.display !== "none";
-    box.style.display = open ? "none" : "block";
-    btn.textContent = open ? "QR-код" : "Скрыть QR";
-    if (!open && !drawn) {
+    const isOpen = box.style.display !== "none";
+    box.style.display = isOpen ? "none" : "block";
+    btn.textContent = isOpen ? "QR-код" : "Скрыть QR";
+    if (!isOpen && !drawn) {
       drawn = true;
       const link = refLink();
       if (!link) return;
       try {
         const QRCode = await loadQR();
-        const canvas = $("#ref-qr-canvas");
-        if (canvas) new QRCode(canvas, { text: link, width: 140, height: 140, colorDark:"#000", colorLight:"#fff", correctLevel: QRCode.CorrectLevel.M });
-      } catch(e) { box.innerHTML = `<div class="mut" style="font-size:12px">Не удалось загрузить QR</div>`; }
+        // qrcodejs создаёт внутри div img+canvas — нужен div-контейнер, не canvas
+        const wrap = document.getElementById("ref-qr-wrap");
+        if (!wrap) return;
+        wrap.innerHTML = ""; // очищаем на случай повтора
+        new QRCode(wrap, {
+          text: link,
+          width: 148,
+          height: 148,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+        // Стилизуем img который qrcodejs добавил внутрь
+        setTimeout(() => {
+          const img = wrap.querySelector("img");
+          if (img) { img.style.borderRadius = "10px"; img.style.display = "block"; }
+          const cv = wrap.querySelector("canvas");
+          if (cv) { cv.style.display = "none"; } // прячем canvas, показываем img
+        }, 100);
+      } catch(e) {
+        const wrap = document.getElementById("ref-qr-wrap");
+        if (wrap) wrap.innerHTML = `<div class="mut" style="font-size:12px">Не удалось загрузить QR</div>`;
+      }
     }
   };
 }
