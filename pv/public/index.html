@@ -1644,7 +1644,10 @@ function openReviewSheet() {
       toast("Отзыв опубликован ✓");
       S_reviews = null;
       await rvFetch();
-      const sy = window.scrollY; home(); window.scrollTo(0, sy);
+      const sy = window.scrollY;
+      const homeEl = document.getElementById("home");
+      if (homeEl) { homeEl.innerHTML = home(); rvInitInteractive(); }
+      window.scrollTo(0, sy);
     } catch(e) {
       const msgs = { not_bought:"Только для покупателей", auth:"Нужна авторизация" };
       toast(msgs[e.message] || "Ошибка: " + (e.message||""));
@@ -1671,7 +1674,17 @@ function rvInitInteractive(showAll) {
 
   const moreBtn = document.getElementById("rv-more-btn");
   if (moreBtn) moreBtn.addEventListener("click", () => {
-    const sy = window.scrollY; home(true); window.scrollTo(0, sy);
+    // Перерисовываем только блок отзывов внутри #home
+    const homeEl = document.getElementById("home");
+    if (homeEl) {
+      const rvSection = homeEl.querySelector(".sec-head");
+      // Находим родителя блока отзывов и обновляем его
+      const sy = window.scrollY;
+      // Проще всего — перезаписать весь #home
+      homeEl.innerHTML = home(true);
+      window.scrollTo(0, sy);
+      rvInitInteractive(true);
+    }
   });
 
   // Удаление (для админа)
@@ -1681,7 +1694,9 @@ function rvInitInteractive(showAll) {
       try {
         await api("/api/x?r=reviews", { method:"POST", body:{ action:"delete", id:+b.dataset.rvDel }});
         S_reviews = null; await rvFetch();
-        const sy = window.scrollY; home(showAll); window.scrollTo(0, sy);
+        const sy = window.scrollY;
+        const homeEl = document.getElementById("home");
+        if (homeEl) { homeEl.innerHTML = home(showAll); window.scrollTo(0, sy); rvInitInteractive(showAll); }
       } catch(e) { toast("Ошибка: " + e.message); }
     });
   });
@@ -1714,7 +1729,6 @@ function home(showAll) {
   ${popularRow("Популярные игры")}
   ${howBlock()}
   ${reviewsBlock(showAll)}`;
-  requestAnimationFrame(() => rvInitInteractive(showAll));
 }
 
 function shop() {
@@ -1726,6 +1740,7 @@ function shop() {
   </div>
   <div id="gr"></div>
   <div id="home">${home()}</div>`;
+  requestAnimationFrame(rvInitInteractive);
   const g = $("#gs");
   let debounce;
   g.oninput = () => { clearTimeout(debounce); debounce = setTimeout(()=>{ S.q=g.value.trim(); gres(); }, 120); };
