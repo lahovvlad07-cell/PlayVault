@@ -35,7 +35,15 @@ export default async function handler(req, res) {
     const msg = String(text || "").trim(), ph = cleanPhoto(photo);
     if (!msg) return res.status(400).json({ error: "empty" });
     const from = Number(after) || 0;
-    const rows = await sql`select id from users where id > ${from} and not blocked order by id limit ${BATCH}`;
+    const label = String(req.body?.label || "promo");
+    // Фильтруем: исключаем тех кто отключил все уведомления или конкретную метку
+    const rows = await sql`
+      select id from users
+      where id > ${from}
+        and not blocked
+        and (notify_prefs->>'all')::boolean is not false
+        and (notify_prefs->>${label})::boolean is not false
+      order by id limit ${BATCH}`;
     const out = await Promise.all(rows.map(async (r) => [r.id, await send(r.id, msg, ph, !!button).catch((e) => ({ ok: false, error_code: 0, description: String(e.message) }))]));
     let sent = 0, failed = 0, blocked = 0, err = null;
     for (const [id, r] of out) {
@@ -102,7 +110,14 @@ export default async function handler(req, res) {
       : [];
     if (!row) return res.status(404).json({ error: "not_found" });
     const from_id = 0;
-    const rows2 = await sql`select id from users where id > ${from_id} and not blocked order by id limit ${BATCH}`;
+    const rowLabel = row.label || "promo";
+    const rows2 = await sql`
+      select id from users
+      where id > ${from_id}
+        and not blocked
+        and (notify_prefs->>'all')::boolean is not false
+        and (notify_prefs->>${rowLabel})::boolean is not false
+      order by id limit ${BATCH}`;
     const out2 = await Promise.all(rows2.map(async (r) => [r.id, await send(r.id, row.text, row.photo, row.button).catch((e) => ({ ok: false, error_code: 0, description: String(e.message) }))]));
     let sent = 0, failed = 0;
     for (const [, r] of out2) { if (r.ok) sent++; else failed++; }
