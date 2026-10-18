@@ -645,10 +645,10 @@ img{-webkit-user-drag:none;user-drag:none}
 .ref .cred{justify-content:center}
 .ref .cred code{font-size:13px;text-align:center}
 .ref-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ref-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ref-stats>div{background:var(--sf2);border-radius:12px;padding:10px;text-align:center}
-.ref-stats b{display:block;font-size:18px;font-weight:800}
-.ref-stats span{font-size:12px;color:var(--sub);font-weight:600}
+.ref-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ref-stats>div{background:var(--sf2);border-radius:10px;padding:8px;text-align:center}
+.ref-stats b{display:block;font-size:15px;font-weight:800}
+.ref-stats span{font-size:11px;color:var(--sub);font-weight:600}
 
 .cred code.mask{white-space:nowrap;word-break:normal;letter-spacing:1px}
 .pe-acc{display:flex;flex-direction:column;gap:10px;padding:14px;border:1px solid var(--brd);border-radius:14px;background:var(--sf2)}
@@ -697,28 +697,33 @@ img{-webkit-user-drag:none;user-drag:none}
 button:focus-visible{outline:2px solid var(--ac)}
 
 /* ── Профиль (mp-*) ── */
-.mp-hero{position:relative;overflow:hidden;border-radius:20px;padding:18px 16px 16px;display:flex;flex-direction:column;gap:16px;color:#fff;background:radial-gradient(120% 140% at 100% 0%,#2f6fa6 0%,transparent 55%),linear-gradient(145deg,#1e3a5f,#12263d);border:1px solid rgba(91,163,217,.28)}
-.mp-user{display:flex;align-items:center;gap:12px;min-width:0}
-.mp-av{width:52px;height:52px;font-size:21px;box-shadow:0 0 0 3px rgba(255,255,255,.14)}
+.mp-hero{position:relative;overflow:hidden;border-radius:16px;padding:14px 14px 0;display:flex;flex-direction:column;gap:0;color:#fff;background:radial-gradient(120% 140% at 100% 0%,#2f6fa6 0%,transparent 55%),linear-gradient(145deg,#1e3a5f,#12263d);border:1px solid rgba(91,163,217,.28)}
+.mp-user{display:flex;align-items:center;gap:10px;min-width:0}
+.mp-av{width:42px;height:42px;font-size:17px;box-shadow:0 0 0 2px rgba(255,255,255,.16)}
 .mp-who{min-width:0;flex:1}
-.mp-name{font-size:17px;font-weight:800;line-height:1.2;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mp-sub{font-size:13px;color:rgba(255,255,255,.66);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mp-bal{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)}
-.mp-lbl{font-size:12px;font-weight:600;color:rgba(255,255,255,.66);text-transform:uppercase;letter-spacing:.06em}
-.mp-sum{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-top:2px;color:#fff}
-.mp-top{width:auto;height:42px;padding:0 18px;font-size:14px;flex:none}
-.mp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.mp-stats>div{background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:14px 8px 12px;text-align:center;min-width:0;display:flex;flex-direction:column;gap:3px}
-.mp-stats b{font-size:18px;font-weight:800;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mp-stats span{font-size:12px;color:var(--sub);font-weight:600}
+.mp-name{font-size:15px;font-weight:800;line-height:1.2;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mp-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mp-bal{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0 14px;margin-top:10px;border-top:1px solid rgba(255,255,255,.12)}
+.mp-lbl{font-size:11px;font-weight:600;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.06em}
+.mp-sum{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-top:1px;color:#fff}
+.mp-top{width:auto;height:34px;padding:0 14px;font-size:13px;flex:none}
+.mp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mp-stats>div{background:var(--sf);border:1px solid var(--brd);border-radius:12px;padding:10px 6px 8px;text-align:center;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mp-stats b{font-size:15px;font-weight:800;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-stats span{font-size:11px;color:var(--sub);font-weight:600}
 .mp-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.mp-card>.mp-h h3,.card.ref>h3,.card .row>h3{font-size:16px;font-weight:800;letter-spacing:-.01em}
+.mp-card>.mp-h h3,.card.ref>h3,.card .row>h3{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.mp-card{padding:12px;gap:8px}
+.card.ref{padding:12px;gap:8px}
+.mp-promo{display:flex;gap:8px;align-items:center}
+.mp-promo input{flex:1;height:36px;padding:0 12px;font-size:13px}
+.mp-promo .btn{height:36px;padding:0 14px;font-size:13px;flex:none}
 .mp-faq details{border-top:1px solid var(--brd);padding:0}
-.mp-faq summary{padding:13px 0;font-size:14px;font-weight:600}
-.mp-faq summary::after{font-size:18px;color:var(--sub)}
-.mp-faq details p{margin:0 0 14px;line-height:1.5}
-.mp-sup{display:grid;grid-template-columns:1.3fr 1fr;gap:10px;margin-top:4px}
-.mp-sup .btn{height:46px;font-size:14px}
+.mp-faq summary{padding:10px 0;font-size:13px;font-weight:600;cursor:pointer}
+.mp-faq summary::after{font-size:16px;color:var(--sub)}
+.mp-faq details p{margin:0 0 10px;line-height:1.5;font-size:13px;color:var(--sub)}
+.mp-sup{display:grid;grid-template-columns:1.3fr 1fr;gap:8px;margin-top:4px}
+.mp-sup .btn{height:38px;font-size:13px}
 
 .hd-r{display:flex;align-items:center;gap:8px}
 .tgch{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#2aabee;color:#fff;border:0;cursor:pointer;flex:none;transition:transform .15s,opacity .15s}
@@ -1933,9 +1938,8 @@ function favCard(){
   const all = [...S.fav].reverse();
   if(!all.length) return "";
   return `<div class="card">
-    <div class="row"><h3>Избранное</h3><span class="tag">${all.length}</span></div>
+    <div class="row" style="margin-bottom:2px"><h3>Избранное</h3><button class="btn sec sm" style="font-size:12px;height:28px;padding:0 10px" data-act="favs">Все (${all.length})</button></div>
     <div class="fvl">${all.slice(0,3).map(favRow).join("")}</div>
-    ${all.length>3 ? `<button class="btn sec" data-act="favs">Показать все (${all.length})</button>` : ""}
   </div>`;
 }
 function favs(){
@@ -1963,20 +1967,20 @@ function copyText(text, msg) {
 function refCard() {
   const link = refLink(), bonus = ME.bonus ?? 20;
   return `<div class="card ref">
-    <h3>Пригласить друга</h3>
-    <div class="mut">За каждого друга, купившего доступ, вы получите ${bonus} ₽ на баланс — и уведомление в бота.</div>
-    ${link ? `<div class="cred"><code>${esc(link.replace("https://",""))}</code></div>
-    <div class="ref-actions"><button class="btn sec" data-act="ref">Копировать</button><button class="btn pri" data-act="refshare">Поделиться</button></div>
-    <div class="ref-stats"><div><b>${ME.friends||0}</b><span>приглашено</span></div><div><b>${ME.bought||0}</b><span>купили</span></div></div>
-    <div class="mut" style="font-size:12px;margin-top:4px">⚠️ Бонус начисляется, если друг перешёл по вашей ссылке до покупки и оплатил набор звёздами или с баланса (пополненного звёздами).</div>
-    <div style="margin-top:4px">
-      <button class="btn sec sm" id="ref-qr-toggle" style="font-size:12px">QR-код</button>
-      <div id="ref-qr-box" style="display:none;margin-top:10px;text-align:center">
+    <div class="row" style="margin-bottom:2px"><h3>Пригласить друга</h3>${(ME.friends||0)>0?`<span class="tag">${ME.bought||0} купили</span>`:""}</div>
+    <div class="mut" style="font-size:12px;margin-bottom:0">+${bonus} ₽ на баланс за каждого купившего</div>
+    ${link ? `<div class="cred" style="margin-top:8px"><code>${esc(link.replace("https://",""))}</code></div>
+    <div class="ref-actions" style="margin-top:8px"><button class="btn sec" style="height:36px;font-size:13px" data-act="ref">Копировать</button><button class="btn pri" style="height:36px;font-size:13px" data-act="refshare">Поделиться</button></div>
+    <div class="ref-stats" style="margin-top:8px"><div><b>${ME.friends||0}</b><span>приглашено</span></div><div><b>${ME.bought||0}</b><span>купили</span></div></div>
+    <div class="mut" style="font-size:11px;margin-top:6px;line-height:1.4">⚠ Бонус начисляется при оплате звёздами или с баланса, пополненного звёздами</div>
+    <div style="margin-top:6px">
+      <button class="btn sec sm" id="ref-qr-toggle" style="font-size:12px;height:30px">QR-код</button>
+      <div id="ref-qr-box" style="display:none;margin-top:8px;text-align:center">
         <div id="ref-qr-wrap" style="border-radius:10px;background:#fff;padding:8px;display:inline-block;line-height:0"></div>
-        <div class="mut" style="font-size:11px;margin-top:6px">Покажи другу — он откроет бота</div>
+        <div class="mut" style="font-size:11px;margin-top:4px">Покажи другу — он откроет бота</div>
       </div>
     </div>`
-    : `<div class="mut">${tgInit() ? "Загружаем вашу ссылку…" : "Откройте приложение в Telegram — там появится ваша личная ссылка."}</div>`}
+    : `<div class="mut" style="font-size:13px;margin-top:4px">${tgInit() ? "Загружаем вашу ссылку…" : "Откройте приложение в Telegram."}</div>`}
   </div>`;
 }
 // QR-код через Google Charts API — работает везде без JS-библиотек
@@ -2032,21 +2036,20 @@ function me() {
   </div>
   <div class="mp-stats">
     <div><b>${S.orders.length}</b><span>Наборов</span></div>
-    <div><b>${r(S.spent)}</b><span>Потрачено</span></div>
-    <div><b>${S.fav.size}</b><span>Избранное</span></div>
+    <div><b>${r(S.spent)} ₽</b><span>Потрачено</span></div>
+    <div><b>${S.fav.size}</b><span>${S.fav.size===1?"Игра":"Игр"} ♥</span></div>
   </div>
   <div class="card mp-card">
-    <div class="mp-h"><h3>Промокод</h3></div>
-    <div class="row-in">
-      <input id="mp" placeholder="Введите промокод" autocomplete="off" autocapitalize="characters">
+    <div class="mp-promo">
+      <input id="mp" placeholder="Промокод" autocomplete="off" autocapitalize="characters">
       <button class="btn sec" data-act="mpromo">Применить</button>
     </div>
-    ${S.promo ? `<span class="tag ok" style="align-self:flex-start">Код ${esc(S.promo)} · скидка ${promoPct(S.promo)}%</span>` : ''}
+    ${S.promo ? `<span class="tag ok" style="align-self:flex-start;margin-top:8px">Код ${esc(S.promo)} · скидка ${promoPct(S.promo)}%</span>` : ''}
   </div>
   ${favCard()}
   ${refCard()}
   <div class="card mp-card mp-faq">
-    <div class="mp-h"><h3>Вопросы и ответы</h3></div>
+    <div class="mp-h" style="margin-bottom:2px"><h3>Вопросы и ответы</h3></div>
     <details>
       <summary>Можно ли играть онлайн?</summary>
       <p>Только в оффлайн-режиме Steam. Онлайн-функции и мультиплеер недоступны.</p>
@@ -2057,18 +2060,18 @@ function me() {
     </details>
     <details>
       <summary>Доступ действительно навсегда?</summary>
-      <p>Оплата разовая, без подписки. Срок доступа не ограничен, пока аккаунт остаётся рабочим. Замены аккаунтов мы не делаем, все риски несёт клиент.</p>
+      <p>Оплата разовая, без подписки. Срок доступа не ограничен, пока аккаунт остаётся рабочим. Все риски несёт клиент.</p>
     </details>
     <details>
       <summary>Есть ли возврат средств?</summary>
-      <p>Да. Гарантия возврата средств на баланс аккаунта действует 14 дней с момента покупки. Возврат производится только на баланс. Замены аккаунтов мы не делаем, клиент берёт все риски на себя.</p>
+      <p>Да. Гарантия возврата на баланс — 14 дней с момента покупки. Замены аккаунтов не предусмотрены.</p>
     </details>
     <div class="mp-sup">
       <button class="btn pri" data-act="tnew">💬 В поддержку</button>
       <button class="btn sec" data-act="sup">История</button>
     </div>
   </div>
-  ${isAdmin() ? `<button class="btn sec" data-act="adm">Админ-панель</button>` : ''}`;
+  ${isAdmin() ? `<button class="btn sec" style="font-size:13px;height:38px" data-act="adm">Админ-панель</button>` : ''}`;
   requestAnimationFrame(initRefQR);
 }
 
