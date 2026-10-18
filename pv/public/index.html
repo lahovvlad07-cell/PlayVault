@@ -716,8 +716,14 @@ button:focus-visible{outline:2px solid var(--ac)}
 .mp-card{padding:12px;gap:8px}
 .card.ref{padding:12px;gap:8px}
 .mp-promo{display:flex;gap:8px;align-items:center}
-.mp-promo input{flex:1;height:36px;padding:0 12px;font-size:13px}
-.mp-promo .btn{height:36px;padding:0 14px;font-size:13px;flex:none}
+.mp-promo input{flex:1;min-width:0;height:36px;padding:0 12px;font-size:13px;border-radius:10px;border:1px solid var(--brd);background:var(--sf2);color:var(--ink);font:inherit}
+.mp-promo input:focus{outline:none;border-color:var(--ac)}
+.mp-promo .btn{height:36px;padding:0 14px;font-size:13px;flex:none;white-space:nowrap}
+.mp-qr{margin-top:4px;display:flex;align-items:center;gap:8px}
+.mp-qr-btn{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 10px;font-size:11px;font-weight:600;border-radius:8px;border:1px solid var(--brd);background:var(--sf2);color:var(--sub);cursor:pointer;transition:border-color .15s,color .15s}
+.mp-qr-btn:hover{border-color:var(--ac);color:var(--ink)}
+.mp-qr-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#ref-qr-box{margin-top:8px;text-align:center}
 .mp-faq details{border-top:1px solid var(--brd);padding:0}
 .mp-faq summary{padding:10px 0;font-size:13px;font-weight:600;cursor:pointer}
 .mp-faq summary::after{font-size:16px;color:var(--sub)}
@@ -1969,17 +1975,17 @@ function refCard() {
   return `<div class="card ref">
     <div class="row" style="margin-bottom:2px"><h3>Пригласить друга</h3>${(ME.friends||0)>0?`<span class="tag">${ME.bought||0} купили</span>`:""}</div>
     <div class="mut" style="font-size:12px;margin-bottom:0">+${bonus} ₽ на баланс за каждого купившего</div>
-    ${link ? `<div class="cred" style="margin-top:8px"><code>${esc(link.replace("https://",""))}</code></div>
+    ${link ? `<div class="cred" style="margin-top:6px"><code>${esc(link.replace("https://",""))}</code></div>
     <div class="ref-actions" style="margin-top:8px"><button class="btn sec" style="height:36px;font-size:13px" data-act="ref">Копировать</button><button class="btn pri" style="height:36px;font-size:13px" data-act="refshare">Поделиться</button></div>
-    <div class="ref-stats" style="margin-top:8px"><div><b>${ME.friends||0}</b><span>приглашено</span></div><div><b>${ME.bought||0}</b><span>купили</span></div></div>
-    <div class="mut" style="font-size:11px;margin-top:6px;line-height:1.4">⚠ Бонус начисляется при оплате звёздами или с баланса, пополненного звёздами</div>
-    <div style="margin-top:6px">
-      <button class="btn sec sm" id="ref-qr-toggle" style="font-size:12px;height:30px">QR-код</button>
-      <div id="ref-qr-box" style="display:none;margin-top:8px;text-align:center">
-        <div id="ref-qr-wrap" style="border-radius:10px;background:#fff;padding:8px;display:inline-block;line-height:0"></div>
-        <div class="mut" style="font-size:11px;margin-top:4px">Покажи другу — он откроет бота</div>
-      </div>
-    </div>`
+    <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+      <div class="ref-stats" style="flex:1"><div><b>${ME.friends||0}</b><span>приглашено</span></div><div><b>${ME.bought||0}</b><span>купили</span></div></div>
+      <button class="mp-qr-btn" id="ref-qr-toggle"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="3" height="3"/><rect x="19" y="14" width="2" height="2"/><rect x="14" y="19" width="2" height="2"/><rect x="18" y="18" width="3" height="3"/></svg>QR-код</button>
+    </div>
+    <div id="ref-qr-box" style="display:none;margin-top:8px;text-align:center">
+      <div id="ref-qr-wrap" style="border-radius:12px;background:#fff;padding:10px;display:inline-block;line-height:0"></div>
+      <div class="mut" style="font-size:11px;margin-top:5px">Покажи другу — он откроет бота</div>
+    </div>
+    <div class="mut" style="font-size:11px;margin-top:6px;line-height:1.4">⚠ Бонус — при оплате звёздами или с баланса, пополненного звёздами</div>`
     : `<div class="mut" style="font-size:13px;margin-top:4px">${tgInit() ? "Загружаем вашу ссылку…" : "Откройте приложение в Telegram."}</div>`}
   </div>`;
 }
@@ -1992,7 +1998,10 @@ function initRefQR() {
   btn.onclick = () => {
     const isOpen = box.style.display !== "none";
     box.style.display = isOpen ? "none" : "block";
-    btn.textContent = isOpen ? "QR-код" : "Скрыть QR";
+    // preserve the QR icon SVG, only change text node
+    const svg = btn.querySelector("svg");
+    btn.textContent = isOpen ? "QR-код" : "Скрыть";
+    if(svg) btn.prepend(svg);
     if (!isOpen && !drawn) {
       drawn = true;
       const link = refLink();
@@ -2036,8 +2045,8 @@ function me() {
   </div>
   <div class="mp-stats">
     <div><b>${S.orders.length}</b><span>Наборов</span></div>
-    <div><b>${r(S.spent)} ₽</b><span>Потрачено</span></div>
-    <div><b>${S.fav.size}</b><span>${S.fav.size===1?"Игра":"Игр"} ♥</span></div>
+    <div><b>${r(S.spent)}</b><span>Потрачено</span></div>
+    <div><b>${S.fav.size}</b><span>В избранном</span></div>
   </div>
   <div class="card mp-card">
     <div class="mp-promo">
