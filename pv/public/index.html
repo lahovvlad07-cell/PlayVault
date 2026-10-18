@@ -28,27 +28,36 @@
 .tu-stars-need{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--ac) 10%,transparent);border:1px solid color-mix(in srgb,var(--ac) 30%,transparent)}
 .tu-stars-need-l{font-size:13px;color:var(--sub)}
 .tu-stars-need-r{font-size:17px;font-weight:800;color:var(--ac)}
-/* sbuy redesigned */
-.sbuy{border:1px solid var(--brd);border-radius:16px;background:var(--sf2);padding:14px;display:flex;flex-direction:column;gap:12px}
-.sbuy-h{display:flex;gap:12px;align-items:center}
+/* sbuy — redesigned v2 */
+.sbuy{border:1px solid var(--brd);border-radius:16px;background:var(--sf2);overflow:hidden;display:flex;flex-direction:column}
+.sbuy-h{display:flex;gap:12px;align-items:center;padding:14px}
 .sbuy-ic{width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--warn) 22%,transparent);display:grid;place-items:center;font-size:20px;flex:none}
 .sbuy-t{font-size:14px;font-weight:800;color:var(--ink);line-height:1.25}
 .sbuy-s{font-size:12px;color:var(--sub);line-height:1.35;margin-top:2px}
 .sbuy-need{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:11px;background:var(--sf);border:1px dashed var(--brd);font-size:13px;color:var(--sub)}
 .sbuy-need b{font-size:16px;color:var(--ink)}
+.sbuy-btn-wrap{padding:0 14px 14px}
 .sbuy-btn{width:100%}
-.sbuy details{border-top:1px solid var(--brd);padding-top:10px}
-.sbuy summary{cursor:pointer;list-style:none;font-size:13px;font-weight:700;color:var(--ac);display:flex;justify-content:space-between;align-items:center}
-.sbuy summary::-webkit-details-marker{display:none}
-.sbuy summary::after{content:"▾";transition:transform .2s}
-.sbuy details[open] summary::after{transform:rotate(180deg)}
-.sbuy ol{list-style:none;counter-reset:st;display:flex;flex-direction:column;gap:9px;margin:12px 0 4px}
-.sbuy li{counter-increment:st;display:flex;gap:10px;font-size:13px;line-height:1.4;color:var(--ink)}
-.sbuy li::before{content:counter(st);flex:none;width:22px;height:22px;border-radius:50%;background:var(--ac);color:var(--acink);font-size:12px;font-weight:800;display:grid;place-items:center;margin-top:1px}
-.sbuy-pay{font-size:12px;color:var(--sub);margin-top:6px}
-.sbuy-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.sbuy-chips span{padding:5px 10px;border-radius:999px;background:var(--sf);border:1px solid var(--brd);font-size:12px;font-weight:600;color:var(--ink)}
-.sbuy-note{font-size:11.5px;line-height:1.4;color:var(--sub)}
+/* steps summary row */
+.sbuy-sum-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-top:1px solid var(--brd);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .12s}
+.sbuy-sum-row:active{background:var(--sf3)}
+.sbuy-sum-ic{font-size:16px;line-height:1}
+.sbuy-sum-lbl{flex:1;font-size:13px;font-weight:700;color:var(--ac)}
+.sbuy-sum-arr{font-size:18px;color:var(--sub);transition:transform .2s;line-height:1}
+.sbuy details[open] .sbuy-sum-arr{transform:rotate(90deg)}
+.sbuy details summary{list-style:none}
+.sbuy details summary::-webkit-details-marker{display:none}
+/* steps grid */
+.sbuy-steps{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+.sbuy-step{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:12px 10px;background:var(--sf);border-radius:13px;border:1px solid var(--brd)}
+.sbuy-step-n{width:30px;height:30px;border-radius:50%;background:var(--ac);color:var(--acink);font-size:13px;font-weight:800;display:grid;place-items:center;flex:none}
+.sbuy-step-t{font-size:13px;line-height:1.45;color:var(--ink)}
+/* payment chips */
+.sbuy-pay-section{display:flex;flex-direction:column;align-items:center;gap:8px;padding:4px 14px 14px}
+.sbuy-pay-lbl{font-size:12px;color:var(--sub);font-weight:600}
+.sbuy-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.sbuy-chips span{padding:5px 11px;border-radius:999px;background:var(--sf2);border:1px solid var(--brd);font-size:12px;font-weight:600;color:var(--ink)}
+.sbuy-note{font-size:11.5px;line-height:1.4;color:var(--sub);text-align:center;padding:0 14px 14px}
 /* legacy keep */
 .stars-info{background:var(--sf2);border:1px solid var(--brd);border-radius:13px;padding:14px;font-weight:700;font-size:14px;text-align:center;line-height:1.45}
 .stars-info .mut{font-size:13px;font-weight:500;margin-top:3px;display:block}
@@ -345,7 +354,7 @@ h3{font-size:15px;font-weight:700}
 .sheet-scroll::-webkit-scrollbar{width:4px}
 .sheet-scroll::-webkit-scrollbar-track{background:transparent}
 .sheet-scroll::-webkit-scrollbar-thumb{background:transparent;border-radius:4px}
-.sheet-handle{width:36px;height:4px;background:var(--brd);border-radius:2px;margin:0 auto -4px}
+.sheet-handle{display:none}
 .opt{
   display:flex;justify-content:space-between;align-items:center;
   width:100%;background:var(--sf2);border:1.5px solid transparent;
@@ -3310,29 +3319,49 @@ function starsRateLine(rate) {
 // Дешёвая покупка Stars у стороннего продавца (Plati). Открывается во внешнем браузере.
 const PLATI_STARS_URL = "https://plati.market/itm/telegram-stars-by-username-automatic-delivery/5275956";
 function buyStarsBlock(need) {
-  const show = need > 0;
   return `<div class="sbuy">
     <div class="sbuy-h">
       <div class="sbuy-ic">⭐</div>
-      <div>
+      <div style="flex:1">
         <div class="sbuy-t">Нет Stars? Купите дешевле</div>
-        <div class="sbuy-s">На Plati обычно ≈ 1,4–1,5 ₽ за звезду, от 50 ⭐. Цена может меняться.</div>
+        <div class="sbuy-s">На Plati ≈ 1,4–1,5 ₽/⭐ · от 50 ⭐ · цена может меняться</div>
       </div>
     </div>
-    <div class="sbuy-need" id="sbuy-need" style="${show?"":"display:none"}"><span>Вам понадобится</span><b id="sbuy-n">${show?need+" ⭐":""}</b></div>
-    <button class="btn sec sbuy-btn" data-act="buystars">Открыть Plati</button>
+    <div class="sbuy-btn-wrap">
+      <button class="btn pri sbuy-btn" data-act="buystars" style="background:linear-gradient(135deg,#2481cc,#1a6fad)">Открыть Plati →</button>
+    </div>
     <details>
-      <summary>Как купить: 4 шага</summary>
-      <ol>
-        <li>Нажмите «Открыть Plati» и укажите количество звёзд (минимум 50).</li>
-        <li>Введите свой Telegram @username. Пароли и коды от Telegram не нужны.</li>
-        <li>Выберите способ оплаты и укажите email, на него придёт чек.</li>
-        <li>Подождите 5–25 минут: звёзды придут на ваш аккаунт. Вернитесь сюда и нажмите «Пополнить» или «Оплатить».</li>
-      </ol>
-      <div class="sbuy-pay">Способы оплаты на Plati:</div>
-      <div class="sbuy-chips"><span>СБП</span><span>Карта РФ</span><span>SberPay</span><span>USDT</span><span>TON</span><span>BTC</span><span>Binance Pay</span><span>WebMoney</span></div>
+      <summary>
+        <div class="sbuy-sum-row">
+          <span class="sbuy-sum-ic">📋</span>
+          <span class="sbuy-sum-lbl">Как купить — 4 шага</span>
+          <span class="sbuy-sum-arr">›</span>
+        </div>
+      </summary>
+      <div class="sbuy-steps">
+        <div class="sbuy-step">
+          <div class="sbuy-step-n">1</div>
+          <div class="sbuy-step-t">Нажмите «Открыть Plati» и укажите количество звёзд (минимум 50)</div>
+        </div>
+        <div class="sbuy-step">
+          <div class="sbuy-step-n">2</div>
+          <div class="sbuy-step-t">Введите свой Telegram @username — пароли и коды не нужны</div>
+        </div>
+        <div class="sbuy-step">
+          <div class="sbuy-step-n">3</div>
+          <div class="sbuy-step-t">Выберите способ оплаты и укажите email — на него придёт чек</div>
+        </div>
+        <div class="sbuy-step">
+          <div class="sbuy-step-n">4</div>
+          <div class="sbuy-step-t">Подождите 5–25 минут, вернитесь сюда и нажмите «Пополнить»</div>
+        </div>
+      </div>
+      <div class="sbuy-pay-section">
+        <div class="sbuy-pay-lbl">Способы оплаты на Plati</div>
+        <div class="sbuy-chips"><span>СБП</span><span>Карта РФ</span><span>SberPay</span><span>USDT</span><span>TON</span><span>BTC</span><span>Binance Pay</span><span>WebMoney</span></div>
+      </div>
+      <div class="sbuy-note">Plati — сторонний сервис, а не PlayVault. Покупайте звёзды только на свой @username.</div>
     </details>
-    <div class="sbuy-note">Plati — сторонний сервис, а не PlayVault. Покупайте звёзды только на свой @username.</div>
   </div>`;
 }
 
@@ -3682,9 +3711,9 @@ document.addEventListener("click", e => {
       </div>
       <div class="tu-rate-badge">≈ ${rubPerStar} ₽/⭐</div>
     </div>
-    <div class="tu-stars-need" id="sbuy-need" style="display:none">
+    <div class="tu-stars-need" id="sbuy-need">
       <span class="tu-stars-need-l">Нужно звёзд</span>
-      <span class="tu-stars-need-r" id="sbuy-n"></span>
+      <span class="tu-stars-need-r" id="sbuy-n">—</span>
     </div>
     <button class="btn pri" id="go" data-act="tgo" style="height:52px;font-size:16px;font-weight:800;border-radius:14px">Пополнить</button>
     ${buyStarsBlock(0)}`);
@@ -3698,10 +3727,9 @@ document.addEventListener("click", e => {
       });
     });
     const updateStars = () => {
-      const n = Math.floor(+ta.value||0), box = $("#sbuy-need"), nn = $("#sbuy-n");
-      if(!box || !nn) return;
-      if(n >= 10){ nn.textContent = Math.ceil(n*S.starsRate) + " ⭐"; box.style.display = ""; }
-      else box.style.display = "none";
+      const n = Math.floor(+ta.value||0), nn = $("#sbuy-n");
+      if(!nn) return;
+      nn.textContent = n >= 10 ? Math.ceil(n*S.starsRate) + " ⭐" : "—";
     };
     if(ta) ta.oninput = updateStars;
     return;
