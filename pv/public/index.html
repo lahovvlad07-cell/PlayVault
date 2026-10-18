@@ -2141,7 +2141,15 @@ function chat(adm) {
     // Двойная галочка
     const dblChk = `<svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/><polyline points="8,8 12,12 20,4"/></svg>`;
     return t.msgs.map((m,i)=>`<div class="bub ${m.f===me?"me":"th"}">
-    ${m.ph?`<img src="${esc(tkPhotoSrc(m.ph))}" data-fileid="${/^[A-Za-z0-9_\-]{20,}$/.test(m.ph)&&!m.ph.startsWith("http")?esc(m.ph):""}" style="max-width:100%;border-radius:10px;display:block;margin-bottom:${m.t?"6px":"0"}" loading="lazy" onerror="tkImgErr(this)">`:``}
+    ${m.ph?(()=>{
+      const isFileId = /^[A-Za-z0-9_\-]{20,}$/.test(m.ph)&&!m.ph.startsWith("http");
+      const src = isFileId ? "" : esc(m.ph);
+      const mb = m.t?"6px":"0";
+      if(isFileId){
+        return `<div data-fileid="${esc(m.ph)}" class="tk-photo-wrap" style="max-width:100%;min-height:120px;border-radius:10px;background:var(--sf2);margin-bottom:${mb};display:block"></div>`;
+      }
+      return `<img src="${src}" style="max-width:100%;border-radius:10px;display:block;margin-bottom:${mb}" loading="lazy" onerror="this.style.display='none'">`;
+    })():""}
     ${m.t?`<div>${esc(m.t)}</div>`:""}
     <small>${m.f==="me"?(adm?"Клиент":"Вы"):"Поддержка"} · ${tm(m.ts)}${i===lastMineIdx&&m.f===me?`<span class="bub-checks" title="${isRead?"Прочитано":"Доставлено"}">${isRead?dblChk:chk}</span>`:""}</small>
   </div>`).join("");
@@ -2454,29 +2462,35 @@ const bcLimit = () => bcPhoto() ? 1024 : 4096;
 function tkPhotoSrc(ph) {
   if (!ph) return "";
   if (ph.startsWith("http")) return ph;
-  // file_id: покажем скелетон, резолв происходит в tkResolveImages()
-  return "";
+  return ""; // file_id рендерится через div[data-fileid], резолв в tkResolveImages()
 }
 // Резолвим все file_id изображения в чате сразу после рендера
 async function tkResolveImages() {
-  const imgs = document.querySelectorAll("img[data-fileid]");
-  await Promise.all(Array.from(imgs).map(async img => {
-    const fid = img.dataset.fileid;
-    if (!fid || img._tkResolved) return;
-    img._tkResolved = true;
-    // Показываем скелетон-плейсхолдер
-    img.style.cssText = "max-width:100%;border-radius:10px;display:block;min-height:80px;background:var(--sf2);" + (img.style.marginBottom || "");
+  // Ищем и <img data-fileid> и <div data-fileid> (разные версии рендера)
+  const els = document.querySelectorAll("[data-fileid]");
+  await Promise.all(Array.from(els).map(async el => {
+    const fid = el.dataset.fileid;
+    if (!fid || el._tkResolved) return;
+    el._tkResolved = true;
     try {
       const j = await api("/api/upload?file_id=" + encodeURIComponent(fid));
       if (j.ok && j.url) {
+        // Заменяем div-скелетон на img
+        const img = document.createElement("img");
         img.src = j.url;
-        img.style.background = "";
+        img.style.cssText = el.style.cssText;
         img.style.minHeight = "";
+        img.style.background = "";
+        img.style.maxWidth = "100%";
+        img.style.borderRadius = "10px";
+        img.style.display = "block";
+        img.onerror = () => { img.style.display = "none"; };
+        el.replaceWith(img);
       } else {
-        img.style.display = "none";
+        el.style.display = "none";
       }
     } catch(_) {
-      img.style.display = "none";
+      el.style.display = "none";
     }
   }));
 }
