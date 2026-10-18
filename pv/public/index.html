@@ -28,36 +28,34 @@
 .tu-stars-need{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--ac) 10%,transparent);border:1px solid color-mix(in srgb,var(--ac) 30%,transparent)}
 .tu-stars-need-l{font-size:13px;color:var(--sub)}
 .tu-stars-need-r{font-size:17px;font-weight:800;color:var(--ac)}
-/* sbuy — redesigned v2 */
-.sbuy{border:1px solid var(--brd);border-radius:16px;background:var(--sf2);overflow:hidden;display:flex;flex-direction:column}
-.sbuy-h{display:flex;gap:12px;align-items:center;padding:14px}
-.sbuy-ic{width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--warn) 22%,transparent);display:grid;place-items:center;font-size:20px;flex:none}
-.sbuy-t{font-size:14px;font-weight:800;color:var(--ink);line-height:1.25}
-.sbuy-s{font-size:12px;color:var(--sub);line-height:1.35;margin-top:2px}
-.sbuy-need{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:11px;background:var(--sf);border:1px dashed var(--brd);font-size:13px;color:var(--sub)}
-.sbuy-need b{font-size:16px;color:var(--ink)}
-.sbuy-btn-wrap{padding:0 14px 14px}
-.sbuy-btn{width:100%}
+/* sbuy — redesigned v3 */
+.sbuy{border:1px solid var(--brd);border-radius:16px;background:var(--sf2);display:flex;flex-direction:column}
+.sbuy-h{display:flex;gap:12px;align-items:center;padding:13px 14px}
+.sbuy-ic{width:36px;height:36px;border-radius:10px;background:color-mix(in srgb,var(--warn) 18%,transparent);display:grid;place-items:center;font-size:18px;flex:none}
+.sbuy-t{font-size:13px;font-weight:700;color:var(--ink);line-height:1.25}
+.sbuy-s{font-size:11.5px;color:var(--sub);line-height:1.35;margin-top:2px}
+.sbuy-open-btn{flex:none;padding:7px 13px;border-radius:10px;border:1.5px solid var(--ac);background:transparent;color:var(--ac);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .12s}
+.sbuy-open-btn:active{background:color-mix(in srgb,var(--ac) 15%,transparent)}
 /* steps summary row */
-.sbuy-sum-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-top:1px solid var(--brd);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .12s}
+.sbuy-sum-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--brd);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .12s}
 .sbuy-sum-row:active{background:var(--sf3)}
-.sbuy-sum-ic{font-size:16px;line-height:1}
-.sbuy-sum-lbl{flex:1;font-size:13px;font-weight:700;color:var(--ac)}
-.sbuy-sum-arr{font-size:18px;color:var(--sub);transition:transform .2s;line-height:1}
+.sbuy-sum-ic{font-size:15px;line-height:1}
+.sbuy-sum-lbl{flex:1;font-size:12.5px;font-weight:700;color:var(--sub)}
+.sbuy-sum-arr{font-size:16px;color:var(--sub);transition:transform .2s;line-height:1}
 .sbuy details[open] .sbuy-sum-arr{transform:rotate(90deg)}
 .sbuy details summary{list-style:none}
 .sbuy details summary::-webkit-details-marker{display:none}
 /* steps grid */
-.sbuy-steps{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
-.sbuy-step{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:12px 10px;background:var(--sf);border-radius:13px;border:1px solid var(--brd)}
-.sbuy-step-n{width:30px;height:30px;border-radius:50%;background:var(--ac);color:var(--acink);font-size:13px;font-weight:800;display:grid;place-items:center;flex:none}
-.sbuy-step-t{font-size:13px;line-height:1.45;color:var(--ink)}
+.sbuy-steps{padding:4px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.sbuy-step{display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;padding:12px 10px;background:var(--sf);border-radius:12px;border:1px solid var(--brd)}
+.sbuy-step-n{width:28px;height:28px;border-radius:50%;background:var(--ac);color:var(--acink);font-size:12px;font-weight:800;display:grid;place-items:center;flex:none}
+.sbuy-step-t{font-size:12.5px;line-height:1.45;color:var(--ink)}
 /* payment chips */
-.sbuy-pay-section{display:flex;flex-direction:column;align-items:center;gap:8px;padding:4px 14px 14px}
-.sbuy-pay-lbl{font-size:12px;color:var(--sub);font-weight:600}
-.sbuy-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
-.sbuy-chips span{padding:5px 11px;border-radius:999px;background:var(--sf2);border:1px solid var(--brd);font-size:12px;font-weight:600;color:var(--ink)}
-.sbuy-note{font-size:11.5px;line-height:1.4;color:var(--sub);text-align:center;padding:0 14px 14px}
+.sbuy-pay-section{display:flex;flex-direction:column;align-items:center;gap:7px;padding:2px 14px 14px}
+.sbuy-pay-lbl{font-size:11.5px;color:var(--sub);font-weight:600}
+.sbuy-chips{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.sbuy-chips span{padding:4px 10px;border-radius:999px;background:var(--sf);border:1px solid var(--brd);font-size:11.5px;font-weight:600;color:var(--ink)}
+.sbuy-note{font-size:11px;line-height:1.4;color:var(--sub);text-align:center;padding:0 14px 12px}
 /* legacy keep */
 .stars-info{background:var(--sf2);border:1px solid var(--brd);border-radius:13px;padding:14px;font-weight:700;font-size:14px;text-align:center;line-height:1.45}
 .stars-info .mut{font-size:13px;font-weight:500;margin-top:3px;display:block}
@@ -3322,13 +3320,11 @@ function buyStarsBlock(need) {
   return `<div class="sbuy">
     <div class="sbuy-h">
       <div class="sbuy-ic">⭐</div>
-      <div style="flex:1">
+      <div style="flex:1;min-width:0">
         <div class="sbuy-t">Нет Stars? Купите дешевле</div>
-        <div class="sbuy-s">На Plati ≈ 1,4–1,5 ₽/⭐ · от 50 ⭐ · цена может меняться</div>
+        <div class="sbuy-s">На Plati ≈ 1,4–1,5 ₽/⭐ · от 50 ⭐</div>
       </div>
-    </div>
-    <div class="sbuy-btn-wrap">
-      <button class="btn pri sbuy-btn" data-act="buystars" style="background:linear-gradient(135deg,#2481cc,#1a6fad)">Открыть Plati →</button>
+      <button class="sbuy-open-btn" data-act="buystars">Открыть →</button>
     </div>
     <details>
       <summary>
