@@ -1955,26 +1955,13 @@ function refCard() {
     : `<div class="mut">${tgInit() ? "Загружаем вашу ссылку…" : "Откройте приложение в Telegram — там появится ваша личная ссылка."}</div>`}
   </div>`;
 }
-// QR-код через qrcode.js (загружается из CDN один раз)
-let _qrLib = null;
-async function loadQR() {
-  if (_qrLib) return _qrLib;
-  if (window.QRCode) { _qrLib = window.QRCode; return _qrLib; }
-  await new Promise((res, rej) => {
-    const s = document.createElement("script");
-    s.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
-    s.onload = res; s.onerror = rej;
-    document.head.appendChild(s);
-  });
-  _qrLib = window.QRCode;
-  return _qrLib;
-}
+// QR-код через Google Charts API — работает везде без JS-библиотек
 function initRefQR() {
   const btn = document.getElementById("ref-qr-toggle");
   const box = document.getElementById("ref-qr-box");
   if (!btn || !box) return;
   let drawn = false;
-  btn.onclick = async () => {
+  btn.onclick = () => {
     const isOpen = box.style.display !== "none";
     box.style.display = isOpen ? "none" : "block";
     btn.textContent = isOpen ? "QR-код" : "Скрыть QR";
@@ -1982,31 +1969,18 @@ function initRefQR() {
       drawn = true;
       const link = refLink();
       if (!link) return;
-      try {
-        const QRCode = await loadQR();
-        // qrcodejs создаёт внутри div img+canvas — нужен div-контейнер, не canvas
-        const wrap = document.getElementById("ref-qr-wrap");
-        if (!wrap) return;
-        wrap.innerHTML = ""; // очищаем на случай повтора
-        new QRCode(wrap, {
-          text: link,
-          width: 148,
-          height: 148,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.M
-        });
-        // Стилизуем img который qrcodejs добавил внутрь
-        setTimeout(() => {
-          const img = wrap.querySelector("img");
-          if (img) { img.style.borderRadius = "10px"; img.style.display = "block"; }
-          const cv = wrap.querySelector("canvas");
-          if (cv) { cv.style.display = "none"; } // прячем canvas, показываем img
-        }, 100);
-      } catch(e) {
-        const wrap = document.getElementById("ref-qr-wrap");
-        if (wrap) wrap.innerHTML = `<div class="mut" style="font-size:12px">Не удалось загрузить QR</div>`;
-      }
+      const wrap = document.getElementById("ref-qr-wrap");
+      if (!wrap) return;
+      const encoded = encodeURIComponent(link);
+      const img = document.createElement("img");
+      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encoded}&bgcolor=ffffff&color=000000&qzone=1`;
+      img.width = 160;
+      img.height = 160;
+      img.style.borderRadius = "10px";
+      img.style.display = "block";
+      img.onerror = () => { wrap.innerHTML = `<div class="mut" style="font-size:12px">Не удалось загрузить QR</div>`; };
+      wrap.innerHTML = "";
+      wrap.appendChild(img);
     }
   };
 }
