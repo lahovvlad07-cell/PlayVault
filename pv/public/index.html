@@ -2,11 +2,37 @@
 .pf-label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mut);font-weight:600}
 .pf-label input{height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--brd);background:var(--sf2);color:var(--ink);font:inherit;margin-top:2px}
 .pack-row{display:flex;flex-direction:column;gap:6px}
-.stars-info{background:var(--sf2);border-radius:12px;padding:12px 14px;font-weight:700;font-size:14px;text-align:center}
-.sbuy{border:1px solid var(--brd);border-radius:16px;background:linear-gradient(160deg,color-mix(in srgb,var(--ac) 14%,var(--sf2)),var(--sf2));padding:14px;display:flex;flex-direction:column;gap:12px}
+/* ── Redesigned topup styles ── */
+.tu-header{display:flex;align-items:center;gap:14px;padding-bottom:4px}
+.tu-icon{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:grid;place-items:center;font-size:22px;flex:none;box-shadow:0 4px 16px color-mix(in srgb,var(--ac) 35%,transparent)}
+.tu-title{font-size:18px;font-weight:800;color:var(--ink);line-height:1.2;letter-spacing:-.02em}
+.tu-subtitle{font-size:13px;color:var(--sub);margin-top:3px}
+.tu-subtitle b{color:var(--ink);font-weight:700}
+.tu-presets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tu-preset{height:44px;border-radius:13px;border:1.5px solid var(--brd);background:var(--sf2);color:var(--ink);font-size:14px;font-weight:700;transition:all .15s;cursor:pointer}
+.tu-preset:hover{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,var(--sf2))}
+.tu-preset.active{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 18%,var(--sf2));color:var(--ac)}
+.tu-divider{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--sub);font-weight:600}
+.tu-divider::before,.tu-divider::after{content:"";flex:1;height:1px;background:var(--brd)}
+.tu-input-wrap{position:relative}
+.tu-input-wrap .tu-curr{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:20px;font-weight:800;color:var(--sub);pointer-events:none}
+.tu-input{width:100%;height:56px;padding:0 16px 0 38px;border-radius:14px;border:1.5px solid var(--brd);background:var(--sf2);color:var(--ink);font-size:22px;font-weight:800;outline:none;transition:border-color .15s}
+.tu-input:focus{border-color:var(--ac)}
+.tu-input::placeholder{color:var(--sub);font-weight:500;font-size:16px}
+.tu-rate-card{border-radius:14px;background:var(--sf2);border:1px solid var(--brd);padding:14px 16px;display:flex;align-items:center;gap:14px}
+.tu-rate-ic{width:38px;height:38px;border-radius:11px;background:color-mix(in srgb,var(--warn) 18%,transparent);display:grid;place-items:center;font-size:18px;flex:none}
+.tu-rate-info{flex:1;min-width:0}
+.tu-rate-name{font-size:14px;font-weight:700;color:var(--ink)}
+.tu-rate-val{font-size:12px;color:var(--sub);margin-top:2px}
+.tu-rate-badge{flex:none;background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok);border-radius:8px;padding:4px 9px;font-size:12px;font-weight:700;white-space:nowrap}
+.tu-stars-need{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--ac) 10%,transparent);border:1px solid color-mix(in srgb,var(--ac) 30%,transparent)}
+.tu-stars-need-l{font-size:13px;color:var(--sub)}
+.tu-stars-need-r{font-size:17px;font-weight:800;color:var(--ac)}
+/* sbuy redesigned */
+.sbuy{border:1px solid var(--brd);border-radius:16px;background:var(--sf2);padding:14px;display:flex;flex-direction:column;gap:12px}
 .sbuy-h{display:flex;gap:12px;align-items:center}
 .sbuy-ic{width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--warn) 22%,transparent);display:grid;place-items:center;font-size:20px;flex:none}
-.sbuy-t{font-size:15px;font-weight:800;color:var(--ink);line-height:1.25}
+.sbuy-t{font-size:14px;font-weight:800;color:var(--ink);line-height:1.25}
 .sbuy-s{font-size:12px;color:var(--sub);line-height:1.35;margin-top:2px}
 .sbuy-need{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:11px;background:var(--sf);border:1px dashed var(--brd);font-size:13px;color:var(--sub)}
 .sbuy-need b{font-size:16px;color:var(--ink)}
@@ -23,6 +49,9 @@
 .sbuy-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .sbuy-chips span{padding:5px 10px;border-radius:999px;background:var(--sf);border:1px solid var(--brd);font-size:12px;font-weight:600;color:var(--ink)}
 .sbuy-note{font-size:11.5px;line-height:1.4;color:var(--sub)}
+/* legacy keep */
+.stars-info{background:var(--sf2);border:1px solid var(--brd);border-radius:13px;padding:14px;font-weight:700;font-size:14px;text-align:center;line-height:1.45}
+.stars-info .mut{font-size:13px;font-weight:500;margin-top:3px;display:block}
 </style><script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head><body>
 <title>PlayVault</title>
@@ -728,13 +757,8 @@ button:focus-visible{outline:2px solid var(--ac)}
 .sum .price-line{display:inline-flex;align-items:baseline;gap:0}
 .sum .price-line s{font-size:13px;font-weight:400;color:var(--sub);text-decoration:line-through}
 
-/* stars-info в topup — единый стиль с opt */
-.stars-info{
-  background:var(--sf2);border:1px solid var(--brd);
-  border-radius:13px;padding:14px;
-  font-weight:700;font-size:14px;text-align:center;
-  line-height:1.45;
-}
+/* stars-info — legacy, kept for checkout */
+.stars-info{background:var(--sf2);border:1px solid var(--brd);border-radius:13px;padding:14px;font-weight:700;font-size:14px;text-align:center;line-height:1.45}
 .stars-info .mut{font-size:13px;font-weight:500;margin-top:3px;display:block}
 
 /* гарантийный текст */
@@ -3629,17 +3653,57 @@ document.addEventListener("click", e => {
   }
   if(a==="topup"){
     S.topm = S.topm || "Telegram Stars";
-    sheet(`<h2>Пополнение баланса</h2>
-    <input class="search" id="ta" type="number" inputmode="numeric" min="10" placeholder="Сумма, ₽" style="height:48px;padding-left:16px;font-size:18px;font-weight:700">
-    <div class="stars-info">⭐ Оплата через Telegram Stars<br><span class="mut">${starsRateLine(S.starsRate)}</span></div>
-    <button class="btn pri" id="go" data-act="tgo">Пополнить</button>
+    const rubPerStar = (1/S.starsRate).toFixed(2);
+    const starsFor100 = Math.ceil(100*S.starsRate);
+    sheet(`
+    <div class="tu-header">
+      <div class="tu-icon">💳</div>
+      <div>
+        <div class="tu-title">Пополнение баланса</div>
+        <div class="tu-subtitle">Баланс: <b>${nf(S.bal)} ₽</b></div>
+      </div>
+    </div>
+    <div class="tu-presets">
+      <button class="tu-preset" data-v="100">100 ₽</button>
+      <button class="tu-preset" data-v="200">200 ₽</button>
+      <button class="tu-preset" data-v="500">500 ₽</button>
+      <button class="tu-preset" data-v="1000">1 000 ₽</button>
+    </div>
+    <div class="tu-divider">или введите сумму</div>
+    <div class="tu-input-wrap">
+      <span class="tu-curr">₽</span>
+      <input class="tu-input" id="ta" type="number" inputmode="numeric" min="10" placeholder="Своя сумма">
+    </div>
+    <div class="tu-rate-card">
+      <div class="tu-rate-ic">⭐</div>
+      <div class="tu-rate-info">
+        <div class="tu-rate-name">Telegram Stars</div>
+        <div class="tu-rate-val">Курс: 1 ₽ = ${S.starsRate.toFixed(2)} ⭐ · 100 ₽ = ${starsFor100} ⭐</div>
+      </div>
+      <div class="tu-rate-badge">≈ ${rubPerStar} ₽/⭐</div>
+    </div>
+    <div class="tu-stars-need" id="sbuy-need" style="display:none">
+      <span class="tu-stars-need-l">Нужно звёзд</span>
+      <span class="tu-stars-need-r" id="sbuy-n"></span>
+    </div>
+    <button class="btn pri" id="go" data-act="tgo" style="height:52px;font-size:16px;font-weight:800;border-radius:14px">Пополнить</button>
     ${buyStarsBlock(0)}`);
     const ta = $("#ta");
-    if(ta) ta.oninput = () => {
+    // Presets
+    $$(".tu-preset").forEach(btn => {
+      btn.addEventListener("click", () => {
+        $$(".tu-preset").forEach(x => x.classList.remove("active"));
+        btn.classList.add("active");
+        if(ta) { ta.value = btn.dataset.v; ta.dispatchEvent(new Event("input")); }
+      });
+    });
+    const updateStars = () => {
       const n = Math.floor(+ta.value||0), box = $("#sbuy-need"), nn = $("#sbuy-n");
       if(!box || !nn) return;
-      if(n >= 10){ nn.textContent = Math.ceil(n*S.starsRate) + " ⭐"; box.style.display = ""; } else box.style.display = "none";
+      if(n >= 10){ nn.textContent = Math.ceil(n*S.starsRate) + " ⭐"; box.style.display = ""; }
+      else box.style.display = "none";
     };
+    if(ta) ta.oninput = updateStars;
     return;
   }
   if(a==="tgch"){
