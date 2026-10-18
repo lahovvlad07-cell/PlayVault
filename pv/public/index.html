@@ -2209,14 +2209,16 @@ function chat(adm) {
   if (tmFile)    tmFile.onchange    = e => handlePhotoFile(e.target.files[0], tmFile);
   if (tmFileCam) tmFileCam.onchange = e => handlePhotoFile(e.target.files[0], tmFileCam);
 
-  // Клик по скрепке — на iOS показываем выбор: камера или галерея
+  // Клик по скрепке — на iOS показываем выбор через sheet (без preventDefault)
   const attachLabel = $("#tm-attach");
   if (attachLabel && tmFileCam) {
-    attachLabel.onclick = e => {
-      e.preventDefault();
-      // Если iOS (Telegram WebApp) — показываем выбор через sheet
-      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-      if (isIOS) {
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if (isIOS) {
+      // На iOS убираем связь label→input и вешаем свой обработчик
+      attachLabel.removeAttribute("for");
+      attachLabel.style.cursor = "pointer";
+      attachLabel.onclick = e => {
+        e.preventDefault();
         sheet(`
           <div style="display:flex;flex-direction:column;gap:10px;padding-bottom:4px">
             <button class="btn sec" id="ph-gallery-btn" style="font-size:15px">🖼 Выбрать из галереи</button>
@@ -2225,10 +2227,9 @@ function chat(adm) {
         `);
         document.getElementById("ph-gallery-btn")?.addEventListener("click", () => { closeSheet(); tmFile?.click(); });
         document.getElementById("ph-camera-btn")?.addEventListener("click", () => { closeSheet(); tmFileCam?.click(); });
-      } else {
-        tmFile?.click();
-      }
-    };
+      };
+    }
+    // На ПК — label работает нативно через input внутри, ничего не трогаем
   }
 
   if (tmClear && sendBtn && tmPreview) {
