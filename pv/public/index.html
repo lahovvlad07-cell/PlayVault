@@ -731,14 +731,19 @@ button:focus-visible{outline:2px solid var(--ac)}
 .ref-row span{font-size:11px;color:var(--sub);font-weight:600}
 #ref-qr-box{text-align:center}
 /* faq */
-.mp-faq details{border-top:1px solid var(--brd)}
-.mp-faq summary{padding:10px 0;font-size:13px;font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.mp-faq{gap:0;padding:0;overflow:hidden}
+.mp-faq-head{padding:12px 14px 10px;border-bottom:1px solid var(--brd)}
+.mp-faq-head h3{font-size:14px;font-weight:700}
+.mp-faq details{border-bottom:1px solid var(--brd);background:transparent}
+.mp-faq details:last-of-type{border-bottom:none}
+.mp-faq summary{padding:11px 14px;font-size:13px;font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;background:transparent;color:var(--ink)}
 .mp-faq summary::-webkit-details-marker{display:none}
-.mp-faq summary::after{content:"›";font-size:18px;color:var(--sub);transition:transform .2s;display:block}
-.mp-faq details[open] summary::after{transform:rotate(90deg)}
-.mp-faq details p{margin:0 0 10px;line-height:1.5;font-size:13px;color:var(--sub)}
-.mp-sup{display:grid;grid-template-columns:1.3fr 1fr;gap:8px;margin-top:2px}
-.mp-sup .btn{height:38px;font-size:13px;width:auto!important}
+.mp-faq summary::after{content:"›";font-size:17px;color:var(--sub);transition:transform .2s;flex-shrink:0;line-height:1}
+.mp-faq details[open]>summary::after{transform:rotate(90deg)}
+.mp-faq details[open]>summary{color:var(--ac)}
+.mp-faq .faq-ans{padding:0 14px 12px;font-size:13px;color:var(--sub);line-height:1.55;margin:0}
+.mp-faq-foot{padding:10px 14px 12px;display:grid;grid-template-columns:1.3fr 1fr;gap:8px;border-top:1px solid var(--brd)}
+.mp-faq-foot .btn{height:38px;font-size:13px;width:auto!important}
 
 .hd-r{display:flex;align-items:center;gap:8px}
 .tgch{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#2aabee;color:#fff;border:0;cursor:pointer;flex:none;transition:transform .15s,opacity .15s}
@@ -2067,29 +2072,29 @@ function me() {
   ${favCard()}
   ${refCard()}
   <div class="card mp-card mp-faq">
-    <div class="mp-h" style="margin-bottom:2px"><h3>Вопросы и ответы</h3></div>
+    <div class="mp-faq-head"><h3>Вопросы и ответы</h3></div>
     <details>
       <summary>Можно ли играть онлайн?</summary>
-      <p>Только в оффлайн-режиме Steam. Онлайн-функции и мультиплеер недоступны.</p>
+      <p class="faq-ans">Только в оффлайн-режиме Steam. Онлайн-функции и мультиплеер недоступны.</p>
     </details>
     <details>
       <summary>Могут ли заблокировать аккаунт?</summary>
-      <p>Valve запрещает передачу аккаунтов, поэтому такой риск есть, и покупатель принимает его на себя. Замены аккаунтов мы не делаем.</p>
+      <p class="faq-ans">Valve запрещает передачу аккаунтов, поэтому такой риск есть. Покупатель принимает его на себя. Замены аккаунтов мы не делаем.</p>
     </details>
     <details>
       <summary>Доступ действительно навсегда?</summary>
-      <p>Оплата разовая, без подписки. Срок доступа не ограничен, пока аккаунт остаётся рабочим. Все риски несёт клиент.</p>
+      <p class="faq-ans">Оплата разовая, без подписки. Срок не ограничен, пока аккаунт рабочий. Все риски несёт клиент.</p>
     </details>
     <details>
       <summary>Есть ли возврат средств?</summary>
-      <p>Да. Гарантия возврата на баланс — 14 дней с момента покупки. Замены аккаунтов не предусмотрены.</p>
+      <p class="faq-ans">Да. Гарантия возврата на баланс — 14 дней с покупки. Замены аккаунтов не предусмотрены.</p>
     </details>
-    <div class="mp-sup">
+    <div class="mp-faq-foot">
       <button class="btn pri" data-act="tnew">💬 В поддержку</button>
       <button class="btn sec" data-act="sup">История</button>
     </div>
   </div>
-  ${isAdmin() ? `<button class="btn sec" style="font-size:13px;height:38px" data-act="adm">Админ-панель</button>` : ''}`;
+  ${isAdmin() ? `<button class="btn sec" style="font-size:13px;height:38px;width:auto!important" data-act="adm">Админ-панель</button>` : ''}`;
   requestAnimationFrame(initRefQR);
 }
 
