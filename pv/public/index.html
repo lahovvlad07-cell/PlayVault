@@ -4,7 +4,8 @@
 .pack-row{display:flex;flex-direction:column;gap:6px}
 /* ── Redesigned topup styles ── */
 .tu-header{display:flex;align-items:center;gap:11px;padding-bottom:2px}
-.tu-icon{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:grid;place-items:center;font-size:18px;flex:none}
+.tu-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:grid;place-items:center;flex:none;color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--ac) 30%,transparent)}
+.tu-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tu-title{font-size:16px;font-weight:800;color:var(--ink);line-height:1.2;letter-spacing:-.02em}
 .tu-subtitle{font-size:12px;color:var(--sub);margin-top:2px}
 .tu-subtitle b{color:var(--ink);font-weight:700}
@@ -118,7 +119,8 @@ header{
   position:sticky;top:0;z-index:10;
   border-bottom:1px solid var(--brd);
 }
-.logo{font-weight:800;font-size:19px;letter-spacing:-.03em;color:var(--ink)}
+.logo{font-weight:800;font-size:19px;letter-spacing:-.03em;color:var(--ink);cursor:pointer;padding:4px 0;-webkit-tap-highlight-color:transparent;transition:opacity .15s}
+.logo:active{opacity:.7}
 .logo span{color:var(--ac)}
 #balchip{
   display:flex;align-items:center;gap:6px;
@@ -726,9 +728,9 @@ button:focus-visible{outline:2px solid var(--ac)}
 .mp-promo .btn{width:auto!important;height:36px;padding:0 14px;font-size:13px;flex-shrink:0}
 /* ref card */
 .ref-link{background:var(--sf2);border:1px solid var(--brd);border-radius:10px;padding:9px 12px;font:600 12px ui-monospace,Menlo,monospace;color:var(--ink);word-break:break-all;line-height:1.4}
-.ref-btns{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
-.ref-btns .btn{width:auto!important;height:36px;font-size:13px}
-.ref-btns .btn-qr{display:flex;align-items:center;justify-content:center;width:36px!important;height:36px;padding:0;border-radius:10px;background:var(--sf2);border:1px solid var(--brd);color:var(--sub);cursor:pointer;transition:border-color .15s,color .15s;flex-shrink:0}
+.ref-btns{display:grid;grid-template-columns:1fr 40px 1fr;gap:8px}
+.ref-btns .btn{width:auto!important;min-width:0;height:40px;font-size:13px;padding:0 8px;white-space:nowrap}
+.ref-btns .btn-qr{display:flex;align-items:center;justify-content:center;width:40px!important;height:40px;padding:0;border-radius:13px;background:var(--sf2);border:1px solid var(--brd);color:var(--sub);cursor:pointer;transition:border-color .15s,color .15s;flex-shrink:0}
 .ref-btns .btn-qr:hover,.ref-btns .btn-qr.on{border-color:var(--ac);color:var(--ac)}
 .ref-btns .btn-qr svg{width:16px;height:16px;fill:currentColor}
 .ref-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
@@ -748,8 +750,9 @@ button:focus-visible{outline:2px solid var(--ac)}
 .mp-faq details[open]>summary::after{transform:rotate(90deg)}
 .mp-faq details[open]>summary{color:var(--ac)}
 .mp-faq .faq-ans{padding:0 14px 12px;font-size:13px;color:var(--sub);line-height:1.55;margin:0}
-.mp-faq-foot{padding:10px 14px 12px;display:grid;grid-template-columns:1.3fr 1fr;gap:8px;border-top:1px solid var(--brd)}
-.mp-faq-foot .btn{height:38px;font-size:13px;width:auto!important}
+.mp-faq-foot{padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--brd)}
+.mp-faq-foot .btn{height:42px;font-size:13.5px;width:100%!important;min-width:0;padding:0 8px;gap:7px;white-space:nowrap}
+.mp-faq-foot .btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
 .hd-r{display:flex;align-items:center;gap:8px}
 .tgch{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#2aabee;color:#fff;border:0;cursor:pointer;flex:none;transition:transform .15s,opacity .15s}
@@ -773,6 +776,59 @@ button:focus-visible{outline:2px solid var(--ac)}
 .hv-rnd{height:46px;padding:0 16px;border-radius:12px;display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:14px;font-weight:700;color:#e4eefa;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);cursor:pointer;transition:background .15s}
 .hv-rnd:hover{background:rgba(255,255,255,.14)}
 .hv-rnd:active{transform:scale(.97)}
+
+
+/* ── Мои доступы: карточка заказа ── */
+.oc{background:var(--sf);border:1px solid var(--brd);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.oc-head{display:flex;align-items:center;gap:12px}
+.oc-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;color:var(--ac);background:color-mix(in srgb,var(--ac) 14%,var(--sf2));border:1px solid color-mix(in srgb,var(--ac) 25%,transparent)}
+.oc-ic svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.oc-t{flex:1;min-width:0}
+.oc-t h2{font-size:16px;font-weight:800;letter-spacing:-.02em;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oc-t div{font-size:12px;color:var(--sub);margin-top:2px}
+.oc-badge{flex:none;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;background:rgba(92,184,122,.14);color:var(--ok);border:1px solid rgba(92,184,122,.25)}
+.oc-badge.warn{background:rgba(232,168,74,.14);color:var(--warn);border-color:rgba(232,168,74,.28)}
+.oc-timer{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--sub);padding:9px 12px;border-radius:11px;background:var(--sf2);border:1px solid var(--brd)}
+.oc-timer>svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.oc-timer span{flex:1;min-width:0}
+.oc-timer b{color:var(--ink);font-variant-numeric:tabular-nums}
+.oc-timer button{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--sub);color:var(--sub);font-size:11px;font-weight:700;display:grid;place-items:center;padding:0;flex:none}
+.oc-lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin:0 2px -6px}
+.cr-box{background:var(--sf2);border:1px solid var(--brd);border-radius:13px;overflow:hidden}
+.cr-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px 11px 14px}
+.cr-row+.cr-row{border-top:1px solid var(--brd)}
+.cr-main{min-width:0;flex:1}
+.cr-main small{display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:3px}
+.cr-main code{display:block;font:700 15px ui-monospace,Menlo,monospace;word-break:break-all;color:var(--ink)}
+.cr-main code.mask{white-space:nowrap;word-break:normal;letter-spacing:1px}
+.cr-acts{display:flex;gap:6px;flex:none}
+.cr-b{height:34px;min-width:34px;padding:0 11px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;font-size:12.5px;font-weight:700;color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,transparent);border:1px solid color-mix(in srgb,var(--ac) 22%,transparent);white-space:nowrap;transition:background .15s,transform .1s}
+.cr-b:active{transform:scale(.96)}
+.cr-b.ic{padding:0;width:34px}
+.cr-b.ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.oc-timer span{white-space:nowrap}
+.cr-b.ghost{color:var(--sub);background:transparent;border-color:var(--brd)}
+.oc-tip{display:flex;gap:9px;font-size:12px;line-height:1.5;color:var(--sub);padding:0 2px}
+.oc-tip svg{width:15px;height:15px;flex:none;margin-top:2px;fill:none;stroke:var(--warn);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.oc .btn.oc-guard{height:46px;font-size:14.5px}
+.oc .btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.oc-code{background:var(--sf2);border:1px solid var(--brd);border-radius:13px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.oc-code-h{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--sub)}
+.oc-code-h b{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
+.oc-acts{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px}
+.oc-acts .btn{height:40px;font-size:13px;width:100%;padding:0 8px;border-radius:11px}
+.oc-acts .btn.warn{color:var(--warn)}
+.oc-acts .btn.dim{color:var(--sub)}
+.oc-guide{border-top:1px solid var(--brd);padding-top:12px;margin-top:-2px}
+.oc-guide summary{font-size:13px;color:var(--sub);font-weight:600}
+.oc-aged{background:var(--sf2);border:1px solid var(--brd);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--sub);text-align:center;line-height:1.5}
+.oc-mini{display:flex;align-items:center;gap:12px;background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:12px 14px}
+.oc-mini .oc-ic{width:36px;height:36px;border-radius:10px;opacity:.7}
+.oc-mini .oc-t h2{font-size:14.5px}
+.oc-mini .btn{width:auto;height:34px;font-size:12.5px;padding:0 14px;border-radius:10px}
+.oc-sum{display:flex;align-items:baseline;justify-content:space-between;padding:2px 4px 0}
+.oc-sum h2{font-size:20px;font-weight:800;letter-spacing:-.03em}
+.oc-sum span{font-size:12.5px;color:var(--sub);font-weight:600}
 
 /* ── checkout & topup visual fixes ── */
 
@@ -825,7 +881,7 @@ button:focus-visible{outline:2px solid var(--ac)}
 
 <div id="app">
   <header>
-    <div class="logo">Play<span>Vault</span></div>
+    <button class="logo" data-act="cat" aria-label="PlayVault — в каталог">Play<span>Vault</span></button>
     <div class="hd-r">
       <button id="theme-tog" aria-label="Сменить тему"></button>
       <button class="tgch" data-act="tgch" aria-label="Telegram-канал PlayVault">
@@ -1874,67 +1930,69 @@ function mine() {
     ${popularRow("С чего начать")}`;
     return;
   }
-  V.innerHTML = tkBtn() + S.orders.map((o, i) => {
+  const IC = {
+    copy:'<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></svg>',
+    key:'<svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>',
+    clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    shield:'<svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+    info:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+    pwr:'<svg viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.3 7.3a8 8 0 1 0 11.4 0"/></svg>'
+  };
+  const act = n => `<div class="oc-sum"><h2>Мои доступы</h2><span>${n} ${n%10===1&&n%100!==11?"набор":(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?"набора":"наборов"}</span></div>`;
+  V.innerHTML = tkBtn() + act(S.orders.length) + S.orders.map((o, i) => {
     const left = o.exp ? Math.max(0, Math.ceil((o.exp-Date.now())/864e5)) : null;
     const hidden = S._hiddenOrders.has(o.id);
     // Счётчик 14 дней (срок гарантии)
     const daysLeft = o.created_at ? Math.max(0, 14 - Math.floor((Date.now()-new Date(o.created_at).getTime())/864e5)) : null;
+    const until = o.created_at ? new Date(o.created_at).getTime()+14*864e5 : 0;
 
-    if(hidden) return `<div class="card" style="flex-direction:row;align-items:center;gap:12px">
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(o.p.name)}</div>
-        <div class="mut" style="font-size:12px">Заказ №${o.n} · скрыто${daysLeft!==null ? (o.aged ? " · данные скрыты (14 дн.)" : ` · данные ещё <b class="cred-timer" style="color:var(--ink)" data-until="${new Date(o.created_at).getTime()+14*864e5}">${daysLeft} дн.</b>`) : ""}</div>
+    if(hidden) return `<div class="oc-mini">
+      <div class="oc-ic">${IC.key}</div>
+      <div class="oc-t">
+        <h2>${esc(o.p.name)}</h2>
+        <div>Заказ №${o.n} · скрыто${daysLeft!==null ? (o.aged ? " · данные скрыты" : ` · ещё <b class="cred-timer" style="color:var(--ink)" data-until="${until}">${daysLeft} дн.</b>`) : ""}</div>
       </div>
-      <button class="btn sec sm" data-act="hideorder" data-i="${i}">Показать</button>
+      <button class="btn sec" data-act="hideorder" data-i="${i}">Показать</button>
     </div>`;
 
-    return `<div class="card">
-      <div class="row">
-        <div>
-          <h2 style="font-size:17px">${o.p.name}</h2>
-          <div class="mut">Заказ №${o.n}</div>
+    const credRows = (login, pass, ids) => `<div class="cr-box">
+        <div class="cr-row">
+          <div class="cr-main"><small>Логин</small><code>${esc(login)}</code></div>
+          <div class="cr-acts"><button class="cr-b ic" data-act="${ids.cl}" data-i="${i}" aria-label="Копировать логин">${IC.copy}</button></div>
         </div>
-        <span class="tag ${o.exp?'warn':'ok'}">${o.exp? left+' дн.' : 'Навсегда'}</span>
+        <div class="cr-row">
+          <div class="cr-main"><small>Пароль</small><code id="${ids.pw}${i}" class="mask">•••••••••</code></div>
+          <div class="cr-acts">
+            <button class="cr-b ic" data-act="${ids.cp}" data-i="${i}" aria-label="Копировать пароль">${IC.copy}</button>
+            <button class="cr-b ghost" data-act="${ids.sp}" data-i="${i}" id="${ids.spb}${i}">Показать</button>
+          </div>
+        </div>
+      </div>`;
+
+    return `<div class="oc">
+      <div class="oc-head">
+        <div class="oc-ic">${IC.key}</div>
+        <div class="oc-t"><h2>${esc(o.p.name)}</h2><div>Заказ №${o.n}</div></div>
+        <span class="oc-badge ${o.exp?'warn':''}">${o.exp? left+' дн.' : 'Навсегда'}</span>
       </div>
       ${o.exp?`<div class="bar"><i style="width:${Math.min(100,left/(o.span||30)*100)}%"></i></div>`:''}
-      ${daysLeft!==null ? `<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut)">
-        <span>Данные доступны ещё <b class="cred-timer" style="color:var(--ink)" data-until="${new Date(o.created_at).getTime()+14*864e5}">${daysLeft} дн.</b></span>
-        <button data-act="credhint" style="width:16px;height:16px;border-radius:50%;border:1.5px solid var(--mut);color:var(--mut);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0;background:transparent;flex-shrink:0">?</button>
+      ${daysLeft!==null && !o.aged ? `<div class="oc-timer">${IC.clock}
+        <span>Доступны ещё <b class="cred-timer" data-until="${until}">${daysLeft} дн.</b></span>
+        <button data-act="credhint" aria-label="Подробнее">?</button>
       </div>` : ''}
-      ${o.aged ? `<div style="background:var(--sf2);border:1px solid var(--brd);border-radius:11px;padding:12px 14px;font-size:13px;color:var(--mut);text-align:center">⏳ Данные для входа скрыты — прошло 14 дней. Доступ к аккаунту сохраняется.</div>` : `
-      <div class="cred">
-        <div><small>Логин</small><code>${esc(o.p.login)}</code></div>
-        <button class="ico" data-act="cl" data-i="${i}">Копировать</button>
-      </div>
-      <div class="cred">
-        <div><small>Пароль</small><code id="pw${i}" class="mask">•••••••••</code></div>
-        <div style="display:flex;gap:4px">
-          <button class="ico" data-act="cp" data-i="${i}">Копировать</button>
-          <button class="ico" data-act="sp" data-i="${i}" id="spb${i}">Показать</button>
-        </div>
-      </div>
-      <div class="mut" style="font-size:12px;margin:-2px 2px 0">💡 Пароль может выглядеть как ссылка — это не ошибка. Копируйте его целиком кнопкой «Копировать» и вставляйте в Steam как обычный пароль.</div>
-      <div id="sg${i}"></div>
-      ${o.p.extra_service ? `<div class="cred-sep"><span class="tag" style="font-size:12px">${o.p.extra_service==="uplay"?"Ubisoft Connect (Uplay)":o.p.extra_service}</span></div>
-      <div class="cred">
-        <div><small>Логин</small><code>${esc(o.p.extra_login||"")}</code></div>
-        <button class="ico" data-act="cxl" data-i="${i}" aria-label="Копировать логин Uplay">Копировать</button>
-      </div>
-      <div class="cred">
-        <div><small>Пароль</small><code id="xpw${i}" class="mask">•••••••••</code></div>
-        <div style="display:flex;gap:4px">
-          <button class="ico" data-act="cxp" data-i="${i}" aria-label="Копировать пароль Uplay">Копировать</button>
-          <button class="ico" data-act="sxp" data-i="${i}" id="sxpb${i}">Показать</button>
-        </div>
-      </div>` : ""}
+      ${o.aged ? `<div class="oc-aged">Данные для входа скрыты — прошло 14 дней.<br>Доступ к аккаунту сохраняется.</div>` : `
+      ${credRows(o.p.login, o.p.pass, {cl:"cl",cp:"cp",sp:"sp",pw:"pw",spb:"spb"})}
+      <div class="oc-tip">${IC.info}<span>Пароль может выглядеть как ссылка — это не ошибка. Копируйте его целиком кнопкой справа и вставляйте в Steam как обычный пароль.</span></div>
+      ${o.p.extra_service ? `<div class="oc-lbl">${o.p.extra_service==="uplay"?"Ubisoft Connect (Uplay)":esc(o.p.extra_service)}</div>
+      ${credRows(o.p.extra_login||"", "", {cl:"cxl",cp:"cxp",sp:"sxp",pw:"xpw",spb:"sxpb"})}` : ""}
       `}
-      <div class="row" style="gap:8px;flex-wrap:wrap">
-        <button class="btn sec sm" data-act="gd" data-i="${i}">🔐 Код Steam Guard</button>
-        ${o.exp?`<button class="btn sec sm" data-act="ext" data-i="${i}">Продлить</button>`:''}
-        <button class="btn sec sm" data-act="bad" data-i="${i}" style="color:var(--warn)">Не работает</button>
-        <button class="btn sec sm" data-act="hideorder" data-i="${i}" style="color:var(--mut)">Скрыть</button>
+      <div id="sg${i}"><button class="btn pri oc-guard" data-act="gd" data-i="${i}">${IC.shield}Код Steam Guard</button></div>
+      <div class="oc-acts">
+        ${o.exp?`<button class="btn sec" data-act="ext" data-i="${i}">Продлить</button>`:''}
+        <button class="btn sec warn" data-act="bad" data-i="${i}">Не работает</button>
+        <button class="btn sec dim" data-act="hideorder" data-i="${i}">Скрыть</button>
       </div>
-      <details>
+      <details class="oc-guide">
         <summary>Как включить оффлайн-режим</summary>
         <ol>
           <li>Войдите в Steam, введите код Steam Guard</li>
@@ -2000,8 +2058,8 @@ function refCard() {
     ${link ? `<div class="ref-link">${esc(link.replace("https://",""))}</div>
     <div class="ref-btns">
       <button class="btn sec" data-act="ref">Копировать</button>
-      <button class="btn pri" data-act="refshare">Поделиться</button>
       <button class="btn-qr" id="ref-qr-toggle" title="QR-код"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3h7v7H3zm1 1v5h5V4zm1 1h3v3H5zM14 3h7v7h-7zm1 1v5h5V4zm1 1h3v3h-3zM3 14h7v7H3zm1 1v5h5v-5zm1 1h3v3H5zM14 14h3v3h-3zm4 0h3v3h-3zm-4 4h3v3h-3zm4 0h3v3h-3z"/></svg></button>
+      <button class="btn pri" data-act="refshare">Поделиться</button>
     </div>
     <div class="ref-row"><div><b>${ME.friends||0}</b><span>приглашено</span></div><div><b>${ME.bought||0}</b><span>купили</span></div></div>
     <div id="ref-qr-box" style="display:none">
@@ -2096,8 +2154,8 @@ function me() {
       <p class="faq-ans">Да. Гарантия возврата на баланс — 14 дней с покупки. Замены аккаунтов не предусмотрены.</p>
     </details>
     <div class="mp-faq-foot">
-      <button class="btn pri" data-act="tnew">💬 В поддержку</button>
-      <button class="btn sec" data-act="sup">История</button>
+      <button class="btn pri" data-act="tnew"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>В поддержку</button>
+      <button class="btn sec" data-act="sup"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>История</button>
     </div>
   </div>
   ${isAdmin() ? `<button class="btn sec" style="font-size:13px;height:38px;width:auto!important" data-act="adm">Админ-панель</button>` : ''}`;
@@ -3679,7 +3737,7 @@ document.addEventListener("click", e => {
     const starsFor100 = Math.ceil(100*S.starsRate);
     sheet(`
     <div class="tu-header">
-      <div class="tu-icon">💳</div>
+      <div class="tu-icon"><svg viewBox="0 0 24 24"><path d="M19 7V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/><path d="M21 12h-5a2 2 0 0 0 0 4h5z"/></svg></div>
       <div>
         <div class="tu-title">Пополнение баланса</div>
         <div class="tu-subtitle">Баланс: <b>${nf(S.bal)} ₽</b></div>
@@ -4103,18 +4161,18 @@ document.addEventListener("click", e => {
     if(!box)return;
     let t=Math.ceil(timeLeft/1000);
     clearInterval(S._timers["sg"+i]);
-    box.innerHTML=`<div class="cred" style="flex-direction:column;align-items:stretch;gap:8px">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <small>Код Steam Guard</small>
-        <span class="mut" style="font-size:12px">Действует <span id="tt${i}">${t}</span> с</span>
+    box.innerHTML=`<div class="oc-code">
+      <div class="oc-code-h">
+        <b>Код Steam Guard</b>
+        <span>Действует <span id="tt${i}">${t}</span> с</span>
       </div>
       <div class="code-display" id="stcode${i}">${c}</div>
-      <button class="btn sec sm" style="width:auto" onclick="navigator.clipboard?.writeText('${c}').then(()=>window._toast('Код скопирован')).catch(()=>{})">Копировать</button>
+      <button class="btn sec" style="height:38px;font-size:13px" onclick="navigator.clipboard?.writeText('${c}').then(()=>window._toast('Код скопирован')).catch(()=>{})">Копировать</button>
     </div>`;
     S._timers["sg"+i]=setInterval(()=>{
       t--;
       const e2=$("#tt"+i);
-      if(!e2||t<=0){clearInterval(S._timers["sg"+i]);box.innerHTML=`<button class="btn sec sm" data-act="gd" data-i="${i}">🔐 Обновить код</button>`;return}
+      if(!e2||t<=0){clearInterval(S._timers["sg"+i]);box.innerHTML=`<button class="btn pri oc-guard" data-act="gd" data-i="${i}">Обновить код Steam Guard</button>`;return}
       e2.textContent=t;
     },1000);
     return;
