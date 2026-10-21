@@ -8,17 +8,34 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     const rows = await sql`
       select o.id, o.pack_id, o.price_rub, o.created_at, p.name,
+             coalesce(o.creds_until, o.created_at + interval '14 days') as creds_until,
+             coalesce(o.creds_until, o.created_at + interval '14 days') <= now() as aged,
              a.login_enc, a.pass_enc,
              a.extra_service, a.extra_login_enc, a.extra_pass_enc
       from orders o join packs p on p.id = o.pack_id join accounts a on a.id = o.account_id
       where o.user_id = ${u.id} and o.status = 'paid' order by o.id desc`;
-    return res.json(rows.map(({ login_enc, pass_enc, extra_login_enc, extra_pass_enc, ...r }) => ({
+    // Срок показа истёк — логин и пароль с сервера уже не отдаём
+    return res.json(rows.map(({ login_enc, pass_enc, extra_login_enc, extra_pass_enc, ...r }) => r.aged ? ({
+      ...r, login: null, pass: null, extra_login: null, extra_pass: null,
+    }) : ({
       ...r,
       login: dec(login_enc),
       pass:  dec(pass_enc),
       extra_login: extra_login_enc ? dec(extra_login_enc) : null,
       extra_pass:  extra_pass_enc  ? dec(extra_pass_enc)  : null,
     })));
+  }
+
+  // Обновить таймер: сброс на 14 дней от сегодня (не прибавка). Только когда осталось от 0 до 7 дней.
+  if (req.method === "PATCH") {
+    const [o] = await sql`
+      update orders set creds_until = now() + interval '14 days'
+      where id = ${Number(req.body?.id)} and user_id = ${u.id} and status = 'paid'
+        and coalesce(creds_until, created_at + interval '14 days') >  now()
+        and coalesce(creds_until, created_at + interval '14 days') <= now() + interval '7 days'
+      returning creds_until`;
+    if (!o) return res.status(409).json({ error: "not_allowed" });
+    return res.json({ creds_until: o.creds_until });
   }
 
   // Покупка: цена считается на сервере, клиенту не доверяем
