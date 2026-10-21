@@ -832,6 +832,12 @@ button:focus-visible{outline:2px solid var(--ac)}
 .cr-b.ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .oc-timer span{white-space:nowrap}
 .cr-b.ghost{color:var(--sub);background:transparent;border-color:var(--brd)}
+.oc-refresh{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 14px;border-radius:13px;background:color-mix(in srgb,var(--ac) 12%,transparent);border:1px solid color-mix(in srgb,var(--ac) 32%,transparent);color:var(--ac);transition:transform .1s,background .15s}
+.oc-refresh:active{transform:scale(.985);background:color-mix(in srgb,var(--ac) 20%,transparent)}
+.oc-refresh svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.oc-refresh b{display:block;font-size:14px;font-weight:700;color:var(--ink)}
+.oc-refresh small{display:block;font-size:12px;color:var(--sub);margin-top:1px;font-weight:500}
+.oc-refresh.busy{opacity:.6;pointer-events:none}
 .oc-tip{display:flex;gap:9px;font-size:12px;line-height:1.5;color:var(--sub);padding:0 2px}
 .oc-tip svg{width:15px;height:15px;flex:none;margin-top:2px;fill:none;stroke:var(--warn);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .oc .btn.oc-guard{height:46px;font-size:14.5px}
@@ -2094,8 +2100,9 @@ function mine() {
     const left = o.exp ? Math.max(0, Math.ceil((o.exp-Date.now())/864e5)) : null;
     const hidden = S._hiddenOrders.has(o.id);
     // Счётчик 14 дней (срок гарантии)
-    const daysLeft = o.created_at ? Math.max(0, 14 - Math.floor((Date.now()-new Date(o.created_at).getTime())/864e5)) : null;
-    const until = o.created_at ? new Date(o.created_at).getTime()+14*864e5 : 0;
+    const until = o.until || (o.created_at ? new Date(o.created_at).getTime()+14*864e5 : 0);
+    const daysLeft = until ? Math.max(0, Math.ceil((until-Date.now())/864e5)) : null;
+    const canRefresh = !!until && until > Date.now() && (until - Date.now()) <= 7*864e5;
 
     if(hidden) return `<div class="oc-mini">
       <div class="oc-ic">${IC.key}</div>
@@ -2130,7 +2137,8 @@ function mine() {
       ${daysLeft!==null && !o.aged ? `<div class="oc-timer">${IC.clock}
         <span>Доступны ещё <b class="cred-timer" data-until="${until}">${daysLeft} дн.</b></span>
         <button data-act="credhint" aria-label="Подробнее"><svg viewBox="0 0 24 24"><path d="M9.2 9.2a2.9 2.9 0 1 1 4.1 2.6c-.8.4-1.3 1-1.3 1.9"/><path d="M12 17.2h.01"/></svg></button>
-      </div>` : ''}
+      </div>
+      ${canRefresh ? `<button class="oc-refresh" data-act="tref" data-i="${i}"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg><span><b>Обновить таймер</b><small>Снова 14 дней — пока данные нужны вам</small></span></button>` : ''}` : ''}
       ${o.aged ? `<div class="oc-aged">Данные для входа скрыты — прошло 14 дней.<br>Доступ к аккаунту сохраняется.</div>` : `
       ${credRows(o.p.login, o.p.pass, {cl:"cl",cp:"cp",sp:"sp",pw:"pw",spb:"spb"})}
       <div class="oc-tip">${IC.info}<span>Пароль может выглядеть как ссылка — это не ошибка. Копируйте его целиком кнопкой справа и вставляйте в Steam как обычный пароль.</span></div>
@@ -3514,11 +3522,11 @@ async function loadOrders() {
   if(!tgInit()) return;
   try {
     const rows = await api("/api/orders");
-    const CRED_TTL = 14 * 24 * 60 * 60 * 1000;
     S.orders = rows
       .map(r => {
-        const aged = r.created_at && (Date.now() - new Date(r.created_at).getTime()) > CRED_TTL;
-        return {n:r.id, id:r.id, plan:"buy", exp:null, span:0, created_at:r.created_at, aged,
+        const until = r.creds_until ? new Date(r.creds_until).getTime() : (r.created_at ? new Date(r.created_at).getTime() + 14*864e5 : 0);
+        const aged = !!until && until <= Date.now();
+        return {n:r.id, id:r.id, plan:"buy", exp:null, span:0, created_at:r.created_at, until, aged,
           p: Object.assign({}, PACKS.find(x => x.id === r.pack_id) || {}, {
             name:r.name,
             login: aged ? null : r.login,
@@ -4379,6 +4387,14 @@ document.addEventListener("click", e => {
     render();
     return;
   }
+  if(a==="tref"){
+    if(b.classList.contains("busy")) return;
+    b.classList.add("busy");
+    api("/api/orders",{method:"PATCH",body:{id:o.id}})
+      .then(async()=>{ await loadOrders(); render(); toast("Таймер обновлён — снова 14 дней ✓"); })
+      .catch(e=>{ b.classList.remove("busy"); toast(e.message==="not_allowed"?"Обновить можно, когда осталось 7 дней или меньше":"Не удалось обновить таймер"); });
+    return;
+  }
   if(a==="credhint"){
     sheet(`<div class="sh-grip"></div>
     <div class="sh-head">
@@ -4386,7 +4402,7 @@ document.addEventListener("click", e => {
       <div class="sh-t"><h2>Срок показа данных</h2><div>Как работает гарантийный период</div></div>
     </div>
     <div class="sh-pt"><div class="sh-pt-n">1</div><div><b>14 дней после покупки</b><span>Именно столько логин и пароль отображаются в приложении — это срок гарантии.</span></div></div>
-    <div class="sh-pt"><div class="sh-pt-n">2</div><div><b>Сохраните данные заранее</b><span>Скопируйте логин и пароль в надёжное место, пока они доступны.</span></div></div>
+    <div class="sh-pt"><div class="sh-pt-n">2</div><div><b>Нужны данные дольше?</b><span>Когда останется 7 дней или меньше, появится кнопка «Обновить таймер» — он снова станет 14 дней.</span></div></div>
     <div class="sh-pt"><div class="sh-pt-n ok">✓</div><div><b>Доступ не пропадает</b><span>После скрытия данных аккаунт остаётся с вами — меняется только отображение.</span></div></div>
     <button class="sh-btn" data-act="sclose">Понятно</button>`);
     return;
