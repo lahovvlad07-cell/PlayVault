@@ -2343,7 +2343,7 @@ function tickets() {
     return "💬";
   };
   const hasNew = S.tickets.some(t => t.uu);
-  V.innerHTML = `<button class="back" data-act="mine">← Мои доступы</button>
+  V.innerHTML = `<button class="back" data-act="mine">Мои доступы</button>
   <div class="sup-hero">
     <div class="sup-hero-ic">🎧</div>
     <h2>Поддержка</h2>
@@ -2411,7 +2411,7 @@ function chat(adm) {
   const me=adm?"sup":"me", op=t.st==="open";
   const V = $("#view");
   V.innerHTML = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <button class="back" data-act="${adm?"atks":"tickets"}" style="margin-bottom:0;flex-shrink:0">←</button>
+    <button class="back" data-act="${adm?"atks":"tickets"}" style="margin-bottom:0;flex-shrink:0" aria-label="Назад"></button>
     <div style="flex:1;min-width:0">
       <div style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.subj)}</div>
       <div class="mut" style="font-size:12px">№${t.id}${adm?" · "+esc(t.who):""} · ${tm(t.ts)}</div>
