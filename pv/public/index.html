@@ -425,7 +425,22 @@ h3{font-size:15px;font-weight:700}
 .rv-del-btn:hover{color:var(--hot);background:rgba(255,80,80,.08)}
 
 /* ── Tickets ── */
-.tk{display:flex;flex-direction:column;gap:6px;text-align:left;width:100%;background:var(--sf);border:1px solid var(--brd);border-radius:14px;padding:14px;transition:background .15s}
+.tk{display:flex;flex-direction:column;gap:5px;text-align:left;width:100%;background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:14px 16px;transition:background .15s;position:relative}
+.tk:active{background:var(--sf2)}
+.tk-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--ac);flex-shrink:0;margin-top:4px}
+.tk-cat-icon{font-size:18px;line-height:1;flex-shrink:0}
+.tk-head{display:flex;align-items:flex-start;gap:10px}
+.tk-head-body{flex:1;min-width:0}
+.sup-hero{text-align:center;padding:28px 0 20px}
+.sup-hero-ic{font-size:40px;line-height:1;margin-bottom:10px}
+.sup-hero h2{font-size:22px;font-weight:800;margin:0 0 4px}
+.sup-cats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.sup-cat{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:14px;transition:background .15s;cursor:pointer;width:100%}
+.sup-cat:active{background:var(--sf2)}
+.sup-cat-ic{font-size:26px;line-height:1}
+.sup-cat b{font-size:13px;line-height:1.3;font-weight:700}
+.sup-cat small{font-size:11px;color:var(--sub);line-height:1.35}
+.sup-footer{text-align:center;padding:8px 0 4px}
 .tk:hover{background:var(--sf2)}
 .tkb{
   display:grid;grid-template-columns:40px 1fr auto;
@@ -1231,23 +1246,6 @@ const GDESC = {
   "Poly Bridge":"Инженерная головоломка: строй мосты, которые выдержат вес транспорта.",
   "Poly Bridge 2":"Продолжение инженерной головоломки: новые материалы, уровни и физика.",
   "The Awesome Adventures of Captain Spirit":"Короткая бесплатная история от создателей Life is Strange: фантазии мальчика и семейная драма.",
-  "Borderlands 2 RU":"Шутер-лутер на Пандоре: бесконечный арсенал и чёрный юмор. Версия с русской локализацией.",
-  "Contraband Police":"Таможенный полицейский в вымышленной стране 80-х: проверка машин на КПП, погони и перестрелки с контрабандистами.",
-  "Forza Horizon 5":"Гоночный фестиваль в Мексике: сотни машин, огромный открытый мир и разные виды гонок.",
-  "Forza Horizon 6":"Новая часть серии фестивальных гонок Forza Horizon: открытый мир и большой автопарк.",
-  "Horizon Zero Dawn Complete Edition":"Элой в мире машин-динозавров. Оригинальная игра с дополнением «Замёрзшие пустоши».",
-  "In Sound Mind":"Психологический хоррор от первого лица: психотерапевт Деррик исследует кошмары своих пациентов.",
-  "Killing Floor":"Классический кооперативный шутер: отбивайтесь от орд мутантов, закупайте оружие между волнами. Можно играть одному.",
-  "Killing Floor 2":"Продолжение шутера про орды мутантов: кровавые бои, перки и волны врагов.",
-  "Mafia II (Classic)":"Оригинальная Mafia II: Вито Скалетта в мафии 1940–50-х. Сюжетный экшен с большим городом.",
-  "Metro Exodus Enhanced Edition":"Улучшенная версия Metro Exodus: путешествие Артёма на поезде по постапокалиптической России. Трассировка лучей и обновлённая графика.",
-  "Portal: Revolution":"Самостоятельная фанатская головоломка в духе Portal 2: новые механики порталов и большая кампания.",
-  "Resident Evil (1996)":"Оригинальный Resident Evil 1996 года: особняк Спенсера и классический survival horror.",
-  "Resident Evil 2 (1998)":"Оригинальный Resident Evil 2 1998 года: Леон и Клэр в Раккун-Сити, классические фиксированные камеры.",
-  "Resident Evil 3 Nemesis (1999)":"Оригинальный Resident Evil 3 1999 года: Джилл Валентайн убегает от Немезиса по Раккун-Сити.",
-  "Resident Evil 4 (2005)":"Оригинальный Resident Evil 4 2005 года: Леон спасает дочь президента в испанской деревне.",
-  "Resident Evil Village":"Итан Уинтерс ищет дочь в деревне, полной монстров: замок леди Димитреску и хоррор от первого лица.",
-  "The Walking Dead: The Telltale Definitive Series":"Все сезоны The Walking Dead от Telltale в одном издании: эпизодическая история выживания и тяжёлых выборов.",
 };
 
 const TOP = {
@@ -2245,17 +2243,62 @@ function loadHiddenOrders(){ try{ return JSON.parse(localStorage.getItem("pv_hid
 function saveHiddenOrders(){ try{ localStorage.setItem("pv_hidden_orders", JSON.stringify([...S._hiddenOrders])); }catch(_){} }
 function tickets() {
   const V = $("#view");
-  V.innerHTML = `<button class="back" data-act="mine">Мои доступы</button>
-  <div class="row"><h2>Поддержка</h2><div style="display:flex;gap:8px"><button class="btn sec sm" data-act="treq">Запросить игру</button><button class="btn pri sm" data-act="tnew">Новое</button></div></div>
-  ${S.tickets.length ? S.tickets.map(t=>{const l=t.msgs[t.msgs.length-1];return `<button class="tk" data-act="topen" data-id="${t.id}">
-    <div class="row"><b style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${esc(t.subj)}</b><span class="tag ${t.st==='open'?'ok':''}">${t.st==='open'?'Открыт':'Закрыт'}</span></div>
-    <div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.f==="me"?"Вы: ":"Поддержка: "}${esc(l.t)}</div>
-    <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}${t.st!=='open'?' · 🗑 '+tkDel(t):''}</span>${t.uu?'<span class="disc-badge">новый ответ</span>':''}</div>
-  </button>`}).join("") : `<div class="card empty">
-    <h3>Обращений пока нет</h3>
-    <div class="mut">Если что-то не работает или есть вопрос — создайте обращение</div>
-    <button class="btn pri" data-act="tnew">Написать</button>
-  </div>`}`;
+  const CAT_IC = {acc:"🔐",pay:"💳",ref:"💰",ext:"🕐",game:"🎮",other:"💬"};
+  const getIcon = subj => {
+    if(/аккаунт|пароль|steam/i.test(subj)) return "🔐";
+    if(/оплат/i.test(subj)) return "💳";
+    if(/возврат/i.test(subj)) return "💰";
+    if(/продлен/i.test(subj)) return "🕐";
+    if(/игр/i.test(subj)) return "🎮";
+    return "💬";
+  };
+  const hasNew = S.tickets.some(t => t.uu);
+  V.innerHTML = `<button class="back" data-act="mine">← Мои доступы</button>
+  <div class="sup-hero">
+    <div class="sup-hero-ic">🎧</div>
+    <h2>Поддержка</h2>
+    <div class="mut" style="font-size:13px">Обычно отвечаем в течение 24 часов</div>
+  </div>
+  ${!S.tickets.length ? `
+  <div class="sup-cats">
+    ${[["acc","🔐","Аккаунт не работает","var(--hot)","Неверный пароль, заблокирован"],
+       ["pay","💳","Вопрос по оплате","var(--warn)","Не прошёл платёж, списали дважды"],
+       ["ref","💰","Возврат на баланс","var(--ok)","Хочу вернуть средства"],
+       ["ext","🕐","Продление доступа","var(--ac)","Доступ истёк или хочу продлить"],
+       ["game","🎮","Запросить игру","#a78bfa","Нет нужной игры"],
+       ["other","💬","Другой вопрос","var(--sub)","Всё остальное"]
+      ].map(([id,ic,lbl,col,hint])=>`<button class="sup-cat" data-act="tcat" data-cat="${id}">
+      <span class="sup-cat-ic">${ic}</span>
+      <b style="color:${col}">${lbl}</b>
+      <small>${hint}</small>
+    </button>`).join("")}
+  </div>
+  <div class="sup-footer"><div class="mut" style="font-size:12px">Работаем ежедневно · среднее время ответа <b>45 мин</b></div></div>
+  ` : `
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+    <h3 style="margin:0;font-size:15px">Мои обращения</h3>
+    <button class="btn pri sm" data-act="tnew">+ Новое</button>
+  </div>
+  ${S.tickets.map(t=>{
+    const l=t.msgs[t.msgs.length-1];
+    const ic = getIcon(t.subj);
+    const isOpen = t.st==='open';
+    const preview = l.t ? (l.f==="me"?"Вы: ":"Поддержка: ") + l.t : l.ph ? "📷 Фото" : "";
+    return `<button class="tk" data-act="topen" data-id="${t.id}">
+    <div class="tk-head">
+      <span class="tk-cat-icon">${ic}</span>
+      <div class="tk-head-body">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+          <b style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:14px">${esc(t.subj)}</b>
+          <span class="tag ${isOpen?'ok':''}" style="flex-shrink:0;font-size:11px">${isOpen?'Открыт':'Закрыт'}</span>
+        </div>
+        <div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px">${esc(preview)}</div>
+        <div class="mut" style="font-size:11px;margin-top:3px">№${t.id} · ${tm(l.ts)}${!isOpen?' · 🗑 '+tkDel(t):''}</div>
+      </div>
+      ${t.uu?'<span class="tk-unread-dot"></span>':''}
+    </div>
+  </button>`;}).join("")}
+  `}`;
 }
 
 function atks(fresh = true) {
@@ -2277,15 +2320,15 @@ function chat(adm) {
   const t = getT(); if(!t){S.tab=adm?"atks":"tickets";return render()}
   const me=adm?"sup":"me", op=t.st==="open";
   const V = $("#view");
-  V.innerHTML = `<button class="back" data-act="${adm?"atks":"tickets"}">${adm?"Тикеты":"Поддержка"}</button>
-  <div class="row">
-    <div style="min-width:0">
-      <h2 style="font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.subj)}</h2>
-      <div class="mut">№${t.id} · ${adm?esc(t.who)+" · ":""}${tm(t.ts)}</div>
-      <div class="mut" style="font-size:12px;margin-top:2px">${op ? "🗑 После закрытия обращение удаляется через 14 дней" : "🗑 Обращение "+tkDel(t)+" · можно открыть заново"}</div>
+  V.innerHTML = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+    <button class="back" data-act="${adm?"atks":"tickets"}" style="margin-bottom:0;flex-shrink:0">←</button>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.subj)}</div>
+      <div class="mut" style="font-size:12px">№${t.id}${adm?" · "+esc(t.who):""} · ${tm(t.ts)}</div>
     </div>
-    <span class="tag ${op?'ok':''}">${op?"Открыт":"Закрыт"}</span>
+    <span class="tag ${op?'ok':''}" style="flex-shrink:0">${op?"Открыт":"Закрыт"}</span>
   </div>
+  ${!op?`<div style="background:rgba(255,180,0,.08);border:1px solid rgba(255,180,0,.2);border-radius:12px;padding:8px 12px;font-size:12px;color:var(--sub);margin-bottom:8px">🗑 Обращение ${tkDel(t)}</div>`:""}
   <div class="chat">${(()=>{
     // Индекс последнего своего сообщения (для галочек)
     const lastMineIdx = t.msgs.reduce((acc,m,i)=>m.f===me?i:acc,-1);
@@ -2298,12 +2341,11 @@ function chat(adm) {
     return t.msgs.map((m,i)=>`<div class="bub ${m.f===me?"me":"th"}">
     ${m.ph?(()=>{
       const isFileId = /^[A-Za-z0-9_\-]{20,}$/.test(m.ph)&&!m.ph.startsWith("http");
-      const src = isFileId ? "" : esc(m.ph);
       const mb = m.t?"6px":"0";
       if(isFileId){
-        return `<div data-fileid="${esc(m.ph)}" class="tk-photo-wrap" style="max-width:100%;min-height:120px;border-radius:10px;background:var(--sf2);margin-bottom:${mb};display:block"></div>`;
+        return `<div data-fileid="${esc(m.ph)}" style="max-width:100%;min-height:100px;border-radius:10px;background:var(--sf2);margin-bottom:${mb};overflow:hidden;position:relative"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:12px">Загрузка…</div></div>`;
       }
-      return `<img src="${src}" style="max-width:100%;border-radius:10px;display:block;margin-bottom:${mb}" loading="lazy" onerror="this.style.display='none'">`;
+      return `<img src="${esc(m.ph)}" style="max-width:100%;border-radius:10px;display:block;margin-bottom:${mb}" onerror="this.style.display='none'">`;
     })():""}
     ${m.t?`<div>${esc(m.t)}</div>`:""}
     <small>${m.f==="me"?(adm?"Клиент":"Вы"):"Поддержка"} · ${tm(m.ts)}${i===lastMineIdx&&m.f===me?`<span class="bub-checks" title="${isRead?"Прочитано":"Доставлено"}">${isRead?dblChk:chk}</span>`:""}</small>
@@ -2621,7 +2663,6 @@ function tkPhotoSrc(ph) {
 }
 // Резолвим все file_id изображения в чате сразу после рендера
 async function tkResolveImages() {
-  // Ищем и <img data-fileid> и <div data-fileid> (разные версии рендера)
   const els = document.querySelectorAll("[data-fileid]");
   await Promise.all(Array.from(els).map(async el => {
     const fid = el.dataset.fileid;
@@ -2630,18 +2671,18 @@ async function tkResolveImages() {
     try {
       const j = await api("/api/upload?file_id=" + encodeURIComponent(fid));
       if (j.ok && j.url) {
-        // Заменяем div-скелетон на img
+        const marginBottom = el.style.marginBottom || "";
         const img = document.createElement("img");
         img.src = j.url;
-        img.style.cssText = el.style.cssText;
-        img.style.minHeight = "";
-        img.style.background = "";
         img.style.maxWidth = "100%";
         img.style.borderRadius = "10px";
         img.style.display = "block";
+        img.style.marginBottom = marginBottom;
         img.onerror = () => { img.style.display = "none"; };
         el.replaceWith(img);
       } else {
+        el.innerHTML = "";
+        el.style.minHeight = "0";
         el.style.display = "none";
       }
     } catch(_) {
@@ -3408,6 +3449,36 @@ async function loadOrders() {
     S.spent = rows.reduce((a, r) => a + (+r.price_rub || 0), 0);
   } catch(e) {}
 }
+
+// ── Модалька "Важно: перейдите в оффлайн-режим" после покупки ──
+function showOfflineModal() {
+  sheet(`
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:32px;text-align:center">🎮</div>
+      <h2 style="margin:0;text-align:center">Покупка успешна!</h2>
+      <div style="background:rgba(255,180,0,.1);border:1px solid rgba(255,180,0,.3);border-radius:12px;padding:12px 14px">
+        <div style="font-size:13px;font-weight:700;color:#f5a623;margin-bottom:6px">⚠️ ОБЯЗАТЕЛЬНО: перейдите в оффлайн-режим</div>
+        <div style="font-size:13px;color:var(--sub);line-height:1.5">Без этого шага вас могут выбить из аккаунта в любой момент.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${[[1,"Войдите в аккаунт","Данные — в разделе «Мои доступы»"],
+           [2,"Скачайте игры","Из библиотеки Steam"],
+           [3,"Steam → левый верхний угол","«Steam» → «Перейти в автономный режим»"]
+          ].map(([n,t,s])=>`<div style="display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff">${n}</div>
+          <div><div style="font-size:14px;font-weight:600">${t}</div><div style="font-size:12px;color:var(--sub)">${s}</div></div>
+        </div>`).join("")}
+        <div style="display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--ok);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff">✓</div>
+          <div style="font-size:14px;font-weight:600;color:var(--ok)">В оффлайне вас никто не выбьет</div>
+        </div>
+      </div>
+      <button class="btn pri" onclick="closeSheet()">Понял, спасибо!</button>
+      <div class="mut" style="font-size:11px;text-align:center">Инструкция всегда доступна в «Мои доступы»</div>
+    </div>
+  `);
+}
+
 async function waitOrder(id) {
   for(let k = 0; k < 20; k++) {
     await loadOrders();
@@ -3427,8 +3498,8 @@ async function realBuy(p) {
         go.textContent = "Выдаём доступ…";
         promoClear();
         const ok = await waitOrder(j.order);
-        closeSheet(); S.tab = "mine"; S.open = null; render();
-        toast(ok ? "Оплачено! Данные для входа ниже" : "Оплата прошла. Данные появятся в «Мои доступы» через минуту");
+        S.tab = "mine"; S.open = null; render();
+        setTimeout(showOfflineModal, 400);
       } else { reset(); if(st === "cancelled") toast("Оплата отменена"); else if(st === "failed") toast("Оплата не прошла"); }
     });
   } catch(e) { reset(); toast(PROMO_ERR[e.message] ? PROMO_ERR[e.message] : e.message === "no_slots" ? "Свободных слотов сейчас нет" : "Не удалось создать счёт"); }
@@ -3440,7 +3511,7 @@ async function realBuyBalance(p) {
   try {
     const j = await api("/api/orders", {method:"POST", body:{pack_id:p.id, method:"balance", promo:S.promo||undefined}});
     promoClear(); S.bal = j.balance; closeSheet(); await loadOrders();
-    S.tab = "mine"; S.open = null; render(); toast("Оплачено! Данные для входа ниже");
+    S.tab = "mine"; S.open = null; render(); setTimeout(showOfflineModal, 400);
   } catch(e) {
     go.style.minWidth=""; go.disabled = false; go.textContent = label;
     toast(PROMO_ERR[e.message] ? PROMO_ERR[e.message] : e.message === "no_funds" ? "Не хватает средств — пополните баланс" : e.message === "no_slots" ? "Свободных слотов сейчас нет" : "Не удалось оплатить");
