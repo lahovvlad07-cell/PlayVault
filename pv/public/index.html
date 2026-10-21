@@ -477,13 +477,21 @@ h3{font-size:15px;font-weight:700}
 
 /* ── Toast ── */
 #toast{
-  position:fixed;left:50%;bottom:82px;transform:translateX(-50%) translateY(10px);
-  background:var(--ink);color:var(--bg);
-  padding:11px 16px;border-radius:12px;font-size:13px;font-weight:600;
-  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
-  z-index:30;max-width:88%;text-align:center;white-space:nowrap;
+  position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(14px) scale(.97);
+  display:flex;align-items:center;gap:11px;
+  background:color-mix(in srgb,var(--sf3) 92%,transparent);color:var(--ink);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border:1px solid color-mix(in srgb,var(--ink) 12%,transparent);
+  box-shadow:0 12px 32px rgba(0,0,0,.38),0 2px 6px rgba(0,0,0,.2);
+  padding:11px 16px 11px 12px;border-radius:16px;font-size:13px;font-weight:600;line-height:1.45;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s cubic-bezier(.2,.9,.3,1.2);
+  z-index:60;max-width:90%;text-align:left;white-space:normal;width:max-content;
 }
-#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.on{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0) scale(1)}
+#toast .t-ic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--ac) 20%,transparent);color:var(--ac)}
+#toast .t-ic svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#toast.ok .t-ic{background:rgba(92,184,122,.2);color:var(--ok)}
+#toast.err .t-ic{background:rgba(224,92,92,.2);color:var(--hot)}
 
 details{border-top:1px solid var(--brd);padding-top:10px}
 summary{font-weight:600;cursor:pointer;font-size:14px;list-style:none;display:flex;justify-content:space-between;align-items:center}
@@ -530,7 +538,6 @@ details p{margin-top:8px;font-size:13px;color:var(--sub)}
 /* ── v3 ── */
 #balchip::before{content:none}
 #balchip{padding:6px 14px}
-#toast{white-space:normal;width:max-content;max-width:88%}
 input::placeholder,textarea::placeholder{text-transform:none}
 #mp,#pc{text-transform:uppercase}
 .prof{gap:14px}
@@ -807,7 +814,9 @@ button:focus-visible{outline:2px solid var(--ac)}
 .oc-timer>svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .oc-timer span{flex:1;min-width:0}
 .oc-timer b{color:var(--ink);font-variant-numeric:tabular-nums}
-.oc-timer button{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--sub);color:var(--sub);font-size:11px;font-weight:700;display:grid;place-items:center;padding:0;flex:none}
+.oc-timer button{width:26px;height:26px;border-radius:50%;border:1px solid color-mix(in srgb,var(--ac) 35%,transparent);color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,transparent);display:grid;place-items:center;padding:0;flex:none;transition:transform .1s,background .15s}
+.oc-timer button:active{transform:scale(.9);background:color-mix(in srgb,var(--ac) 22%,transparent)}
+.oc-timer button svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .oc-lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin:0 2px -6px}
 .cr-box{background:var(--sf2);border:1px solid var(--brd);border-radius:13px;overflow:hidden}
 .cr-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px 11px 14px}
@@ -834,8 +843,6 @@ button:focus-visible{outline:2px solid var(--ac)}
 .oc-acts .btn{height:40px;font-size:13px;width:100%;padding:0 8px;border-radius:11px}
 .oc-acts .btn.warn{color:var(--warn)}
 .oc-acts .btn.dim{color:var(--sub)}
-.oc-guide{border-top:1px solid var(--brd);padding-top:12px;margin-top:-2px}
-.oc-guide summary{font-size:13px;color:var(--sub);font-weight:600}
 .oc-aged{background:var(--sf2);border:1px solid var(--brd);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--sub);text-align:center;line-height:1.5}
 .oc-mini{display:flex;align-items:center;gap:12px;background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:12px 14px}
 .oc-mini .oc-ic{width:36px;height:36px;border-radius:10px;opacity:.7}
@@ -844,6 +851,50 @@ button:focus-visible{outline:2px solid var(--ac)}
 .oc-sum{display:flex;align-items:baseline;justify-content:space-between;padding:2px 4px 0}
 .oc-sum h2{font-size:20px;font-weight:800;letter-spacing:-.03em}
 .oc-sum span{font-size:12.5px;color:var(--sub);font-weight:600}
+
+
+/* ── Красивые шиты ── */
+.sh-grip{width:38px;height:4px;border-radius:4px;background:var(--brd);align-self:center;margin:-6px 0 4px;flex:none}
+.sh-head{display:flex;align-items:center;gap:13px;margin-bottom:2px}
+.sh-ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--ac);background:color-mix(in srgb,var(--ac) 14%,var(--sf2));border:1px solid color-mix(in srgb,var(--ac) 28%,transparent)}
+.sh-ic.warn{color:var(--warn);background:rgba(232,168,74,.13);border-color:rgba(232,168,74,.3)}
+.sh-ic svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sh-t{flex:1;min-width:0}
+.sh-t h2{font-size:18px;font-weight:800;letter-spacing:-.025em;line-height:1.2}
+.sh-t div{font-size:12.5px;color:var(--sub);margin-top:3px;line-height:1.4}
+.sh-chip{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:11px;background:var(--sf2);border:1px solid var(--brd);font-size:12.5px;color:var(--sub);font-weight:600}
+.sh-chip b{color:var(--ink);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sh-list{display:flex;flex-direction:column;gap:8px}
+.sh-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 12px;border-radius:14px;background:var(--sf2);border:1px solid var(--brd);transition:border-color .15s,background .15s,transform .1s}
+.sh-opt:active{transform:scale(.985);border-color:var(--ac);background:color-mix(in srgb,var(--ac) 8%,var(--sf2))}
+.sh-opt-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--sf3);color:var(--ac)}
+.sh-opt-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.sh-opt-t{flex:1;min-width:0}
+.sh-opt-t b{display:block;font-size:14px;font-weight:700;line-height:1.25}
+.sh-opt-t span{display:block;font-size:12px;color:var(--sub);margin-top:2px;line-height:1.35;font-weight:500}
+.sh-opt::after{content:"›";color:var(--sub);font-size:18px;flex:none}
+.sh-foot{font-size:12px;color:var(--sub);text-align:center;line-height:1.5;margin-top:2px}
+.sh-btn{height:48px;border-radius:13px;font-weight:700;font-size:15px;width:100%;display:flex;align-items:center;justify-content:center;background:var(--ac);color:#fff;margin-top:2px;transition:opacity .15s,transform .1s}
+.sh-btn:active{opacity:.88;transform:scale(.98)}
+.sh-btn.ghost{background:transparent;color:var(--sub);border:1px solid var(--brd);height:44px;font-size:14px}
+.sh-pt{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--sf2);border:1px solid var(--brd)}
+.sh-pt-n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:13px;font-weight:800;color:var(--ac);background:color-mix(in srgb,var(--ac) 14%,transparent)}
+.sh-pt-n.ok{color:var(--ok);background:rgba(92,184,122,.15)}
+.sh-pt b{display:block;font-size:14px;font-weight:700;line-height:1.3}
+.sh-pt span{display:block;font-size:12.5px;color:var(--sub);margin-top:3px;line-height:1.5}
+
+/* ── Офлайн-режим ── */
+.oc-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;counter-reset:st}
+.oc-steps li{counter-increment:st;display:flex;gap:11px;align-items:flex-start;font-size:13px;line-height:1.45;color:var(--ink);padding:0}
+.oc-steps li::before{content:counter(st);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:11.5px;font-weight:800;color:#1b1204;background:var(--warn);margin-top:0}
+.oc-steps li b{font-weight:700}
+.oc-off{border-radius:15px;padding:14px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg,rgba(232,168,74,.13),rgba(232,168,74,.05));border:1px solid rgba(232,168,74,.32)}
+.oc-off-h{display:flex;align-items:center;gap:11px}
+.oc-off-h>i{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex:none;color:var(--warn);background:rgba(232,168,74,.16)}
+.oc-off-h>i svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.oc-off-h b{display:block;font-size:14px;font-weight:800;letter-spacing:-.01em;line-height:1.25}
+.oc-off-h span{display:block;font-size:12px;color:var(--sub);margin-top:2px}
+.oc-off .oc-steps{padding-left:2px}
 
 /* ── checkout & topup visual fixes ── */
 
@@ -1522,9 +1573,23 @@ function steamRow(g, pp) {
   return `<div style="display:flex;align-items:center;gap:10px;background:rgba(92,184,122,.1);border:1px solid rgba(92,184,122,.25);border-radius:12px;padding:10px 14px"><div style="flex:1"><div style="font-size:12px;color:var(--sub);margin-bottom:2px">${label}</div><div style="font-size:20px;font-weight:800;text-decoration:line-through;color:var(--sub)">${ap}${r(now)}</div>${onSale && d.avg > now ? `<div style="font-size:12px;color:var(--sub)">обычно ${ap}${r(d.avg)}</div>` : ''}</div>${saved>0?`<div style="text-align:right"><div style="font-size:12px;color:var(--sub);margin-bottom:2px">Экономия</div><div style="font-size:18px;font-weight:800;color:var(--ok)">−${r(saved)}</div></div>`:''}</div>`;
 }
 
+const TOAST_IC = {
+  ok:'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  err:'<svg viewBox="0 0 24 24"><path d="M12 7v6M12 17h.01"/></svg>',
+  info:'<svg viewBox="0 0 24 24"><path d="M12 11v6M12 7.5h.01"/></svg>'
+};
 const toast = t => {
-  const e = $("#toast"); e.textContent = t; e.classList.add("on");
-  clearTimeout(e._t); e._t = setTimeout(()=>e.classList.remove("on"), 2500);
+  const e = $("#toast"); t = String(t ?? "");
+  const kind = /не удалось|ошибк|не прошла|отменена|не хватает|слотов|неверн|не найден|недоступн|нет доступа/i.test(t) ? "err"
+    : /✓|оплачено|скопирован|создан|отправлен|сохранен|сохранён|записано|зачисл|продлён|применён|получена|добавлен/i.test(t) ? "ok" : "info";
+  e.className = kind;
+  e.innerHTML = `<i class="t-ic">${TOAST_IC[kind]}</i><span></span>`;
+  e.lastChild.textContent = t.replace(/\s*✓\s*$/, "");
+  void e.offsetWidth; e.classList.add("on");
+  clearTimeout(e._t);
+  // чем длиннее текст — тем дольше показываем (минимум 3 с, максимум 9 с)
+  e._t = setTimeout(()=>e.classList.remove("on"), Math.min(9000, Math.max(3000, 1800 + t.length*70)));
+  e.onclick = () => { clearTimeout(e._t); e.classList.remove("on"); };
 };
 const sheet = h => { const sb=$("#sb"); sb.innerHTML = '<div class="sheet-handle"></div>' + h; sb.classList.remove("co-sheet"); $("#sheet").classList.add("open"); };
 const closeSheet = () => { $("#sheet").classList.remove("open"); $("#sb").classList.remove("co-sheet"); };
@@ -1983,6 +2048,27 @@ function detail(p) {
   draw(""); $("#q").oninput = e => draw(e.target.value);
 }
 
+const OFF_IC = '<svg viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 4-2.4M22 8.8A15 15 0 0 0 9 5.2M5.5 12.5a10 10 0 0 1 3-1.8M18.5 12.5a10 10 0 0 0-4.2-2.4M9 16.2a5 5 0 0 1 6 0"/><path d="M12 20h.01"/><path d="M3 3l18 18"/></svg>';
+const OFF_STEPS = `<ol class="oc-steps">
+  <li><span>Войдите в Steam и введите <b>код Steam Guard</b></span></li>
+  <li><span><b>Скачайте игры</b>, пока есть интернет</span></li>
+  <li><span>В Steam нажмите <b>Steam → Перейти в автономный режим</b></span></li>
+  <li><span>Играйте <b>только офлайн</b> и не меняйте пароль и почту</span></li>
+</ol>`;
+function offlineSheet(){
+  sheet(`<div class="sh-grip"></div>
+  <div class="sh-head">
+    <div class="sh-ic warn">${OFF_IC}</div>
+    <div class="sh-t"><h2>Включите офлайн-режим</h2><div>Это важно для сохранности вашего доступа</div></div>
+  </div>
+  <div class="oc-off" style="margin-top:2px">${OFF_STEPS}</div>
+  <div class="sh-foot">Эту памятку всегда можно найти в карточке заказа в «Моих доступах»</div>
+  <button class="sh-btn" data-act="sclose">Понятно, включу офлайн</button>`);
+}
+function offlineOnce(){
+  try{ if(localStorage.getItem("pv_off_seen")) return; localStorage.setItem("pv_off_seen","1"); }catch(_){ return; }
+  setTimeout(()=>{ if(S.tab==="mine" && !$("#sheet").classList.contains("open")) offlineSheet(); }, 450);
+}
 function mine() {
   const V = $("#view");
   if(!S.orders.length) {
@@ -2043,7 +2129,7 @@ function mine() {
       ${o.exp?`<div class="bar"><i style="width:${Math.min(100,left/(o.span||30)*100)}%"></i></div>`:''}
       ${daysLeft!==null && !o.aged ? `<div class="oc-timer">${IC.clock}
         <span>Доступны ещё <b class="cred-timer" data-until="${until}">${daysLeft} дн.</b></span>
-        <button data-act="credhint" aria-label="Подробнее">?</button>
+        <button data-act="credhint" aria-label="Подробнее"><svg viewBox="0 0 24 24"><path d="M9.2 9.2a2.9 2.9 0 1 1 4.1 2.6c-.8.4-1.3 1-1.3 1.9"/><path d="M12 17.2h.01"/></svg></button>
       </div>` : ''}
       ${o.aged ? `<div class="oc-aged">Данные для входа скрыты — прошло 14 дней.<br>Доступ к аккаунту сохраняется.</div>` : `
       ${credRows(o.p.login, o.p.pass, {cl:"cl",cp:"cp",sp:"sp",pw:"pw",spb:"spb"})}
@@ -2057,19 +2143,15 @@ function mine() {
         <button class="btn sec warn" data-act="bad" data-i="${i}">Не работает</button>
         <button class="btn sec dim" data-act="hideorder" data-i="${i}">Скрыть</button>
       </div>
-      <details class="oc-guide">
-        <summary>Как включить оффлайн-режим</summary>
-        <ol>
-          <li>Войдите в Steam, введите код Steam Guard</li>
-          <li>Скачайте нужные игры</li>
-          <li>Steam → Перейти в автономный режим</li>
-          <li>Не меняйте пароль и почту</li>
-        </ol>
-      </details>
+      <div class="oc-off">
+        <div class="oc-off-h"><i>${OFF_IC}</i><div><b>Играйте только в офлайн-режиме</b><span>Обязательно для всех наборов</span></div></div>
+        ${OFF_STEPS}
+      </div>
     </div>`;
   }).join("");
   // Запускаем живой таймер
   requestAnimationFrame(() => startCredTimers());
+  offlineOnce();
 }
 
 function favRow(g){
@@ -3450,34 +3532,6 @@ async function loadOrders() {
   } catch(e) {}
 }
 
-// ── Модалька "Важно: перейдите в оффлайн-режим" после покупки ──
-function showOfflineModal() {
-  sheet(`
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="font-size:32px;text-align:center">🎮</div>
-      <h2 style="margin:0;text-align:center">Покупка успешна!</h2>
-      <div style="background:rgba(255,180,0,.1);border:1px solid rgba(255,180,0,.3);border-radius:12px;padding:12px 14px">
-        <div style="font-size:13px;font-weight:700;color:#f5a623;margin-bottom:6px">⚠️ ОБЯЗАТЕЛЬНО: перейдите в оффлайн-режим</div>
-        <div style="font-size:13px;color:var(--sub);line-height:1.5">Без этого шага вас могут выбить из аккаунта в любой момент.</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        ${[[1,"Войдите в аккаунт","Данные — в разделе «Мои доступы»"],
-           [2,"Скачайте игры","Из библиотеки Steam"],
-           [3,"Steam → левый верхний угол","«Steam» → «Перейти в автономный режим»"]
-          ].map(([n,t,s])=>`<div style="display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start">
-          <div style="width:28px;height:28px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff">${n}</div>
-          <div><div style="font-size:14px;font-weight:600">${t}</div><div style="font-size:12px;color:var(--sub)">${s}</div></div>
-        </div>`).join("")}
-        <div style="display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start">
-          <div style="width:28px;height:28px;border-radius:50%;background:var(--ok);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff">✓</div>
-          <div style="font-size:14px;font-weight:600;color:var(--ok)">В оффлайне вас никто не выбьет</div>
-        </div>
-      </div>
-      <button class="btn pri" onclick="closeSheet()">Понял, спасибо!</button>
-      <div class="mut" style="font-size:11px;text-align:center">Инструкция всегда доступна в «Мои доступы»</div>
-    </div>
-  `);
-}
 
 async function waitOrder(id) {
   for(let k = 0; k < 20; k++) {
@@ -3498,8 +3552,9 @@ async function realBuy(p) {
         go.textContent = "Выдаём доступ…";
         promoClear();
         const ok = await waitOrder(j.order);
-        S.tab = "mine"; S.open = null; render();
-        setTimeout(showOfflineModal, 400);
+        closeSheet(); S.tab = "mine"; S.open = null; render();
+        toast(ok ? "Оплачено! Данные для входа ниже" : "Оплата прошла. Данные появятся в «Мои доступы» через минуту");
+        if(ok) setTimeout(offlineSheet, 500);
       } else { reset(); if(st === "cancelled") toast("Оплата отменена"); else if(st === "failed") toast("Оплата не прошла"); }
     });
   } catch(e) { reset(); toast(PROMO_ERR[e.message] ? PROMO_ERR[e.message] : e.message === "no_slots" ? "Свободных слотов сейчас нет" : "Не удалось создать счёт"); }
@@ -3511,7 +3566,8 @@ async function realBuyBalance(p) {
   try {
     const j = await api("/api/orders", {method:"POST", body:{pack_id:p.id, method:"balance", promo:S.promo||undefined}});
     promoClear(); S.bal = j.balance; closeSheet(); await loadOrders();
-    S.tab = "mine"; S.open = null; render(); setTimeout(showOfflineModal, 400);
+    S.tab = "mine"; S.open = null; render(); toast("Оплачено! Данные для входа ниже");
+    setTimeout(offlineSheet, 500);
   } catch(e) {
     go.style.minWidth=""; go.disabled = false; go.textContent = label;
     toast(PROMO_ERR[e.message] ? PROMO_ERR[e.message] : e.message === "no_funds" ? "Не хватает средств — пополните баланс" : e.message === "no_slots" ? "Свободных слотов сейчас нет" : "Не удалось оплатить");
@@ -4324,15 +4380,40 @@ document.addEventListener("click", e => {
     return;
   }
   if(a==="credhint"){
-    toast("Данные для входа отображаются 14 дней с момента покупки (срок гарантии). Сохраните логин и пароль — потом они будут скрыты. Доступ к аккаунту при этом не пропадёт.");
+    sheet(`<div class="sh-grip"></div>
+    <div class="sh-head">
+      <div class="sh-ic">${'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'}</div>
+      <div class="sh-t"><h2>Срок показа данных</h2><div>Как работает гарантийный период</div></div>
+    </div>
+    <div class="sh-pt"><div class="sh-pt-n">14</div><div><b>14 дней после покупки</b><span>Именно столько логин и пароль отображаются в приложении — это срок гарантии.</span></div></div>
+    <div class="sh-pt"><div class="sh-pt-n">2</div><div><b>Сохраните данные заранее</b><span>Скопируйте логин и пароль в надёжное место, пока они доступны.</span></div></div>
+    <div class="sh-pt"><div class="sh-pt-n ok">✓</div><div><b>Доступ не пропадает</b><span>После скрытия данных аккаунт остаётся с вами — меняется только отображение.</span></div></div>
+    <button class="sh-btn" data-act="sclose">Понятно</button>`);
     return;
   }
+  if(a==="sclose"){closeSheet();return}
   if(a==="sup"){S.tab="tickets";render();scrollTo(0,0);return}
   if(a==="bad"){
     S._bad=i;
-    sheet(`<h2>Что случилось?</h2>
-    <div class="mut">Заказ №${o.n} — ${o.p.name}</div>
-    ${["Неверный пароль","Steam просит подтверждение","Аккаунт заблокирован","Игра не запускается","Другое"].map(x=>`<button class="opt" data-act="rep" data-r="${x}">${x}</button>`).join("")}`);
+    const I = d => `<svg viewBox="0 0 24 24">${d}</svg>`;
+    const OPTS = [
+      ["Неверный пароль","Steam пишет, что пароль не подходит",I('<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/>')],
+      ["Steam просит подтверждение","Запрашивает код или подтверждение входа",I('<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>')],
+      ["Аккаунт заблокирован","Вход невозможен, аккаунт ограничен",I('<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>')],
+      ["Игра не запускается","Ошибка запуска или игра недоступна",I('<path d="M7 5l12 7-12 7z"/>')],
+      ["Другое","Опишите проблему своими словами",I('<path d="M4 5h16v11H9l-5 4z"/>')]
+    ];
+    sheet(`<div class="sh-grip"></div>
+    <div class="sh-head">
+      <div class="sh-ic warn">${I('<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.5h.01"/>')}</div>
+      <div class="sh-t"><h2>Что случилось?</h2><div>Выберите причину — мы создадим обращение</div></div>
+    </div>
+    <div class="sh-chip">${I('<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/>').replace('<svg','<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}<span>Заказ №${o.n}</span><b>${esc(o.p.name)}</b></div>
+    <div class="sh-list">
+    ${OPTS.map(([t,d,ic])=>`<button class="sh-opt" data-act="rep" data-r="${t}"><span class="sh-opt-ic">${ic}</span><span class="sh-opt-t"><b>${t}</b><span>${d}</span></span></button>`).join("")}
+    </div>
+    <div class="sh-foot">Перед обращением убедитесь, что Steam запущен в офлайн-режиме</div>
+    <button class="sh-btn ghost" data-act="sclose">Отмена</button>`);
     return;
   }
   if(a==="rep"){
