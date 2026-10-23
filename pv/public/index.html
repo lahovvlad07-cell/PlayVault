@@ -995,6 +995,77 @@ nav{padding-bottom:max(env(safe-area-inset-bottom,0px),var(--tgb))}
 .rv-when{font-size:11px}
 .rv-stars{font-size:13px;letter-spacing:1px}
 .rv-text{font-size:13.5px;line-height:1.5;color:var(--ink);opacity:.85}
+
+/* ── v15: каталог (поиск, фильтры, сортировка), скидка в цене, форма отзыва ── */
+#packs-h{scroll-margin-top:84px}
+#catalog{scroll-margin-top:72px}
+.cat-search{margin-top:10px}
+.cat-search .search{padding-right:46px}
+#gs::-webkit-search-cancel-button,#gs::-webkit-search-decoration{-webkit-appearance:none;appearance:none;display:none}
+.cat-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--sub);background:var(--sf2)}
+.cat-clear[hidden]{display:none}
+.cat-clear svg{position:static;transform:none;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.cat-bar{display:flex;align-items:center;gap:8px;margin:10px 0 12px}
+.cat-chips{display:flex;gap:6px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;padding:2px 0;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 16px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 16px),transparent)}
+.cat-chips::-webkit-scrollbar{display:none}
+.cat-chip{flex:none;height:34px;padding:0 13px;border-radius:999px;border:1px solid var(--brd);background:var(--sf);color:var(--sub);font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:background .15s,border-color .15s,color .15s,transform .1s}
+.cat-chip:active{transform:scale(.96)}
+.cat-chip.on{background:color-mix(in srgb,var(--ac) 16%,var(--sf));border-color:color-mix(in srgb,var(--ac) 55%,transparent);color:var(--ac)}
+.cat-chip svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.cat-sort{flex:none;height:34px;padding:0 11px 0 10px;border-radius:999px;border:1px solid var(--brd);background:var(--sf2);color:var(--ink);font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:transform .1s}
+.cat-sort:active{transform:scale(.96)}
+.cat-sort svg{width:15px;height:15px;fill:none;stroke:var(--ac);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cat-sort svg.chev{width:12px;height:12px;stroke:var(--sub)}
+.cat-list{display:flex;flex-direction:column;gap:10px}
+.cat-list .pack.pk2+.pack.pk2{margin-top:0}
+.cat-more{width:100%;height:50px;border-radius:14px;background:var(--sf);border:1px solid var(--brd);color:var(--ink);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,transform .1s}
+.cat-more:hover{background:var(--sf2)}
+.cat-more:active{transform:scale(.985)}
+.cat-more b{font-weight:800;background:color-mix(in srgb,var(--ac) 16%,transparent);color:var(--ac);border-radius:999px;padding:2px 9px;font-size:12px}
+.cat-more svg{width:16px;height:16px;fill:none;stroke:var(--ac);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+.cat-more svg.up{transform:rotate(180deg)}
+.cat-empty{text-align:center;padding:26px 16px;border:1px dashed var(--brd);border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--sub);font-size:13px}
+.cat-empty b{color:var(--ink);font-size:15px}
+#home.searching .hm-above,#home.searching .hm-below,#home.searching #cat-tools,#home.searching #cat-list,#home.searching #packs-head{display:none}
+.pk-was{display:flex;align-items:center;justify-content:flex-end;gap:6px;line-height:1}
+.pk-was s{font-size:11.5px;color:var(--sub);text-decoration:line-through}
+.pk-was i{font:800 10.5px/1 Inter,sans-serif;font-style:normal;color:#fff;background:var(--hot);padding:3px 5px;border-radius:6px}
+.pk2 .pprice{gap:4px}
+.pk-in{animation:pkIn .34s cubic-bezier(.2,.8,.3,1) both}
+@keyframes pkIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.pk-in{animation:none}}
+/* сортировка */
+.so{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;border-radius:14px;background:var(--sf2);border:1px solid var(--brd);transition:border-color .15s,background .15s,transform .1s}
+.so:active{transform:scale(.985)}
+.so.on{border-color:color-mix(in srgb,var(--ac) 60%,transparent);background:color-mix(in srgb,var(--ac) 9%,var(--sf2))}
+.so-t{flex:1;min-width:0}
+.so-t b{display:block;font-size:14px;font-weight:700}
+.so-t span{display:block;font-size:12px;color:var(--sub);margin-top:2px}
+.so-ck{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--brd);color:transparent;flex:none}
+.so.on .so-ck{background:var(--ac);border-color:var(--ac);color:#fff}
+.so-ck svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+/* форма отзыва */
+.rvs{display:flex;flex-direction:column;gap:16px;margin-top:4px}
+.rvs-lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:8px}
+.rvs-rate{background:var(--sf2);border:1px solid var(--brd);border-radius:16px;padding:14px 10px 12px;text-align:center}
+.rvs-stars{display:flex;justify-content:center;gap:4px}
+.rvs-star{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;color:color-mix(in srgb,var(--sub) 38%,transparent);transition:color .15s}
+.rvs-star svg{width:38px;height:38px;fill:currentColor;transition:transform .18s cubic-bezier(.3,1.6,.5,1)}
+.rvs-star.on{color:#f5a623}
+.rvs-star.on svg{transform:scale(1.08)}
+.rvs-star:active svg{transform:scale(.9)}
+.rvs-hint{height:20px;margin-top:6px;font-size:13px;font-weight:700;color:var(--sub);transition:color .15s}
+.rvs-hint.on{color:#f5a623}
+.rvs-packs{display:flex;flex-wrap:wrap;gap:8px}
+.rvs-pk{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 14px;border-radius:12px;background:var(--sf2);border:1.5px solid var(--brd);font-size:13.5px;font-weight:700;color:var(--ink);transition:border-color .15s,background .15s,color .15s}
+.rvs-pk.on{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,var(--sf2));color:var(--ac)}
+.rvs-pk svg{display:none;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.rvs-pk.on svg{display:block}
+.rvs-ta{width:100%;min-height:108px;padding:12px 14px;border-radius:14px;border:1px solid var(--brd);background:var(--sf2);color:var(--ink);font:inherit;font-size:16px;line-height:1.45;resize:none;outline:none;transition:border-color .15s,box-shadow .15s}
+.rvs-ta::placeholder{color:var(--sub)}
+.rvs-ta:focus{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 18%,transparent)}
+.rvs-cnt{text-align:right;font-size:11.5px;color:var(--sub);margin-top:6px;font-variant-numeric:tabular-nums}
+.sh-btn.off{opacity:.45}
 </style>
 
 <div id="pv-splash">
@@ -1592,7 +1663,8 @@ const S = {
   orders:[], fav:loadFav(), bal:0, spent:0, promo:null, q:"", starsRate:0.85, selectedPromoPackId:null, // starsRate подгружается из настроек
  
   tickets:[], tk:null, rec:"Ведьмак 3: Дикая Охота — Обновлённое издание",
-  wantLog:[], _co:null, _bad:null, _ar:[], _timers:{}, _hiddenOrders:new Set(loadHiddenOrders())
+  wantLog:[], _co:null, _bad:null, _ar:[], _timers:{}, _hiddenOrders:new Set(loadHiddenOrders()),
+  cSort:"pop", cF:new Set(), cAll:false
 };
 
 // ═══════════════════════════════════════════
@@ -1728,18 +1800,19 @@ function packHead(p) {
   </div>`;
 }
 
-function packRow(p) {
+function packRow(p, ex) {
+  const x = ex && typeof ex === "object" ? ex : {};
   const cg = packCoverGame(p), a = APP[cg], warn = p.stock <= 2;
   const meta = [`<span>${p.count} игр</span>`];
   if(p.buyers>0) meta.push(`<span>${p.buyers} купили</span>`);
   if(warn) meta.push(`<span class="pk-low">осталось ${p.stock}</span>`);
-  return `<button class="pack pk2" data-act="open" data-id="${p.id}" aria-label="${esc(p.name)}">
-    <div class="cover" style="background:${bg(cg)}">${a?`<img src="${steamImg(a)}" alt="" onerror="this.src=this.src.replace('shared.akamai.steamstatic.com/store_item_assets','cdn.cloudflare.steamstatic.com/steam/apps');this.onerror=null">`:`<span class="cl">${esc(cg[0])}</span>`}${p.disc?`<i class="pk-off">−${p.disc}%</i>`:""}</div>
+  return `<button class="pack pk2${x.cls||""}"${x.attr||""} data-act="open" data-id="${p.id}" aria-label="${esc(p.name)}">
+    <div class="cover" style="background:${bg(cg)}">${a?`<img src="${steamImg(a)}" alt="" onerror="this.src=this.src.replace('shared.akamai.steamstatic.com/store_item_assets','cdn.cloudflare.steamstatic.com/steam/apps');this.onerror=null">`:`<span class="cl">${esc(cg[0])}</span>`}</div>
     <div class="pinfo">
       <div class="nm">${p.name}</div>
       <div class="pmeta">${meta.join('<em>·</em>')}</div>
     </div>
-    <div class="pprice">${p.disc?`<s class="old-price">${r(p.price.buy)}</s>`:''}<span class="price">${r(priceOf(p))}</span></div>
+    <div class="pprice">${p.disc?`<div class="pk-was"><s>${r(p.price.buy)}</s><i>−${p.disc}%</i></div>`:""}<span class="price">${r(priceOf(p))}</span></div>
   </button>`;
 }
 
@@ -1814,7 +1887,6 @@ function popularRow(title) {
     return `<button class="gt" data-act="ginfo" data-g="${encodeURIComponent(n)}" data-pid="${p.id}" style="background:${bg(n)}" aria-label="${esc(n)}">
       <i>${esc(n[0])}</i>
       ${a?`<img src="${CDN}${a}/library_600x900.jpg" alt="" draggable="false" onerror="this.onerror=null;this.src='https://cdn.cloudflare.steamstatic.com/steam/apps/'+'${a}'+'/library_600x900.jpg'">`:''}
-      ${p.disc?`<span class="gt-badge">−${p.disc}%</span>`:""}
       <div class="gl">${esc(short(n))}</div>
     </button>`;
   }).join("");
@@ -1891,6 +1963,7 @@ function rvCanWrite() {
   const reviewedIds = new Set((S_reviews||[]).filter(r => r.user_id === ME.id).map(r => r.pack_id));
   return [...boughtIds].some(id => !reviewedIds.has(id));
 }
+const RV_LBL = ["", "Ужасно", "Плохо", "Нормально", "Хорошо", "Отлично"];
 function openReviewSheet() {
   const boughtPacks = [];
   const seen = new Set();
@@ -1901,53 +1974,71 @@ function openReviewSheet() {
   const reviewedIds = new Set((S_reviews||[]).filter(r => r.user_id === ME.id).map(r => r.pack_id));
   const available = boughtPacks.filter(p => !reviewedIds.has(p.id));
   if (!available.length) { toast("Вы уже оставили отзыв на все свои наборы"); return; }
-  const opts = available.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join("");
 
-  sheet(`
-    <h2 style="margin-bottom:16px">Написать отзыв</h2>
-    <div style="display:flex;flex-direction:column;gap:12px">
+  const star = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.94 5.96 6.58.96-4.76 4.64 1.12 6.55L12 17.52l-5.88 3.09 1.12-6.55L2.48 9.42l6.58-.96z"/></svg>';
+  const tick = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  let stars = 0, packId = available[0].id;
+
+  sheet(`<div class="sh-grip"></div>
+    <div class="sh-head">
+      <div class="sh-ic"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></div>
+      <div class="sh-t"><h2>Написать отзыв</h2><div>Пара слов о наборе поможет другим выбрать</div></div>
+    </div>
+    <div class="rvs">
       <div>
-        <div style="font-size:12px;color:var(--sub);margin-bottom:6px;font-weight:600">ОЦЕНКА</div>
-        <div id="rv-star-pick" style="display:flex;gap:8px;font-size:34px;cursor:pointer;line-height:1;color:var(--brd);user-select:none">
-          <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span><span data-s="4">★</span><span data-s="5">★</span>
+        <div class="rvs-lbl">Ваша оценка</div>
+        <div class="rvs-rate">
+          <div class="rvs-stars" role="radiogroup" aria-label="Оценка">${[1,2,3,4,5].map(n => `<button type="button" class="rvs-star" data-s="${n}" role="radio" aria-checked="false" aria-label="${n} из 5">${star}</button>`).join("")}</div>
+          <div class="rvs-hint" id="rvs-hint">Нажмите на звезду</div>
         </div>
       </div>
       <div>
-        <div style="font-size:12px;color:var(--sub);margin-bottom:6px;font-weight:600">НАБОР</div>
-        <select id="rv-pack-sel" style="width:100%;background:var(--sf2);border:1px solid var(--brd);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--ink);font-family:inherit;appearance:none;-webkit-appearance:none;cursor:pointer">${opts}</select>
+        <div class="rvs-lbl">Набор</div>
+        <div class="rvs-packs">${available.map((p, i) => `<button type="button" class="rvs-pk${i === 0 ? " on" : ""}" data-pid="${p.id}">${tick}${esc(p.name)}</button>`).join("")}</div>
       </div>
       <div>
-        <div style="font-size:12px;color:var(--sub);margin-bottom:6px;font-weight:600">КОММЕНТАРИЙ</div>
-        <textarea id="rv-text-inp" placeholder="Напишите пару слов о наборе…" maxlength="300"
-          style="width:100%;min-height:80px;background:var(--sf2);border:1px solid var(--brd);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--ink);resize:none;font-family:inherit;line-height:1.45;box-sizing:border-box"></textarea>
+        <div class="rvs-lbl">Комментарий</div>
+        <textarea class="rvs-ta" id="rvs-text" maxlength="300" rows="4" placeholder="Что понравилось? Как прошла активация?"></textarea>
+        <div class="rvs-cnt" id="rvs-cnt">0 / 300</div>
       </div>
-      <button class="btn pri" id="rv-submit-btn" style="margin-top:4px">Опубликовать</button>
-    </div>
-  `);
+      <button class="sh-btn off" id="rv-submit-btn">Опубликовать</button>
+    </div>`);
 
-  // Инициализируем звёзды — sheet уже в DOM
-  let pickedStars = 0;
-  const picker = document.getElementById("rv-star-pick");
-  const spans = picker.querySelectorAll("span");
-  const paint = n => spans.forEach((s, i) => { s.style.color = i < n ? "#f5a623" : "var(--brd)"; });
-  spans.forEach(s => {
-    const n = +s.dataset.s;
-    s.addEventListener("click",     () => { pickedStars = n; paint(n); });
-    s.addEventListener("touchend",  e  => { e.preventDefault(); pickedStars = n; paint(n); });
-    s.addEventListener("mouseenter",() => paint(n));
-    s.addEventListener("mouseleave",() => paint(pickedStars));
+  const root = $("#sb"), btn = $("#rv-submit-btn"), ta = $("#rvs-text"), hint = $("#rvs-hint");
+  const starBtns = [...root.querySelectorAll(".rvs-star")];
+  const canHover = matchMedia("(hover:hover)").matches;
+  const paint = n => starBtns.forEach((b, i) => b.classList.toggle("on", i < n));
+  const setHint = n => { hint.textContent = n ? RV_LBL[n] : "Нажмите на звезду"; hint.classList.toggle("on", !!n); };
+  const sync = () => btn.classList.toggle("off", !(stars && ta.value.trim().length >= 3 && packId));
+
+  starBtns.forEach(b => {
+    const n = +b.dataset.s;
+    b.addEventListener("click", () => {
+      stars = n; paint(n); setHint(n);
+      starBtns.forEach((x, i) => x.setAttribute("aria-checked", String(i === n - 1)));
+      sync(); hap();
+    });
+    if (canHover) {
+      b.addEventListener("mouseenter", () => { paint(n); setHint(n); });
+      b.addEventListener("mouseleave", () => { paint(stars); setHint(stars); });
+    }
   });
+  const pks = [...root.querySelectorAll(".rvs-pk")];
+  pks.forEach(b => b.addEventListener("click", () => {
+    packId = +b.dataset.pid;
+    pks.forEach(x => x.classList.toggle("on", x === b));
+    sync(); hap();
+  }));
+  ta.addEventListener("input", () => { $("#rvs-cnt").textContent = ta.value.length + " / 300"; sync(); });
 
-  document.getElementById("rv-submit-btn").addEventListener("click", async () => {
-    const text = (document.getElementById("rv-text-inp")?.value || "").trim();
-    const packId = Number(document.getElementById("rv-pack-sel")?.value);
-    const btn = document.getElementById("rv-submit-btn");
-    if (!pickedStars) { toast("Поставьте оценку ★"); return; }
+  btn.addEventListener("click", async () => {
+    const text = ta.value.trim();
+    if (!stars) { toast("Поставьте оценку ★"); return; }
     if (text.length < 3) { toast("Напишите немного больше"); return; }
     if (!packId) { toast("Выберите набор"); return; }
     btn.disabled = true; btn.textContent = "Публикуем…";
     try {
-      await api("/api/x?r=reviews", { method:"POST", body:{ action:"create", pack_id:packId, stars:pickedStars, text }});
+      await api("/api/x?r=reviews", { method:"POST", body:{ action:"create", pack_id:packId, stars, text }});
       closeSheet();
       toast("Отзыв опубликован ✓");
       S_reviews = null;
@@ -2019,7 +2110,7 @@ function home(showAll) {
   const ng = ALLG().length;
   const minPrice = r(Math.min(...PACKS.map(priceOf)));
   const pn = PACKS.length, pw = [2,3,4].includes(pn%10)&&![12,13,14].includes(pn%100)?"набора":pn%10===1&&pn%100!==11?"набор":"наборов";
-  return `<div class="hero hv2">
+  return `<div class="hm-above"><div class="hero hv2">
     <div class="hv-eyebrow"><i></i>Доступ за минуту после оплаты</div>
     <h2><em>${ng}</em> качественных игр<br>по цене одной</h2>
     <p>Только проверенные игры — без мусора. Выберите набор и играйте оффлайн.</p>
@@ -2036,34 +2127,113 @@ function home(showAll) {
       </button>
     </div>
   </div>
-  ${recBlock()}
-  <div class="sec-head"><h2 id="packs-h">Наборы</h2></div>
-  ${PACKS.map(packRow).join("")}
-  ${popularRow("Популярные игры")}
-  ${howBlock()}
-  ${reviewsBlock(showAll)}`;
+  ${recBlock()}</div>
+  ${catalogBlock()}
+  <div class="hm-below">${popularRow("Популярные игры")}${howBlock()}${reviewsBlock(showAll)}</div>`;
 }
+
+// ── Каталог: поиск, фильтры, сортировка, «показать все» ──
+const CAT_LIMIT = 5;
+const CAT_SORTS = [
+  ["pop",   "Популярные",  "Сначала самые покупаемые", "Популярные"],
+  ["cheap", "Дешевле",     "Сначала недорогие",        "Сначала дешевле"],
+  ["exp",   "Дороже",      "Сначала дорогие",          "Сначала дороже"],
+  ["games", "Больше игр",  "Сначала самые большие",    "Больше игр"]
+];
+const CAT_FILTERS = [
+  ["disc",  "Со скидкой", p => p.disc > 0],
+  ["stock", "В наличии",  p => p.stock > 0],
+  ["big",   "50+ игр",    p => p.count >= 50]
+];
+const IC_CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const IC_CHEV  = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+const IC_SORT  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 20l-3-3M7 20l3-3"/><path d="M17 20V4M17 4l-3 3M17 4l3 3"/></svg>';
+
+function catPacks() {
+  const fs = CAT_FILTERS.filter(f => S.cF.has(f[0]));
+  const idx = new Map(PACKS.map((p, i) => [p.id, i]));
+  const cmp = {
+    pop:   (x, y) => (y.sales||0) - (x.sales||0),
+    cheap: (x, y) => priceOf(x) - priceOf(y),
+    exp:   (x, y) => priceOf(y) - priceOf(x),
+    games: (x, y) => y.count - x.count
+  }[S.cSort] || (() => 0);
+  return PACKS.filter(p => fs.every(f => f[2](p))).sort((x, y) => cmp(x, y) || idx.get(x.id) - idx.get(y.id));
+}
+function catToolsHTML() {
+  const cur = CAT_SORTS.find(s => s[0] === S.cSort) || CAT_SORTS[0];
+  const chips = CAT_FILTERS.filter(f => S.cF.has(f[0]) || PACKS.some(f[2])).map(f => {
+    const on = S.cF.has(f[0]);
+    return `<button class="cat-chip${on ? " on" : ""}" data-act="cf" data-k="${f[0]}" aria-pressed="${on}">${on ? IC_CHECK : ""}${f[1]}</button>`;
+  }).join("");
+  return `<div class="cat-bar"><div class="cat-chips">${chips}</div><button class="cat-sort" data-act="csort" aria-label="Сортировка">${IC_SORT}<span>${cur[1]}</span>${IC_CHEV}</button></div>`;
+}
+function catListHTML(anim) {
+  const all = catPacks();
+  if (!all.length) {
+    return S.cF.size
+      ? `<div class="cat-empty"><b>Ничего не нашлось</b>Попробуйте изменить или сбросить фильтры<button class="btn sec sm" data-act="creset">Сбросить фильтры</button></div>`
+      : `<div class="cat-empty"><b>Наборы скоро появятся</b></div>`;
+  }
+  const vis = S.cAll ? all : all.slice(0, CAT_LIMIT);
+  const rest = all.length - vis.length;
+  const rows = vis.map((p, i) => packRow(p, anim && i >= CAT_LIMIT
+    ? { cls: " pk-in", attr: ` style="animation-delay:${Math.min(400, (i - CAT_LIMIT) * 55)}ms"` } : null)).join("");
+  const more = all.length > CAT_LIMIT
+    ? `<button class="cat-more" data-act="cmore">${S.cAll ? "Свернуть" : `Показать все наборы <b>+${rest}</b>`}<svg class="${S.cAll ? "up" : ""}" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>`
+    : "";
+  return rows + more;
+}
+function catalogBlock() {
+  return `<div id="catalog">
+    <div class="sec-head" id="packs-head"><h2 id="packs-h">Наборы</h2></div>
+    <div class="search-wrap cat-search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search" id="gs" type="search" placeholder="Найти игру в наборах (рус / eng)" value="${esc(S.q)}" autocomplete="off" enterkeyhint="search" aria-label="Поиск игры">
+      <button class="cat-clear" data-act="gsclear" aria-label="Очистить поиск"${S.q ? "" : " hidden"}><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="gr"></div>
+    <div id="cat-tools">${catToolsHTML()}</div>
+    <div id="cat-list" class="cat-list">${catListHTML()}</div>
+  </div>`;
+}
+function catRefresh(anim) {
+  const t = $("#cat-tools"), l = $("#cat-list");
+  if (t) t.innerHTML = catToolsHTML();
+  if (l) l.innerHTML = catListHTML(anim);
+}
+function openSortSheet() {
+  sheet(`<div class="sh-grip"></div>
+    <div class="sh-head">
+      <div class="sh-ic">${IC_SORT}</div>
+      <div class="sh-t"><h2>Сортировка</h2><div>Как показывать наборы</div></div>
+    </div>
+    <div class="sh-list">${CAT_SORTS.map(s => `<button class="so${s[0] === S.cSort ? " on" : ""}" data-act="csetsort" data-k="${s[0]}"><span class="so-t"><b>${s[3]}</b><span>${s[2]}</span></span><i class="so-ck">${IC_CHECK}</i></button>`).join("")}</div>`);
+}
+document.addEventListener("input", e => {
+  const t = e.target;
+  if (!t || t.id !== "gs") return;
+  const cl = $(".cat-clear"); if (cl) cl.hidden = !t.value;
+  clearTimeout(window._gsT);
+  window._gsT = setTimeout(() => { S.q = t.value.trim(); gres(); }, 120);
+});
 
 function shop() {
   if(S.open) return detail(PACKS.find(x=>x.id===S.open));
   const V = $("#view");
-  V.innerHTML = `<div class="search-wrap">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input class="search" id="gs" type="search" placeholder="Поиск по названию (рус / eng)" value="${esc(S.q)}" autocomplete="off">
-  </div>
-  <div id="gr"></div>
-  <div id="home">${home()}</div>`;
+  V.innerHTML = `<div id="home">${home()}</div>`;
   requestAnimationFrame(rvInitInteractive);
-  const g = $("#gs");
-  let debounce;
-  g.oninput = () => { clearTimeout(debounce); debounce = setTimeout(()=>{ S.q=g.value.trim(); gres(); }, 120); };
   gres();
 }
 
 function gres() {
   const q = S.q, el = $("#gr"), h = $("#home");
-  if(h) h.style.display = q ? "none" : "";
-  if(!q) { el.innerHTML = ""; return; }
+  if(!el || !h) return;
+  const was = h.classList.contains("searching");
+  h.classList.toggle("searching", !!q);
+  const cl = $(".cat-clear"); if(cl) cl.hidden = !q;
+  if(!q) { el.innerHTML = ""; if(was){ const c = $("#catalog"); if(c) c.scrollIntoView({block:"start"}); } return; }
+  if(!was) window.scrollTo(0, 0);
   if(q.length < 2) { el.innerHTML = `<div class="mut" style="padding:8px 4px">Введите хотя бы 2 символа</div>`; return; }
   const m = [];
   PACKS.forEach(p => rankS(p.games, q).forEach(([n,sc]) => {
@@ -3784,13 +3954,13 @@ async function loadServerPacks() {
         local.name = sp.name; local.sub = sp.sub || local.sub;
         local.price = { buy: sp.price }; local.disc = sp.disc || 0;
         local.games = games; local.count = games.length;
-        local.slots = sp.slots.total; local.stock = sp.slots.free;
+        local.slots = sp.slots.total; local.stock = sp.slots.free; local.sales = sp.buyers || 0;
         local.coverGame  = sp.cover_game  || local.coverGame  || "";
         local.coverAppid = sp.cover_appid || local.coverAppid || null;
         local.showGames  = showGames.length ? showGames : local.showGames || [];
       } else {
         PACKS.push({ id:sp.id, name:sp.name, sub:sp.sub||"", price:{buy:sp.price}, disc:sp.disc||0,
-          games, count:games.length, c:"#5a62c9", slots:sp.slots.total, stock:sp.slots.free,
+          games, count:games.length, c:"#5a62c9", slots:sp.slots.total, stock:sp.slots.free, sales:sp.buyers||0,
           login:"", pass:"", coverAppid:sp.cover_appid||null, coverGame:sp.cover_game||"", showGames });
       }
     });
@@ -3873,6 +4043,16 @@ document.addEventListener("click", e => {
   const a=b.dataset.act, i=+b.dataset.i, o=S.orders[i], id=+b.dataset.id;
 
   if(a==="rvwrite"){rvWrite();return}
+  if(a==="csort"){openSortSheet();hap();return}
+  if(a==="csetsort"){S.cSort=b.dataset.k;closeSheet();catRefresh();hap();return}
+  if(a==="cf"){const k=b.dataset.k;S.cF.has(k)?S.cF.delete(k):S.cF.add(k);catRefresh();hap();return}
+  if(a==="creset"){S.cF.clear();catRefresh();return}
+  if(a==="cmore"){
+    S.cAll=!S.cAll; catRefresh(S.cAll); hap();
+    if(!S.cAll){const c=$("#catalog"); if(c) c.scrollIntoView({behavior:"smooth",block:"start"});}
+    return;
+  }
+  if(a==="gsclear"){S.q="";const g=$("#gs");if(g){g.value="";g.focus();}gres();return}
   if(a==="mine"){S.tab="mine";render();scrollTo(0,0);return}
   if(a==="tickets"){S.tab="tickets";render();scrollTo(0,0);return}
   if(a==="atks"){S.tab="atks";render();scrollTo(0,0);return}
