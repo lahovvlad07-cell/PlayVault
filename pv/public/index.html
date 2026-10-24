@@ -54,12 +54,11 @@
 .stars-info{background:var(--sf2);border:1px solid var(--brd);border-radius:13px;padding:14px;font-weight:700;font-size:14px;text-align:center;line-height:1.45}
 .stars-info .mut{font-size:13px;font-weight:500;margin-top:3px;display:block}
 /* ── Desktop: крупнее и шире (класс .desk ставится скриптом в <head>) ── */
-html.desk body{zoom:1.2;min-height:calc(100vh / 1.2)}
+html.desk{--z:1}
 html.desk #app,html.desk nav,html.desk .sheet>div{max-width:480px}
-html.desk main{padding-bottom:110px}
-html.desk .sheet>div{max-height:92vh;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
-@media (min-width:900px){html.desk body{zoom:1.3;min-height:calc(100vh / 1.3)}html.desk main{padding-bottom:120px}}
-@media (min-width:1400px){html.desk body{zoom:1.45;min-height:calc(100vh / 1.45)}}
+@media (min-width:720px){html.desk{--z:1.2}html.desk body{zoom:1.2}}
+@media (min-width:900px){html.desk{--z:1.3}html.desk body{zoom:1.3}}
+@media (min-width:1400px){html.desk{--z:1.45}html.desk body{zoom:1.45}}
 </style><script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>(function(){try{var w=window.Telegram&&Telegram.WebApp,p=(w&&w.platform)||"unknown",m=/^(android|android_x|ios)$/.test(p);if(!m&&matchMedia("(pointer:fine)").matches)document.documentElement.classList.add("desk")}catch(e){}})()</script>
 </head><body>
@@ -95,7 +94,6 @@ html.desk .sheet>div{max-height:92vh;padding-bottom:calc(20px + env(safe-area-in
 
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-html{overflow-x:clip}
 *{scrollbar-width:none;scrollbar-color:transparent transparent}
 *::-webkit-scrollbar{width:0;height:0;background:transparent}
 *::-webkit-scrollbar-thumb,*::-webkit-scrollbar-track{background:transparent}
@@ -105,6 +103,7 @@ body{
   background:var(--bg);color:var(--ink);
   -webkit-font-smoothing:antialiased;
   padding:0 0 env(safe-area-inset-bottom,0px);
+  overflow-x:hidden;
 }
 button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
 input,textarea{font:inherit;color:inherit}
@@ -342,14 +341,14 @@ h3{font-size:15px;font-weight:700}
   border-radius:22px 22px 0 0;
   padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));
   display:flex;flex-direction:column;gap:9px;
-  max-height:88vh;overflow:auto;
+  max-height:calc((100vh - 64px) / var(--z,1));overflow:auto;overscroll-behavior:contain;
   scrollbar-width:thin;scrollbar-color:transparent transparent;
 }
 .sheet>div::-webkit-scrollbar{width:4px}
 .sheet>div::-webkit-scrollbar-track{background:transparent}
 .sheet>div::-webkit-scrollbar-thumb{background:transparent;border-radius:4px}
 .sheet>div:hover::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12)}
-#sb.co-sheet{overflow:hidden;height:88vh}
+#sb.co-sheet{overflow:hidden;height:calc((100vh - 64px) / var(--z,1))}
 .sheet-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;min-height:0;scrollbar-width:thin;scrollbar-color:transparent transparent}
 .sheet-scroll:hover::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12)}
 .sheet-scroll::-webkit-scrollbar{width:4px}
@@ -427,7 +426,22 @@ h3{font-size:15px;font-weight:700}
 .rv-del-btn:hover{color:var(--hot);background:rgba(255,80,80,.08)}
 
 /* ── Tickets ── */
-.tk{display:flex;flex-direction:column;gap:6px;text-align:left;width:100%;background:var(--sf);border:1px solid var(--brd);border-radius:14px;padding:14px;transition:background .15s}
+.tk{display:flex;flex-direction:column;gap:5px;text-align:left;width:100%;background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:14px 16px;transition:background .15s;position:relative}
+.tk:active{background:var(--sf2)}
+.tk-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--ac);flex-shrink:0;margin-top:4px}
+.tk-cat-icon{font-size:18px;line-height:1;flex-shrink:0}
+.tk-head{display:flex;align-items:flex-start;gap:10px}
+.tk-head-body{flex:1;min-width:0}
+.sup-hero{text-align:center;padding:28px 0 20px}
+.sup-hero-ic{font-size:40px;line-height:1;margin-bottom:10px}
+.sup-hero h2{font-size:22px;font-weight:800;margin:0 0 4px}
+.sup-cats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.sup-cat{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:14px;transition:background .15s;cursor:pointer;width:100%}
+.sup-cat:active{background:var(--sf2)}
+.sup-cat-ic{font-size:26px;line-height:1}
+.sup-cat b{font-size:13px;line-height:1.3;font-weight:700}
+.sup-cat small{font-size:11px;color:var(--sub);line-height:1.35}
+.sup-footer{text-align:center;padding:8px 0 4px}
 .tk:hover{background:var(--sf2)}
 .tkb{
   display:grid;grid-template-columns:40px 1fr auto;
@@ -502,8 +516,7 @@ details p{margin-top:8px;font-size:13px;color:var(--sub)}
 .prow{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
 .prow .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pprice{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;line-height:1.15}
-.ptags{display:flex;gap:4px;flex-wrap:nowrap;overflow-x:auto;overflow-y:visible;margin-top:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.ptags::-webkit-scrollbar{display:none}
+.ptags{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
 .ptags .tag{font-size:11px;padding:2px 7px}
 
 .pack-hero{flex-direction:column;align-items:stretch;gap:14px;padding:16px}
@@ -615,7 +628,7 @@ button.kpi:hover{background:var(--sf2)}
 .rec-img>.rbadge.disc{inset:12px 12px auto auto;background:var(--hot);font-size:14px;font-weight:800;padding:7px 11px}
 .cover .cbadge{position:absolute;top:4px;left:4px;z-index:3;margin:0;opacity:1;background:var(--hot);color:#fff;font:800 11px/1 Inter,sans-serif;padding:3px 6px;border-radius:6px}
 .pack-hero{position:relative}
-.hero-badge{position:absolute;top:14px;right:14px;background:var(--hot);color:#fff;font:800 13px/1 Inter,sans-serif;padding:7px 11px;border-radius:9px}
+.hero-badge{position:absolute;top:10px;right:10px;background:var(--hot);color:#fff;font:800 12px/1 Inter,sans-serif;padding:6px 10px;border-radius:8px;z-index:2}
 .btn-old{opacity:.7;font-weight:600;margin-left:8px;font-size:14px}
 .gt-badge{position:absolute;top:8px;right:8px;z-index:3;background:var(--hot);color:#fff;font:800 11px/1 Inter,sans-serif;padding:4px 6px;border-radius:6px}
 
@@ -771,17 +784,20 @@ button:focus-visible{outline:2px solid var(--ac)}
 #theme-tog:active{transform:scale(.94)}
 
 /* ── Hero v2 ── */
-.hv2{padding:16px 16px 14px;border:1px solid var(--brd);background:var(--sf);border-radius:16px}
-.hv-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--ok);background:rgba(92,184,122,.1);border:1px solid rgba(92,184,122,.2);border-radius:999px;padding:4px 10px 4px 8px;margin-bottom:10px}
-.hv-eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(92,184,122,.2)}
-.hv2 h2{font-size:20px;line-height:1.2;letter-spacing:-.02em;font-weight:800;color:var(--ink)}
-.hv2 h2 em{font-style:normal;color:var(--ac)}
-.hv2 p{margin-top:6px;font-size:13px;line-height:1.45;color:var(--sub)}
-.hv-stats{display:none}
-.hv-actions{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}
-.hv-actions .btn{height:42px;font-size:14px}
-.hv-rnd{height:42px;padding:0 14px;border-radius:11px;display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:13px;font-weight:700;color:var(--ink);background:var(--sf2);border:1px solid var(--brd);cursor:pointer;transition:background .15s}
-.hv-rnd:hover{background:var(--sf3)}
+.hv2{padding:20px 18px 18px;border:1px solid rgba(91,163,217,.22);background:radial-gradient(120% 120% at 100% 0%,rgba(64,144,200,.42) 0%,transparent 58%),linear-gradient(150deg,#1b3a63 0%,#0e1d36 62%,#0f1726 100%)}
+.hv-eyebrow{position:relative;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:#bcd6ee;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:5px 11px 5px 9px;margin-bottom:12px}
+.hv-eyebrow i{width:7px;height:7px;border-radius:50%;background:#5cb87a;box-shadow:0 0 0 3px rgba(92,184,122,.25)}
+.hv2 h2{font-size:24px;line-height:1.18;letter-spacing:-.02em;font-weight:800}
+.hv2 h2 em{font-style:normal;background:linear-gradient(90deg,#7fc4f2,#5ba3d9);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hv2 p{margin-top:8px;line-height:1.45}
+.hv-stats{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.hv-stats>div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:10px 6px;text-align:center;min-width:0}
+.hv-stats b{display:block;font-size:18px;font-weight:800;color:#fff;line-height:1.15;white-space:nowrap}
+.hv-stats span{font-size:11.5px;color:rgba(255,255,255,.62);font-weight:600}
+.hv-actions{position:relative;display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:14px}
+.hv-actions .btn{height:46px;font-size:15px}
+.hv-rnd{height:46px;padding:0 16px;border-radius:12px;display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:14px;font-weight:700;color:#e4eefa;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);cursor:pointer;transition:background .15s}
+.hv-rnd:hover{background:rgba(255,255,255,.14)}
 .hv-rnd:active{transform:scale(.97)}
 
 
@@ -799,7 +815,9 @@ button:focus-visible{outline:2px solid var(--ac)}
 .oc-timer>svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .oc-timer span{flex:1;min-width:0}
 .oc-timer b{color:var(--ink);font-variant-numeric:tabular-nums}
-.oc-timer button{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--sub);color:var(--sub);font-size:11px;font-weight:700;display:grid;place-items:center;padding:0;flex:none}
+.oc-timer button{width:26px;height:26px;border-radius:50%;border:1px solid color-mix(in srgb,var(--ac) 35%,transparent);color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,transparent);display:grid;place-items:center;padding:0;flex:none;transition:transform .1s,background .15s}
+.oc-timer button:active{transform:scale(.9);background:color-mix(in srgb,var(--ac) 22%,transparent)}
+.oc-timer button svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .oc-lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin:0 2px -6px}
 .cr-box{background:var(--sf2);border:1px solid var(--brd);border-radius:13px;overflow:hidden}
 .cr-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px 11px 14px}
@@ -814,7 +832,17 @@ button:focus-visible{outline:2px solid var(--ac)}
 .cr-b.ic{padding:0;width:34px}
 .cr-b.ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .oc-timer span{white-space:nowrap}
+.oc-timer{background:none;border:0;padding:0 2px;font-size:12px}
+.oc-timer>svg{width:14px;height:14px}
+.oc-timer button{width:22px;height:22px}
+.oc-timer button svg{width:12px;height:12px}
 .cr-b.ghost{color:var(--sub);background:transparent;border-color:var(--brd)}
+.oc-refresh{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 14px;border-radius:13px;background:color-mix(in srgb,var(--ac) 12%,transparent);border:1px solid color-mix(in srgb,var(--ac) 32%,transparent);color:var(--ac);transition:transform .1s,background .15s}
+.oc-refresh:active{transform:scale(.985);background:color-mix(in srgb,var(--ac) 20%,transparent)}
+.oc-refresh svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.oc-refresh b{display:block;font-size:14px;font-weight:700;color:var(--ink)}
+.oc-refresh small{display:block;font-size:12px;color:var(--sub);margin-top:1px;font-weight:500}
+.oc-refresh.busy{opacity:.6;pointer-events:none}
 .oc-tip{display:flex;gap:9px;font-size:12px;line-height:1.5;color:var(--sub);padding:0 2px}
 .oc-tip svg{width:15px;height:15px;flex:none;margin-top:2px;fill:none;stroke:var(--warn);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .oc .btn.oc-guard{height:46px;font-size:14.5px}
@@ -826,8 +854,6 @@ button:focus-visible{outline:2px solid var(--ac)}
 .oc-acts .btn{height:40px;font-size:13px;width:100%;padding:0 8px;border-radius:11px}
 .oc-acts .btn.warn{color:var(--warn)}
 .oc-acts .btn.dim{color:var(--sub)}
-.oc-guide{border-top:1px solid var(--brd);padding-top:12px;margin-top:-2px}
-.oc-guide summary{font-size:13px;color:var(--sub);font-weight:600}
 .oc-aged{background:var(--sf2);border:1px solid var(--brd);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--sub);text-align:center;line-height:1.5}
 .oc-mini{display:flex;align-items:center;gap:12px;background:var(--sf);border:1px solid var(--brd);border-radius:16px;padding:12px 14px}
 .oc-mini .oc-ic{width:36px;height:36px;border-radius:10px;opacity:.7}
@@ -850,14 +876,14 @@ button:focus-visible{outline:2px solid var(--ac)}
 .sh-chip{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:11px;background:var(--sf2);border:1px solid var(--brd);font-size:12.5px;color:var(--sub);font-weight:600}
 .sh-chip b{color:var(--ink);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sh-list{display:flex;flex-direction:column;gap:8px}
-.sh-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;border-radius:14px;background:var(--sf);border:1px solid var(--brd);transition:border-color .15s,background .15s,transform .1s}
-.sh-opt:active{transform:scale(.985);border-color:var(--ac);background:color-mix(in srgb,var(--ac) 6%,var(--sf))}
-.sh-opt-ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--ac) 13%,var(--sf2));color:var(--ac)}
+.sh-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 12px;border-radius:14px;background:var(--sf2);border:1px solid var(--brd);transition:border-color .15s,background .15s,transform .1s}
+.sh-opt:active{transform:scale(.985);border-color:var(--ac);background:color-mix(in srgb,var(--ac) 8%,var(--sf2))}
+.sh-opt-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--sf3);color:var(--ac)}
 .sh-opt-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .sh-opt-t{flex:1;min-width:0}
-.sh-opt-t b{display:block;font-size:14px;font-weight:700;line-height:1.25;color:var(--ink)}
-.sh-opt-t span{display:block;font-size:12px;color:var(--sub);margin-top:2px;line-height:1.35;font-weight:400}
-.sh-opt::after{content:"›";color:var(--sub);font-size:20px;flex:none;line-height:1}
+.sh-opt-t b{display:block;font-size:14px;font-weight:700;line-height:1.25}
+.sh-opt-t span{display:block;font-size:12px;color:var(--sub);margin-top:2px;line-height:1.35;font-weight:500}
+.sh-opt::after{content:"›";color:var(--sub);font-size:18px;flex:none}
 .sh-foot{font-size:12px;color:var(--sub);text-align:center;line-height:1.5;margin-top:2px}
 .sh-btn{height:48px;border-radius:13px;font-weight:700;font-size:15px;width:100%;display:flex;align-items:center;justify-content:center;background:var(--ac);color:#fff;margin-top:2px;transition:opacity .15s,transform .1s}
 .sh-btn:active{opacity:.88;transform:scale(.98)}
@@ -922,6 +948,108 @@ button:focus-visible{outline:2px solid var(--ac)}
 .pv-spinner{width:36px;height:36px;border-radius:50%;border:3px solid var(--brd);border-top-color:var(--ac);animation:pvspin .7s linear infinite}
 @keyframes pvspin{to{transform:rotate(360deg)}}
 .pv-splash-hint{font-size:13px;color:var(--sub);font-weight:500}
+
+/* ── v14: аккуратные «назад», наборы, как это работает, отзывы, safe-area ── */
+:root{--tgt:calc(var(--tg-safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px));--tgb:var(--tg-safe-area-inset-bottom,0px)}
+header{padding-top:calc(12px + var(--tgt))}
+nav{padding-bottom:max(env(safe-area-inset-bottom,0px),var(--tgb))}
+
+.back{align-self:flex-start;display:inline-flex;align-items:center;gap:4px;height:34px;padding:0 14px 0 8px;border-radius:999px;background:var(--sf);border:1px solid var(--brd);color:var(--ink);font-weight:600;font-size:13.5px;line-height:1;transition:background .15s,transform .1s}
+.back::before{content:"";width:18px;height:18px;flex:none;background:var(--ac);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E") center/contain no-repeat}
+.back:active{transform:scale(.96);background:var(--sf2)}
+.back:empty{width:36px;height:36px;padding:0;justify-content:center;gap:0}
+
+.pack.pk2{grid-template-columns:88px minmax(0,1fr) auto;gap:12px;padding:10px 13px 10px 10px;border-radius:16px;align-items:center}
+.pk2 .cover{width:88px;border-radius:11px;position:relative;overflow:hidden}
+.pk-off{position:absolute;left:5px;top:5px;z-index:3;font:800 10.5px/1 Inter,sans-serif;font-style:normal;color:#fff;background:var(--hot);padding:3px 6px;border-radius:6px}
+.pk2 .pinfo{gap:5px}
+.pk2 .nm{font-size:14.5px;font-weight:800;letter-spacing:-.01em;white-space:normal;overflow:visible;line-height:1.2}
+.pack.pk2+.pack.pk2{margin-top:4px}
+.pk2 .pprice{display:flex;flex-direction:column;align-items:flex-end;gap:1px;line-height:1.1}
+.pk2 .pprice .old-price{order:0}
+.pk2 .price{font-size:15.5px;font-weight:800}
+.pk2 .old-price{font-size:11.5px}
+.pmeta{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);font-weight:500;flex-wrap:wrap}
+.pmeta em{font-style:normal;opacity:.5}
+.pk-low{color:var(--warn);font-weight:700}
+
+.pack-hero .t{padding-top:22px}
+.how2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hw2{display:flex;flex-direction:column;gap:4px;padding:13px;border-radius:16px;background:var(--sf);border:1px solid var(--brd)}
+.hw2-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.hw2 .hi{width:36px;height:36px;border-radius:11px}
+.hw2 .hi svg{width:18px;height:18px}
+.hw2-n{font-size:22px;font-weight:800;color:var(--brd);letter-spacing:-.04em;line-height:1}
+.hw2 b{font-size:14px;font-weight:700;margin:0}
+.hw2 span:last-child{font-size:12px;line-height:1.4;color:var(--sub)}
+
+.rv-sum{margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:16px;background:var(--sf);border:1px solid var(--brd)}
+.rv-score{display:flex;align-items:center;gap:11px;min-width:0}
+.rv-score>b{font-size:30px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.rv-score span{display:block;font-size:12px;color:var(--sub);margin-top:2px}
+.rv-stars i{font-style:normal;color:var(--brd)}
+.rv-cta{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:12px;background:var(--ac);color:var(--acink,#fff);font-weight:700;font-size:13px;white-space:nowrap;flex:none;transition:transform .1s,opacity .15s}
+.rv-cta:active{transform:scale(.96);opacity:.9}
+.rv-cta svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.rv-grid{display:flex;flex-direction:column;gap:10px}
+.rv-card{padding:14px;gap:10px;border-radius:16px}
+.rv-top{gap:10px}
+.rv-av{width:36px;height:36px;font-size:15px}
+.rv-who{flex:1}
+.rv-name{font-size:13.5px}
+.rv-when{font-size:11px}
+.rv-stars{font-size:13px;letter-spacing:1px}
+.rv-text{font-size:13.5px;line-height:1.5;color:var(--ink);opacity:.85}
+
+/* ── v15: список наборов с фильтрами, форма отзыва ── */
+.pk-sale{font-weight:800;font-size:11px;line-height:1;color:#fff;background:var(--hot);padding:3px 6px;border-radius:6px}
+.pk-bar{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.pk-bar .search-wrap{margin:0}
+.pk-chips{display:flex;gap:6px;cursor:grab;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px 2px}
+.pk-chips::-webkit-scrollbar{display:none}
+.pk-chip{flex:none;height:34px;padding:0 12px;font-size:12.5px;border-radius:999px;background:var(--sf);border:1px solid var(--brd);color:var(--sub);font-weight:600;font-size:13px;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
+.pk-chip.on{background:color-mix(in srgb,var(--ac) 16%,transparent);border-color:color-mix(in srgb,var(--ac) 45%,transparent);color:var(--ac)}
+.pk-list{display:flex;flex-direction:column;gap:10px}
+.pk-list .pack.pk2+.pack.pk2{margin-top:0}
+.pk-empty{padding:22px;text-align:center;color:var(--sub);font-size:13px;border:1px dashed var(--brd);border-radius:16px}
+.pk-all{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:46px;margin-top:10px;border-radius:14px;background:transparent;border:1px solid var(--brd);color:var(--ink);font-weight:700;font-size:14px;transition:background .15s,transform .1s}
+.pk-all:active{transform:scale(.98);background:var(--sf)}
+.pk-all svg{width:18px;height:18px;fill:none;stroke:var(--ac);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+.pk-all.open svg{transform:rotate(180deg)}
+
+.rvs-block{display:flex;flex-direction:column;gap:8px}
+.rvs-lbl{display:flex;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sub)}
+.rvs-lbl span{letter-spacing:0;text-transform:none;font-weight:600;opacity:.7}
+.rvs-stars{display:flex;gap:6px}
+.rvs-stars button{flex:1;height:50px;border-radius:13px;background:var(--sf2);border:1px solid var(--brd);display:grid;place-items:center;transition:background .15s,border-color .15s,transform .1s}
+.rvs-stars button:active{transform:scale(.94)}
+.rvs-stars svg{width:26px;height:26px;fill:var(--brd);stroke:none;transition:fill .15s}
+.rvs-stars button.on{background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.4)}
+.rvs-stars button.on svg{fill:#f5a623}
+.rvs-hint{font-size:13px;color:var(--sub);font-weight:600;min-height:18px;text-align:center}
+.rvs-hint.set{color:#f5a623}
+.rvs-packs{display:flex;flex-wrap:wrap;gap:8px}
+.rvs-pack{padding:9px 14px;border-radius:12px;background:var(--sf2);border:1px solid var(--brd);color:var(--ink);font-weight:600;font-size:13.5px;transition:border-color .15s,background .15s}
+.rvs-pack.on{border-color:color-mix(in srgb,var(--ac) 60%,transparent);background:color-mix(in srgb,var(--ac) 12%,var(--sf2));color:var(--ac)}
+div.rvs-pack{display:inline-flex;align-self:flex-start}
+.rvs-ta{width:100%;box-sizing:border-box;min-height:104px;background:var(--sf2);border:1px solid var(--brd);border-radius:13px;padding:12px 14px;font-size:14px;line-height:1.5;color:var(--ink);resize:none;font-family:inherit;transition:border-color .15s}
+.rvs-ta:focus{outline:none;border-color:var(--ac)}
+.rvs-ta::placeholder{color:var(--sub);opacity:.8}
+
+/* ── v16: поддержка, чистый список ── */
+.sup-top{padding:4px 2px 2px}
+.sup-top h2{font-size:24px;font-weight:800;letter-spacing:-.03em;margin:0}
+.sup-top div{font-size:13px;color:var(--sub);margin-top:4px}
+.sup-list{background:var(--sf);border:1px solid var(--brd);border-radius:16px;overflow:hidden}
+.sup-row{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:13px 14px;transition:background .15s}
+.sup-row+.sup-row{border-top:1px solid var(--brd)}
+.sup-row:active{background:var(--sf2)}
+.sup-row>i{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:none;background:var(--sf2);border:1px solid var(--brd);color:var(--ac)}
+.sup-row>i svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.sup-row>span{flex:1;min-width:0}
+.sup-row b{display:block;font-size:14.5px;font-weight:700;color:var(--ink)}
+.sup-row small{display:block;font-size:12.5px;color:var(--sub);margin-top:2px;line-height:1.35}
+.sup-go{width:18px;height:18px;fill:none;stroke:var(--sub);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none;opacity:.7}
 </style>
 
 <div id="pv-splash">
@@ -1232,7 +1360,56 @@ const GDESC = {
   "Stick Fight: The Game":"Безумный физический файтинг: стикмены колошматят друг друга на крошечных аренах. Идеален для весёлых вечеров с друзьями.",
   "The Walking Dead":"Эпизодическая история выживания в зомби-апокалипсис. Ли и Клементина — одна из самых трогательных историй в играх.",
   "The Walking Dead: Season Two":"Клементина одна в жестоком мире. Продолжение эмоционального путешествия — теперь вы принимаете все решения за неё.",
-  "The Walking Dead: The Final Season":"Финальная глава истории Клементины. Взросление, потери и надежда в мире, где каждый день может быть последним."
+  "The Walking Dead: The Final Season":"Финальная глава истории Клементины. Взросление, потери и надежда в мире, где каждый день может быть последним.",
+  "007 First Light":"Приключенческий экшен от IO Interactive о молодом Джеймсе Бонде: путь к статусу агента 00. Скрытность, погони и шпионские гаджеты.",
+  "Одни из нас: Часть I":"Культовая постапокалиптика: Джоэл и Элли пересекают заражённую грибком Америку. Сильный сюжет, стелс и выживание.",
+  "Одни из нас: Часть II Обновленная версия":"Продолжение истории Элли: жестокая драма о мести. Улучшенная графика и дополнительный режим «Без возврата».",
+  "Полное издание «Horizon Запретный Запад»":"Элой отправляется на Запретный Запад навстречу новой угрозе. Огромный мир, машины-монстры и дополнение «Бурные берега».",
+  "Control Ultimate Edition":"Экшен от Remedy: Джесси исследует Старейший Дом, штаб-квартиру Бюро, где меняются сами комнаты. Телекинез, мистика и все дополнения.",
+  "Cyberpunk 2077":"RPG с открытым миром от CD Projekt RED: наёмник V в мегаполисе будущего Найт-Сити. Импланты, перестрелки и выбор, меняющий сюжет.",
+  "Days Gone":"Охотник за головами Дикон Сент-Джон выживает в постапокалиптическом Орегоне среди орд фрикеров. Мотоцикл и открытый мир.",
+  "Dead Island 2":"Кровавый зомби-экшен в Лос-Анджелесе: расчленение, прокачка оружия и возможность играть в кооперативе.",
+  "Dead Island Riptide Definitive Edition":"Продолжение зомби-экшена на тропических островах: ближний бой, крафт и кооператив. Улучшенное издание.",
+  "DEATH STRANDING DIRECTOR'S CUT":"Игра Хидео Кодзимы: курьер Сэм Бриджес объединяет разрушенную Америку. Необычный сюжет и доставка грузов по опасному миру.",
+  "Dying Light: The Beast":"Новая часть паркур-экшена про зомби: Кайл Крейн возвращается, чтобы отомстить. Ночные кошмары и ближний бой.",
+  "HITMAN 2":"Агент 47 в новых локациях по всему миру. Свобода в выполнении контрактов, маскировки и стелс.",
+  "Horizon Zero Dawn Remastered":"Элой в мире, где правят машины-динозавры. Улучшенная графика, красивый открытый мир и сильный сюжет.",
+  "Just Cause 3":"Рико Родригес освобождает остров от диктатора: взрывы, крюк-кошка и вингсьют. Экшен-песочница «разнеси всё».",
+  "Kingdom Come: Deliverance":"Реалистичная RPG в средневековой Богемии: сын кузнеца Индржих в гуще войны. Без магии, с глубоким сюжетом.",
+  "Lost Soul Aside":"Зрелищный экшен-RPG в духе японских слэшеров: быстрые комбо, боссы и яркая графика.",
+  "Mafia: Definitive Edition":"Ремейк культовой игры: Томми Анджело в мафии 1930-х. Криминальная история, машины и перестрелки.",
+  "Mafia III: Definitive Edition":"Новый Бурбон, 1968 год: ветеран Вьетнама Линкольн Клэй мстит мафии. Открытый мир и сильный сюжет.",
+  "Mafia: The Old Country":"Сюжетный экшен о Сицилии начала XX века и пути в мафии. Одиночная кампания.",
+  "Marvel's Spider-Man Remastered":"Питер Паркер в Нью-Йорке: паутинные полёты, зрелищные бои и сюжет в духе кино от Insomniac.",
+  "METAL GEAR SOLID Δ: SNAKE EATER":"Ремейк классики: Снейк в джунглях 1964 года. Стелс, выживание и сюжет Кодзимы.",
+  "Mortal Shell":"Мрачный экшен в духе Souls: меняйте оболочки с разными способностями. Сложные бои и тёмный мир.",
+  "Prey":"Научно-фантастический экшен от Arkane на станции «Талос-1». Свобода прохождения, способности и враждебные Тифоны.",
+  "REANIMAL":"Атмосферный хоррор-приключение от создателей Little Nightmares: двое детей на мрачных островах. Можно играть кооперативно.",
+  "Resident Evil 0":"Приквел классики: Ребекка Чемберс и Билли Коэн в поезде и особняке. Система партнёров и выживание.",
+  "Resident Evil 5":"Крис Редфилд в Африке: заражённые, экшен и кооператив на двоих.",
+  "Resident Evil 7 Biohazard":"Возвращение серии к хоррору: вид от первого лица, дом семейства Бейкеров и выживание на пределе.",
+  "Resident Evil Requiem":"Новая часть серии Resident Evil от Capcom: хоррор и выживание.",
+  "Resident Evil Revelations":"Приквел между четвёртой и пятой частями: корабль «Куин Зенобия» и хоррор-атмосфера.",
+  "Resident Evil Revelations 2":"Клэр Редфилд и Мойра Бёртон на жутком острове-тюрьме. Две пары героев и эпизодический сюжет.",
+  "RoboCop: Rogue City - Unfinished Business":"Самостоятельное дополнение к Rogue City: новый сюжет за РобоКопа в мрачном Детройте.",
+  "Stellar Blade":"Экшен-слэшер: Ева сражается с чужаками за судьбу Земли. Эффектные бои и яркий визуал.",
+  "Subnautica 2":"Продолжение подводного выживания: чужой океан, строительство базы и исследование глубин.",
+  "The Witcher 2: Assassins of Kings Enhanced Edition":"Геральт расследует покушения на королей. Тёмное фэнтези с последствиями выбора.",
+  "The Witcher: Enhanced Edition":"Первая игра серии: Геральт из Ривии, алхимия, мечи и моральный выбор.",
+  "UNCHARTED: Наследие воров. Коллекция":"Две приключенческие истории Нейтана Дрейка: четвёртая часть и «Утраченное наследие». Погони, головоломки и сокровища.",
+  "WUCHANG: Fallen Feathers":"Мрачный экшен в духе Souls в Китае эпохи Мин: сложные бои и мистика.",
+  "Borderlands 3":"Шутер-лутер с миллиардами пушек и фирменным юмором. Можно играть в одиночку или в кооперативе.",
+  "7 Days to Die":"Выживание в мире зомби: стройте базу, крафтите и готовьтесь к орде каждую седьмую ночь.",
+  "Alan Wake's American Nightmare":"Хоррор-экшен: Алан Уэйк в Аризоне преследует своего тёмного двойника. Бой фонарём и оружием.",
+  "Gothic 1 Remake":"Ремейк культовой RPG: колония заключённых за Барьером, фракции и свобода выбора.",
+  "Хроники Миртаны: Архолос":"RPG во вселенной «Готики»: большой мир, квесты и атмосфера классики.",
+  "100% Orange Juice":"Настольная аркада с картами и кубиками: герои из разных игр и аниме, есть мультиплеер.",
+  "Dark Deception":"Хоррор от первого лица в духе Pac-Man: беги по лабиринтам от монстров и собирай осколки душ.",
+  "DARKEST DAYS":"Зомби-выживание в открытом мире в духе Days Gone и State of Decay.",
+  "Just Ignore Them":"Короткое 2D-хоррор-приключение с мрачной атмосферой.",
+  "Poly Bridge":"Инженерная головоломка: строй мосты, которые выдержат вес транспорта.",
+  "Poly Bridge 2":"Продолжение инженерной головоломки: новые материалы, уровни и физика.",
+  "The Awesome Adventures of Captain Spirit":"Короткая бесплатная история от создателей Life is Strange: фантазии мальчика и семейная драма.",
 };
 
 const TOP = {
@@ -1241,7 +1418,8 @@ const TOP = {
   3: ["Ведьмак 3: Дикая Охота — Обновлённое издание","Хогвартс. Наследие","Lethal Company"],
   4: ["Hearts of Iron IV","Football Manager 2023","Batman: Arkham Knight"],
   5: ["BeamNG.drive","Sons of the Forest","Resident Evil Village Gold Edition"],
-  6: ["Ведьмак 3: Дикая Охота — Обновлённое издание","Mortal Kombat 11","Resident Evil 2"]
+  6: ["Ведьмак 3: Дикая Охота — Обновлённое издание","Mortal Kombat 11","Resident Evil 2"],
+  7: ["Cyberpunk 2077","Marvel's Spider-Man Remastered","Mafia: The Old Country"]
 };
 
 const PAY = ["Telegram Stars","С баланса"];
@@ -1605,24 +1783,58 @@ function packHead(p) {
   </div>`;
 }
 
+const PK_FILTERS = [["pop","Популярные"],["cheap","Дешевле"],["games","Больше игр"],["sale","Скидки"]];
+const PK_LIM = 5;
+// scrollIntoView внутри Telegram Web прокручивает и саму страницу Telegram — шапка уезжает под панель. Скроллим только своё окно.
+function scrollToEl(el) {
+  if(!el) return;
+  const hd = document.querySelector("header");
+  const dy = el.getBoundingClientRect().top - (hd ? hd.getBoundingClientRect().bottom : 0) - 8;
+  try { window.scrollBy({top: dy, behavior: "smooth"}); } catch(_) { window.scrollBy(0, dy); }
+}
+function packsView() {
+  const f = S.pf || "pop";
+  let list = [...PACKS];
+  if(f==="sale") list = list.filter(p=>p.disc>0).sort((a,b)=>b.disc-a.disc||priceOf(a)-priceOf(b));
+  else if(f==="cheap") list.sort((a,b)=>priceOf(a)-priceOf(b));
+  else if(f==="games") list.sort((a,b)=>b.count-a.count);
+  else list.sort((a,b)=>(b.buyers||0)-(a.buyers||0)||b.id-a.id);
+  const total = list.length, show = S.pall ? list : list.slice(0, PK_LIM);
+  const chev = '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
+  return `<div class="pk-list">${show.length ? show.map(packRow).join("") : `<div class="pk-empty">Сейчас нет наборов со скидкой</div>`}</div>`
+    + (total > PK_LIM ? `<button class="pk-all ${S.pall?"open":""}" data-act="pall">${S.pall ? "Свернуть" : `Показать все наборы · ${total}`}${chev}</button>` : "");
+}
+function pkUpdate() {
+  const w = $("#pk-wrap"); if(w) w.innerHTML = packsView();
+  $$("#pk-chips .pk-chip").forEach(c => c.classList.toggle("on", c.dataset.s === (S.pf||"pop")));
+}
+function packsBlock() {
+  return `<div class="sec-head"><h2 id="packs-h">Наборы</h2></div>
+  <div class="pk-bar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search" id="gs" type="search" placeholder="Найти игру — покажем, в каком она наборе" value="${esc(S.q)}" autocomplete="off">
+    </div>
+    <div class="pk-chips" id="pk-chips">${PK_FILTERS.map(([id,l])=>`<button class="pk-chip ${(S.pf||"pop")===id?"on":""}" data-act="psort" data-s="${id}">${l}</button>`).join("")}</div>
+  </div>
+  <div id="gr"></div>
+  <div id="pk-wrap">${packsView()}</div>`;
+}
+
 function packRow(p) {
   const cg = packCoverGame(p), a = APP[cg], warn = p.stock <= 2;
-  return `<button class="pack" data-act="open" data-id="${p.id}" aria-label="${esc(p.name)}">
+  const meta = [];
+  if(p.disc) meta.push(`<b class="pk-sale">−${p.disc}%</b>`);
+  meta.push(`<span>${p.count} игр</span>`);
+  if(p.buyers>0) meta.push(`<span>${p.buyers} купили</span>`);
+  if(warn) meta.push(`<span class="pk-low">осталось ${p.stock}</span>`);
+  return `<button class="pack pk2" data-act="open" data-id="${p.id}" aria-label="${esc(p.name)}">
     <div class="cover" style="background:${bg(cg)}">${a?`<img src="${steamImg(a)}" alt="" onerror="this.src=this.src.replace('shared.akamai.steamstatic.com/store_item_assets','cdn.cloudflare.steamstatic.com/steam/apps');this.onerror=null">`:`<span class="cl">${esc(cg[0])}</span>`}</div>
     <div class="pinfo">
-      <div class="prow">
-        <div class="nm">${p.name}</div>
-        <div class="pprice"><span class="price">${r(priceOf(p))}</span>${p.disc?`<s class="old-price">${r(p.price.buy)}</s>`:''}</div>
-      </div>
-      <div class="sub">${p.sub}</div>
-      <div class="ptags">
-        ${p.disc?`<span class="disc-badge">−${p.disc}%</span>`:""}
-        <span class="tag">${p.count} игр</span>
-        ${p.buyers>0?`<span class="tag" style="color:var(--ok)">👥 ${p.buyers} купили</span>`:""}
-        ${(p.tags||[]).map(t=>`<span class="tag" style="flex-shrink:0">${t}</span>`).join("")}
-        ${warn?`<span class="tag warn">осталось ${p.stock}</span>`:""}
-      </div>
+      <div class="nm">${p.name}</div>
+      <div class="pmeta">${meta.join('<em>·</em>')}</div>
     </div>
+    <div class="pprice">${p.disc?`<s class="old-price">${r(p.price.buy)}</s>`:''}<span class="price">${r(priceOf(p))}</span></div>
   </button>`;
 }
 
@@ -1673,11 +1885,18 @@ function howBlock() {
     k:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/>',
     p:'<path d="M7 9h10a4 4 0 014 4v1a3 3 0 01-5.2 2L14 14h-4l-1.8 2A3 3 0 013 14v-1a4 4 0 014-4z"/><path d="M8 11v2M7 12h2"/>',
   };
+  const short = {
+    g:"Найдите игру через поиск или откройте подборку",
+    c:"Баланс, Telegram Stars, крипта или карта",
+    k:"Логин, пароль и код Steam Guard в «Мои доступы»",
+    p:"Скачайте игры и включите автономный режим",
+  };
   return `<div class="sec-head"><h2>Как это работает</h2></div>
-  <div class="card how">
-    ${steps.map(([i,t,d])=>`<div class="hw">
-      <div class="hi"><svg viewBox="0 0 24 24">${icons[i]}</svg></div>
-      <div><b>${t}</b><div class="mut">${d}</div></div>
+  <div class="how2">
+    ${steps.map(([i,t],n)=>`<div class="hw2">
+      <div class="hw2-top"><div class="hi"><svg viewBox="0 0 24 24">${icons[i]}</svg></div><span class="hw2-n">${n+1}</span></div>
+      <b>${t}</b>
+      <span>${short[i]}</span>
     </div>`).join("")}
   </div>`;
 }
@@ -1738,6 +1957,7 @@ function rvCard(r, isAdmin) {
   const name = r.username || "Аноним";
   const init = name[0].toUpperCase();
   const deleteBtn = isAdmin && r.id ? `<button class="rv-del-btn" data-rv-del="${r.id}" title="Удалить отзыв">✕</button>` : "";
+  const st = Math.max(0, Math.min(5, +r.stars || 0));
   return `<div class="rv-card" data-rv-id="${r.id||""}">
     <div class="rv-top">
       <div class="rv-av">${esc(init)}</div>
@@ -1745,12 +1965,19 @@ function rvCard(r, isAdmin) {
         <div class="rv-name">${esc(name)}</div>
         <div class="rv-when">${esc(rvFmtDate(r.created_at))}</div>
       </div>
+      <div class="rv-stars" aria-label="${st} из 5">${"★".repeat(st)}<i>${"★".repeat(5-st)}</i></div>
       ${deleteBtn}
     </div>
-    <div class="rv-stars">${"★".repeat(r.stars)}${"☆".repeat(5-r.stars)}</div>
     <div class="rv-text">${esc(r.text)}</div>
     <span class="rv-tag">${esc(r.pack_name)}</span>
   </div>`;
+}
+async function rvWrite() {
+  if (!tgInit()) { toast("Откройте приложение в Telegram"); return; }
+  if (!S_reviews) await rvFetch();
+  if (!S.orders?.length) await loadOrders();
+  if (!S.orders?.length) { toast("Отзыв можно оставить после покупки набора"); return; }
+  openReviewSheet();
 }
 function rvCanWrite() {
   // Есть ли купленные наборы без отзыва?
@@ -1771,44 +1998,53 @@ function openReviewSheet() {
   if (!available.length) { toast("Вы уже оставили отзыв на все свои наборы"); return; }
   const opts = available.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join("");
 
-  sheet(`
-    <h2 style="margin-bottom:16px">Написать отзыв</h2>
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div>
-        <div style="font-size:12px;color:var(--sub);margin-bottom:6px;font-weight:600">ОЦЕНКА</div>
-        <div id="rv-star-pick" style="display:flex;gap:8px;font-size:34px;cursor:pointer;line-height:1;color:var(--brd);user-select:none">
-          <span data-s="1">★</span><span data-s="2">★</span><span data-s="3">★</span><span data-s="4">★</span><span data-s="5">★</span>
-        </div>
-      </div>
-      <div>
-        <div style="font-size:12px;color:var(--sub);margin-bottom:6px;font-weight:600">НАБОР</div>
-        <select id="rv-pack-sel" style="width:100%;background:var(--sf2);border:1px solid var(--brd);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--ink);font-family:inherit;appearance:none;-webkit-appearance:none;cursor:pointer">${opts}</select>
-      </div>
-      <div>
-        <div style="font-size:12px;color:var(--sub);margin-bottom:6px;font-weight:600">КОММЕНТАРИЙ</div>
-        <textarea id="rv-text-inp" placeholder="Напишите пару слов о наборе…" maxlength="300"
-          style="width:100%;min-height:80px;background:var(--sf2);border:1px solid var(--brd);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--ink);resize:none;font-family:inherit;line-height:1.45;box-sizing:border-box"></textarea>
-      </div>
-      <button class="btn pri" id="rv-submit-btn" style="margin-top:4px">Опубликовать</button>
+  const LBL = ["", "Ужасно", "Плохо", "Нормально", "Хорошо", "Отлично"];
+  const star = '<svg viewBox="0 0 24 24"><path d="M12 3.2l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.5l6-.8z"/></svg>';
+  sheet(`<div class="sh-grip"></div>
+    <div class="sh-head">
+      <div class="sh-ic"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></div>
+      <div class="sh-t"><h2>Оставить отзыв</h2><div>Это поможет другим выбрать набор</div></div>
     </div>
+    <div class="rvs-block">
+      <div class="rvs-lbl">Ваша оценка</div>
+      <div class="rvs-stars" id="rv-star-pick">${[1,2,3,4,5].map(n=>`<button type="button" data-s="${n}" aria-label="${n} из 5">${star}</button>`).join("")}</div>
+      <div class="rvs-hint" id="rv-hint">Нажмите на звезду</div>
+    </div>
+    <div class="rvs-block">
+      <div class="rvs-lbl">Набор</div>
+      ${available.length === 1
+        ? `<div class="rvs-pack on" data-id="${available[0].id}">${esc(available[0].name)}</div>`
+        : `<div class="rvs-packs" id="rv-packs">${available.map((p,i)=>`<button type="button" class="rvs-pack ${i===0?"on":""}" data-id="${p.id}">${esc(p.name)}</button>`).join("")}</div>`}
+    </div>
+    <div class="rvs-block">
+      <div class="rvs-lbl">Комментарий <span id="rv-cnt">0/300</span></div>
+      <textarea id="rv-text-inp" class="rvs-ta" placeholder="Что понравилось? Как прошла покупка и вход в аккаунт?" maxlength="300" rows="4"></textarea>
+    </div>
+    <button class="sh-btn" id="rv-submit-btn">Опубликовать</button>
   `);
 
-  // Инициализируем звёзды — sheet уже в DOM
   let pickedStars = 0;
   const picker = document.getElementById("rv-star-pick");
-  const spans = picker.querySelectorAll("span");
-  const paint = n => spans.forEach((s, i) => { s.style.color = i < n ? "#f5a623" : "var(--brd)"; });
-  spans.forEach(s => {
-    const n = +s.dataset.s;
-    s.addEventListener("click",     () => { pickedStars = n; paint(n); });
-    s.addEventListener("touchend",  e  => { e.preventDefault(); pickedStars = n; paint(n); });
-    s.addEventListener("mouseenter",() => paint(n));
-    s.addEventListener("mouseleave",() => paint(pickedStars));
+  const btns = picker.querySelectorAll("button");
+  const hint = document.getElementById("rv-hint");
+  const paint = n => { btns.forEach((b, i) => b.classList.toggle("on", i < n)); hint.textContent = n ? LBL[n] : "Нажмите на звезду"; hint.classList.toggle("set", !!n); };
+  btns.forEach(b => {
+    const n = +b.dataset.s;
+    b.addEventListener("click", () => { pickedStars = n; paint(n); });
+    b.addEventListener("mouseenter", () => paint(n));
+    b.addEventListener("mouseleave", () => paint(pickedStars));
   });
+  let packSel = available[0].id;
+  document.querySelectorAll("#rv-packs .rvs-pack").forEach(b => b.addEventListener("click", () => {
+    packSel = +b.dataset.id;
+    document.querySelectorAll("#rv-packs .rvs-pack").forEach(x => x.classList.toggle("on", x === b));
+  }));
+  const ta = document.getElementById("rv-text-inp");
+  ta.addEventListener("input", () => { document.getElementById("rv-cnt").textContent = ta.value.length + "/300"; });
 
   document.getElementById("rv-submit-btn").addEventListener("click", async () => {
     const text = (document.getElementById("rv-text-inp")?.value || "").trim();
-    const packId = Number(document.getElementById("rv-pack-sel")?.value);
+    const packId = packSel;
     const btn = document.getElementById("rv-submit-btn");
     if (!pickedStars) { toast("Поставьте оценку ★"); return; }
     if (text.length < 3) { toast("Напишите немного больше"); return; }
@@ -1836,35 +2072,36 @@ function reviewsBlock(showAll) {
   const adm = isAdmin();
   const visible = showAll ? all : all.slice(0, RV_PAGE);
   const hasMore = !showAll && all.length > RV_PAGE;
-  const canWrite = rvCanWrite();
-  const writeBtn = canWrite ? `<button class="btn sec" id="rv-open-btn" style="width:100%;margin-bottom:12px">✍️ Написать отзыв</button>` : "";
-  const grid = visible.length ? `<div class="rv-grid">${visible.map(r => rvCard(r, adm)).join("")}</div>` : "";
-  const moreBtn = hasMore ? `<button class="rv-more-btn" id="rv-more-btn">Показать ещё · ${all.length - RV_PAGE}</button>` : showAll ? `<button class="rv-more-btn" id="rv-less-btn" style="color:var(--sub)">Свернуть</button>` : "";
-  const loading = !S_reviews ? `<div class="mut" style="text-align:center;padding:12px 0;font-size:13px">Загружаем отзывы…</div>` : "";
-  return `<div class="sec-head"><h2>Отзывы</h2><span class="mut">${rvCountLabel(all.length)}</span></div>
-  ${writeBtn}${loading}${grid}${moreBtn}`;
+  const avg = all.length ? all.reduce((a, r) => a + (+r.stars || 0), 0) / all.length : 0;
+  const stars = Math.round(avg);
+  const list = visible.length ? `<div class="rv-grid">${visible.map(r => rvCard(r, adm)).join("")}</div>` : "";
+  const moreBtn = hasMore ? `<button class="rv-more-btn" id="rv-more-btn">Показать ещё · ${all.length - RV_PAGE}</button>` : "";
+  const loading = !S_reviews ? `<div class="mut" style="text-align:center;padding:8px 0;font-size:13px">Загружаем отзывы…</div>` : "";
+  return `<div class="sec-head"><h2>Отзывы</h2></div>
+  <div class="rv-sum">
+    <div class="rv-score">
+      <b>${all.length ? avg.toFixed(1) : "—"}</b>
+      <div><div class="rv-stars">${"★".repeat(stars)}<i>${"★".repeat(5-stars)}</i></div><span>${rvCountLabel(all.length)}</span></div>
+    </div>
+    <button class="rv-cta" data-act="rvwrite"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>Оставить отзыв</button>
+  </div>
+  ${loading}${list}${moreBtn}`;
 }
 function rvInitInteractive(showAll) {
-  const openBtn = document.getElementById("rv-open-btn");
-  if (openBtn) openBtn.addEventListener("click", openReviewSheet);
+  if(typeof gres === "function") gres();
 
   const moreBtn = document.getElementById("rv-more-btn");
   if (moreBtn) moreBtn.addEventListener("click", () => {
+    // Перерисовываем только блок отзывов внутри #home
     const homeEl = document.getElementById("home");
     if (homeEl) {
+      const rvSection = homeEl.querySelector(".sec-head");
+      // Находим родителя блока отзывов и обновляем его
       const sy = window.scrollY;
+      // Проще всего — перезаписать весь #home
       homeEl.innerHTML = home(true);
-      requestAnimationFrame(() => window.scrollTo(0, sy));
+      window.scrollTo(0, sy);
       rvInitInteractive(true);
-    }
-  });
-  const lessBtn = document.getElementById("rv-less-btn");
-  if (lessBtn) lessBtn.addEventListener("click", () => {
-    const homeEl = document.getElementById("home");
-    if (homeEl) {
-      homeEl.innerHTML = home(false);
-      requestAnimationFrame(() => window.scrollTo(0, 0));
-      rvInitInteractive(false);
     }
   });
 
@@ -1877,7 +2114,7 @@ function rvInitInteractive(showAll) {
         S_reviews = null; await rvFetch();
         const sy = window.scrollY;
         const homeEl = document.getElementById("home");
-        if (homeEl) { homeEl.innerHTML = home(showAll); requestAnimationFrame(() => window.scrollTo(0, sy)); rvInitInteractive(showAll); }
+        if (homeEl) { homeEl.innerHTML = home(showAll); window.scrollTo(0, sy); rvInitInteractive(showAll); }
       } catch(e) { toast("Ошибка: " + e.message); }
     });
   });
@@ -1887,45 +2124,55 @@ function home(showAll) {
   const ng = ALLG().length;
   const minPrice = r(Math.min(...PACKS.map(priceOf)));
   const pn = PACKS.length, pw = [2,3,4].includes(pn%10)&&![12,13,14].includes(pn%100)?"набора":pn%10===1&&pn%100!==11?"набор":"наборов";
-  return `<div class="hero hv2">
-    <div class="hv-eyebrow"><i></i>Доступ активируется сразу</div>
-    <h2>Играй в <em>${ng} игр</em> — от ${minPrice}</h2>
-    <p>${pn} ${pw} на выбор. Офлайн-режим, без подписки, навсегда.</p>
+  return `<div class="hs-hide"><div class="hero hv2">
+    <div class="hv-eyebrow"><i></i>Доступ за минуту после оплаты</div>
+    <h2><em>${ng}</em> качественных игр<br>по цене одной</h2>
+    <p>Только проверенные игры — без мусора. Выберите набор и играйте оффлайн.</p>
+    <div class="hv-stats">
+      <div><b>${ng}</b><span>игр</span></div>
+      <div><b>${pn}</b><span>${pw}</span></div>
+      <div><b>${minPrice}</b><span>цена от</span></div>
+    </div>
     <div class="hv-actions">
-      <button class="btn pri" data-act="topacks">Смотреть наборы</button>
+      <button class="btn pri" data-act="topacks">Выбрать набор</button>
       <button class="hv-rnd" data-act="rnd" aria-label="Случайная игра">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
         Случайная
       </button>
     </div>
   </div>
-  ${recBlock()}
-  <div class="sec-head"><h2 id="packs-h">Наборы</h2></div>
-  ${PACKS.map(packRow).join("")}
+  ${recBlock()}</div>
+  ${packsBlock()}
+  <div class="hs-hide">
   ${popularRow("Популярные игры")}
   ${howBlock()}
-  ${reviewsBlock(showAll)}`;
+  ${reviewsBlock(showAll)}</div>`;
 }
 
 function shop() {
   if(S.open) return detail(PACKS.find(x=>x.id===S.open));
   const V = $("#view");
-  V.innerHTML = `<div class="search-wrap">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input class="search" id="gs" type="search" placeholder="Поиск по названию (рус / eng)" value="${esc(S.q)}" autocomplete="off">
-  </div>
-  <div id="gr"></div>
-  <div id="home">${home()}</div>`;
+  V.innerHTML = `<div id="home">${home()}</div>`;
   requestAnimationFrame(rvInitInteractive);
-  const g = $("#gs");
-  let debounce;
-  g.oninput = () => { clearTimeout(debounce); debounce = setTimeout(()=>{ S.q=g.value.trim(); gres(); }, 120); };
   gres();
 }
+(function(){ // перетаскивание мышью для горизонтальных лент (на ПК нет свайпа)
+  let el=null, x0=0, sl0=0, moved=false;
+  document.addEventListener("mousedown", e => { const c = e.target.closest && e.target.closest(".pk-chips"); if(!c) return; el=c; x0=e.pageX; sl0=c.scrollLeft; moved=false; });
+  document.addEventListener("mousemove", e => { if(!el) return; const dx=e.pageX-x0; if(Math.abs(dx)>4) moved=true; el.scrollLeft = sl0 - dx; });
+  document.addEventListener("mouseup", () => { el=null; });
+  document.addEventListener("click", e => { if(moved){ moved=false; e.stopPropagation(); e.preventDefault(); } }, true);
+})();
+document.addEventListener("input", e => {
+  const g = e.target;
+  if(g && g.id === "gs") { clearTimeout(window._gsd); window._gsd = setTimeout(()=>{ S.q = g.value.trim(); gres(); }, 120); }
+});
 
 function gres() {
-  const q = S.q, el = $("#gr"), h = $("#home");
-  if(h) h.style.display = q ? "none" : "";
+  const q = S.q, el = $("#gr");
+  if(!el) return;
+  $$("#home .hs-hide").forEach(n => n.style.display = q ? "none" : "");
+  ["#pk-wrap","#pk-chips"].forEach(sel => { const n = $(sel); if(n) n.style.display = q ? "none" : ""; });
   if(!q) { el.innerHTML = ""; return; }
   if(q.length < 2) { el.innerHTML = `<div class="mut" style="padding:8px 4px">Введите хотя бы 2 символа</div>`; return; }
   const m = [];
@@ -2029,8 +2276,9 @@ function mine() {
     const left = o.exp ? Math.max(0, Math.ceil((o.exp-Date.now())/864e5)) : null;
     const hidden = S._hiddenOrders.has(o.id);
     // Счётчик 14 дней (срок гарантии)
-    const daysLeft = o.created_at ? Math.max(0, 14 - Math.floor((Date.now()-new Date(o.created_at).getTime())/864e5)) : null;
-    const until = o.created_at ? new Date(o.created_at).getTime()+14*864e5 : 0;
+    const until = o.until || (o.created_at ? new Date(o.created_at).getTime()+14*864e5 : 0);
+    const daysLeft = until ? Math.max(0, Math.ceil((until-Date.now())/864e5)) : null;
+    const canRefresh = !!until && until > Date.now() && (until - Date.now()) <= 7*864e5;
 
     if(hidden) return `<div class="oc-mini">
       <div class="oc-ic">${IC.key}</div>
@@ -2062,10 +2310,6 @@ function mine() {
         <span class="oc-badge ${o.exp?'warn':''}">${o.exp? left+' дн.' : 'Навсегда'}</span>
       </div>
       ${o.exp?`<div class="bar"><i style="width:${Math.min(100,left/(o.span||30)*100)}%"></i></div>`:''}
-      ${daysLeft!==null && !o.aged ? `<div class="oc-timer">${IC.clock}
-        <span>Доступны ещё <b class="cred-timer" data-until="${until}">${daysLeft} дн.</b></span>
-        <button data-act="credhint" aria-label="Подробнее">?</button>
-      </div>` : ''}
       ${o.aged ? `<div class="oc-aged">Данные для входа скрыты — прошло 14 дней.<br>Доступ к аккаунту сохраняется.</div>` : `
       ${credRows(o.p.login, o.p.pass, {cl:"cl",cp:"cp",sp:"sp",pw:"pw",spb:"spb"})}
       <div class="oc-tip">${IC.info}<span>Пароль может выглядеть как ссылка — это не ошибка. Копируйте его целиком кнопкой справа и вставляйте в Steam как обычный пароль.</span></div>
@@ -2073,6 +2317,11 @@ function mine() {
       ${credRows(o.p.extra_login||"", "", {cl:"cxl",cp:"cxp",sp:"sxp",pw:"xpw",spb:"sxpb"})}` : ""}
       `}
       <div id="sg${i}"><button class="btn pri oc-guard" data-act="gd" data-i="${i}">${IC.shield}Код Steam Guard</button></div>
+      ${daysLeft!==null && !o.aged ? `<div class="oc-timer">${IC.clock}
+        <span>Доступны ещё <b class="cred-timer" data-until="${until}">${daysLeft} дн.</b></span>
+        <button data-act="credhint" aria-label="Подробнее"><svg viewBox="0 0 24 24"><path d="M9.2 9.2a2.9 2.9 0 1 1 4.1 2.6c-.8.4-1.3 1-1.3 1.9"/><path d="M12 17.2h.01"/></svg></button>
+      </div>
+      ${canRefresh ? `<button class="oc-refresh" data-act="tref" data-i="${i}"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg><span><b>Обновить таймер</b><small>Снова 14 дней — пока данные нужны вам</small></span></button>` : ''}` : ''}
       <div class="oc-acts">
         ${o.exp?`<button class="btn sec" data-act="ext" data-i="${i}">Продлить</button>`:''}
         <button class="btn sec warn" data-act="bad" data-i="${i}">Не работает</button>
@@ -2260,17 +2509,57 @@ function loadHiddenOrders(){ try{ return JSON.parse(localStorage.getItem("pv_hid
 function saveHiddenOrders(){ try{ localStorage.setItem("pv_hidden_orders", JSON.stringify([...S._hiddenOrders])); }catch(_){} }
 function tickets() {
   const V = $("#view");
+  const CAT_IC = {acc:"🔐",pay:"💳",ref:"💰",ext:"🕐",game:"🎮",other:"💬"};
+  const getIcon = subj => {
+    if(/аккаунт|пароль|steam/i.test(subj)) return "🔐";
+    if(/оплат/i.test(subj)) return "💳";
+    if(/возврат/i.test(subj)) return "💰";
+    if(/продлен/i.test(subj)) return "🕐";
+    if(/игр/i.test(subj)) return "🎮";
+    return "💬";
+  };
+  const hasNew = S.tickets.some(t => t.uu);
   V.innerHTML = `<button class="back" data-act="mine">Мои доступы</button>
-  <div class="row"><h2>Поддержка</h2><div style="display:flex;gap:8px"><button class="btn sec sm" data-act="treq">+ Игру</button><button class="btn pri sm" data-act="tnew">Написать</button></div></div>
-  ${S.tickets.length ? S.tickets.map(t=>{const l=t.msgs[t.msgs.length-1];return `<button class="tk" data-act="topen" data-id="${t.id}">
-    <div class="row"><b style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${esc(t.subj)}</b><span class="tag ${t.st==='open'?'ok':''}">${t.st==='open'?'Открыт':'Закрыт'}</span></div>
-    <div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.f==="me"?"Вы: ":"Поддержка: "}${esc(l.t)}</div>
-    <div class="row mut" style="font-size:12px"><span>№${t.id} · ${tm(l.ts)}${t.st!=='open'?' · 🗑 '+tkDel(t):''}</span>${t.uu?'<span class="disc-badge">новый ответ</span>':''}</div>
-  </button>`}).join("") : `<div class="card empty">
-    <h3>Обращений пока нет</h3>
-    <div class="mut">Если что-то не работает или есть вопрос — создайте обращение</div>
-    <button class="btn pri" data-act="tnew">Написать</button>
-  </div>`}`;
+  <div class="sup-top"><h2>Поддержка</h2><div>Выберите тему — ответим в течение 24 часов</div></div>
+  ${!S.tickets.length ? `
+  <div class="sup-list">
+    ${[["acc","Аккаунт не работает","Неверный пароль, блокировка, просит код",'<rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 018 0v3"/>'],
+       ["pay","Вопрос по оплате","Не прошёл платёж, списали дважды",'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/>'],
+       ["ref","Возврат на баланс","Вернуть средства в течение 14 дней",'<path d="M4 12a8 8 0 1 0 2.6-5.9"/><path d="M4 4v5h5"/>'],
+       ["ext","Продление доступа","Доступ истёк или хочу продлить",'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'],
+       ["game","Запросить игру","Нет нужной игры в наборах",'<path d="M7 9h10a4 4 0 014 4v1a3 3 0 01-5.2 2L14 14h-4l-1.8 2A3 3 0 013 14v-1a4 4 0 014-4z"/><path d="M8 11v2M7 12h2"/>'],
+       ["other","Другой вопрос","Всё остальное",'<path d="M21 12a8 8 0 01-11.5 7.2L4 20l1-4.3A8 8 0 1121 12z"/>']
+      ].map(([id,lbl,hint,ic])=>`<button class="sup-row" data-act="tcat" data-cat="${id}">
+      <i><svg viewBox="0 0 24 24">${ic}</svg></i>
+      <span><b>${lbl}</b><small>${hint}</small></span>
+      <svg class="sup-go" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+    </button>`).join("")}
+  </div>
+  ` : `
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+    <h3 style="margin:0;font-size:15px">Мои обращения</h3>
+    <button class="btn pri sm" data-act="tnew">+ Новое</button>
+  </div>
+  ${S.tickets.map(t=>{
+    const l=t.msgs[t.msgs.length-1];
+    const ic = getIcon(t.subj);
+    const isOpen = t.st==='open';
+    const preview = l.t ? (l.f==="me"?"Вы: ":"Поддержка: ") + l.t : l.ph ? "📷 Фото" : "";
+    return `<button class="tk" data-act="topen" data-id="${t.id}">
+    <div class="tk-head">
+      <span class="tk-cat-icon">${ic}</span>
+      <div class="tk-head-body">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+          <b style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:14px">${esc(t.subj)}</b>
+          <span class="tag ${isOpen?'ok':''}" style="flex-shrink:0;font-size:11px">${isOpen?'Открыт':'Закрыт'}</span>
+        </div>
+        <div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px">${esc(preview)}</div>
+        <div class="mut" style="font-size:11px;margin-top:3px">№${t.id} · ${tm(l.ts)}${!isOpen?' · 🗑 '+tkDel(t):''}</div>
+      </div>
+      ${t.uu?'<span class="tk-unread-dot"></span>':''}
+    </div>
+  </button>`;}).join("")}
+  `}`;
 }
 
 function atks(fresh = true) {
@@ -2292,15 +2581,15 @@ function chat(adm) {
   const t = getT(); if(!t){S.tab=adm?"atks":"tickets";return render()}
   const me=adm?"sup":"me", op=t.st==="open";
   const V = $("#view");
-  V.innerHTML = `<button class="back" data-act="${adm?"atks":"tickets"}">${adm?"Тикеты":"Поддержка"}</button>
-  <div class="row">
-    <div style="min-width:0">
-      <h2 style="font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.subj)}</h2>
-      <div class="mut">№${t.id} · ${adm?esc(t.who)+" · ":""}${tm(t.ts)}</div>
-      <div class="mut" style="font-size:12px;margin-top:2px">${op ? "🗑 После закрытия обращение удаляется через 14 дней" : "🗑 Обращение "+tkDel(t)+" · можно открыть заново"}</div>
+  V.innerHTML = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+    <button class="back" data-act="${adm?"atks":"tickets"}" style="margin-bottom:0;flex-shrink:0" aria-label="Назад"></button>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.subj)}</div>
+      <div class="mut" style="font-size:12px">№${t.id}${adm?" · "+esc(t.who):""} · ${tm(t.ts)}</div>
     </div>
-    <span class="tag ${op?'ok':''}">${op?"Открыт":"Закрыт"}</span>
+    <span class="tag ${op?'ok':''}" style="flex-shrink:0">${op?"Открыт":"Закрыт"}</span>
   </div>
+  ${!op?`<div style="background:rgba(255,180,0,.08);border:1px solid rgba(255,180,0,.2);border-radius:12px;padding:8px 12px;font-size:12px;color:var(--sub);margin-bottom:8px">🗑 Обращение ${tkDel(t)}</div>`:""}
   <div class="chat">${(()=>{
     // Индекс последнего своего сообщения (для галочек)
     const lastMineIdx = t.msgs.reduce((acc,m,i)=>m.f===me?i:acc,-1);
@@ -2313,12 +2602,11 @@ function chat(adm) {
     return t.msgs.map((m,i)=>`<div class="bub ${m.f===me?"me":"th"}">
     ${m.ph?(()=>{
       const isFileId = /^[A-Za-z0-9_\-]{20,}$/.test(m.ph)&&!m.ph.startsWith("http");
-      const src = isFileId ? "" : esc(m.ph);
       const mb = m.t?"6px":"0";
       if(isFileId){
-        return `<div data-fileid="${esc(m.ph)}" class="tk-photo-wrap" style="max-width:100%;min-height:120px;border-radius:10px;background:var(--sf2);margin-bottom:${mb};display:block"></div>`;
+        return `<div data-fileid="${esc(m.ph)}" style="max-width:100%;min-height:100px;border-radius:10px;background:var(--sf2);margin-bottom:${mb};overflow:hidden;position:relative"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:12px">Загрузка…</div></div>`;
       }
-      return `<img src="${src}" style="max-width:100%;border-radius:10px;display:block;margin-bottom:${mb}" loading="lazy" onerror="this.style.display='none'">`;
+      return `<img src="${esc(m.ph)}" style="max-width:100%;border-radius:10px;display:block;margin-bottom:${mb}" onerror="this.style.display='none'">`;
     })():""}
     ${m.t?`<div>${esc(m.t)}</div>`:""}
     <small>${m.f==="me"?(adm?"Клиент":"Вы"):"Поддержка"} · ${tm(m.ts)}${i===lastMineIdx&&m.f===me?`<span class="bub-checks" title="${isRead?"Прочитано":"Доставлено"}">${isRead?dblChk:chk}</span>`:""}</small>
@@ -2636,7 +2924,6 @@ function tkPhotoSrc(ph) {
 }
 // Резолвим все file_id изображения в чате сразу после рендера
 async function tkResolveImages() {
-  // Ищем и <img data-fileid> и <div data-fileid> (разные версии рендера)
   const els = document.querySelectorAll("[data-fileid]");
   await Promise.all(Array.from(els).map(async el => {
     const fid = el.dataset.fileid;
@@ -2645,18 +2932,18 @@ async function tkResolveImages() {
     try {
       const j = await api("/api/upload?file_id=" + encodeURIComponent(fid));
       if (j.ok && j.url) {
-        // Заменяем div-скелетон на img
+        const marginBottom = el.style.marginBottom || "";
         const img = document.createElement("img");
         img.src = j.url;
-        img.style.cssText = el.style.cssText;
-        img.style.minHeight = "";
-        img.style.background = "";
         img.style.maxWidth = "100%";
         img.style.borderRadius = "10px";
         img.style.display = "block";
+        img.style.marginBottom = marginBottom;
         img.onerror = () => { img.style.display = "none"; };
         el.replaceWith(img);
       } else {
+        el.innerHTML = "";
+        el.style.minHeight = "0";
         el.style.display = "none";
       }
     } catch(_) {
@@ -2992,7 +3279,7 @@ document.addEventListener("click", e => {
   if (s0 === s1) { toast("Сначала выделите слово в тексте"); return; }
   bar._sel = { s0, s1 };
   if (k === "b") wrap("**", "**");
-  else { row.style.display = "flex"; inp.focus(); }
+  else { row.style.display = "flex"; inp.focus({preventScroll:true}); }
 });
 const bcRich = t => esc(t)
   .replace(/\[([^\]\n]+)\]\(((?:https?|tg):\/\/[^\s)"]+)\)/g, '<span style="color:#5aa9e6">$1</span>')
@@ -3406,11 +3693,11 @@ async function loadOrders() {
   if(!tgInit()) return;
   try {
     const rows = await api("/api/orders");
-    const CRED_TTL = 14 * 24 * 60 * 60 * 1000;
     S.orders = rows
       .map(r => {
-        const aged = r.created_at && (Date.now() - new Date(r.created_at).getTime()) > CRED_TTL;
-        return {n:r.id, id:r.id, plan:"buy", exp:null, span:0, created_at:r.created_at, aged,
+        const until = r.creds_until ? new Date(r.creds_until).getTime() : (r.created_at ? new Date(r.created_at).getTime() + 14*864e5 : 0);
+        const aged = !!until && until <= Date.now();
+        return {n:r.id, id:r.id, plan:"buy", exp:null, span:0, created_at:r.created_at, until, aged,
           p: Object.assign({}, PACKS.find(x => x.id === r.pack_id) || {}, {
             name:r.name,
             login: aged ? null : r.login,
@@ -3423,6 +3710,8 @@ async function loadOrders() {
     S.spent = rows.reduce((a, r) => a + (+r.price_rub || 0), 0);
   } catch(e) {}
 }
+
+
 async function waitOrder(id) {
   for(let k = 0; k < 20; k++) {
     await loadOrders();
@@ -3688,6 +3977,9 @@ document.addEventListener("click", e => {
   const b = e.target.closest("[data-act]"); if(!b) return;
   const a=b.dataset.act, i=+b.dataset.i, o=S.orders[i], id=+b.dataset.id;
 
+  if(a==="psort"){S.pf=b.dataset.s;S.pall=false;pkUpdate();return}
+  if(a==="pall"){S.pall=!S.pall;pkUpdate();if(!S.pall) scrollToEl($("#packs-h"));return}
+  if(a==="rvwrite"){rvWrite();return}
   if(a==="mine"){S.tab="mine";render();scrollTo(0,0);return}
   if(a==="tickets"){S.tab="tickets";render();scrollTo(0,0);return}
   if(a==="atks"){S.tab="atks";render();scrollTo(0,0);return}
@@ -3696,27 +3988,27 @@ document.addEventListener("click", e => {
   if(a==="tnew"){
     // Step 1: category picker
     const CATS = [
-      {id:"acc",  icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`, label:"Аккаунт не работает",    hint:"Неверный пароль, заблокирован"},
-      {id:"pay",  icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>`, label:"Вопрос по оплате",       hint:"Не прошёл платёж или списали дважды"},
-      {id:"ref",  icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`, label:"Возврат на баланс",       hint:"Возврат работает 14 дней с покупки"},
-      {id:"ext",  icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`, label:"Продление доступа",      hint:"Доступ истёк или хочу продлить"},
-      {id:"game", icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`, label:"Запросить игру",          hint:"Нет нужной игры — хочу чтобы добавили"},
-      {id:"other",icon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`, label:"Другой вопрос",           hint:"Всё остальное"},
+      {id:"acc",  icon:"🔐", label:"Аккаунт не работает",    color:"var(--hot)",  hint:"Неверный пароль, заблокирован, просит код"},
+      {id:"pay",  icon:"💳", label:"Вопрос по оплате",       color:"var(--warn)", hint:"Не прошёл платёж, списали дважды"},
+      {id:"ref",  icon:"💰", label:"Возврат на баланс",       color:"var(--ok)",   hint:"Хочу вернуть средства — 14 дней с покупки"},
+      {id:"ext",  icon:"🕐", label:"Продление доступа",       color:"var(--ac)",   hint:"Доступ истёк или хочу продлить"},
+      {id:"game", icon:"🎮", label:"Запросить игру",          color:"#a78bfa",     hint:"Нет нужной игры — хочу, чтобы добавили"},
+      {id:"other",icon:"💬", label:"Другой вопрос",           color:"var(--sub)",  hint:"Всё остальное"},
     ];
-    sheet(`<div style="display:flex;align-items:center;gap:12px;padding-bottom:2px">
-      <div style="width:44px;height:44px;border-radius:14px;background:color-mix(in srgb,var(--ac) 14%,var(--sf2));display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--ac)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-      </div>
-      <div>
-        <h2 style="font-size:17px;line-height:1.2">Служба поддержки</h2>
-        <div class="mut" style="font-size:12px;margin-top:2px">Ответим в течение часа · ежедневно</div>
-      </div>
+    sheet(`<div style="text-align:center;padding-bottom:4px">
+      <div style="font-size:22px;margin-bottom:6px">🎧</div>
+      <h2 style="font-size:19px">Поддержка</h2>
+      <div class="mut" style="margin-top:4px;font-size:13px">Обычно отвечаем в течение 24 часов</div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:6px;margin-top:2px">
-      ${CATS.map(c=>`<button class="sh-opt" data-act="tcat" data-cat="${c.id}">
-        <div class="sh-opt-ic">${c.icon}</div>
-        <div class="sh-opt-t"><b>${c.label}</b><span>${c.hint}</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      ${CATS.map(c=>`<button class="kpi" style="align-items:flex-start;cursor:pointer" data-act="tcat" data-cat="${c.id}">
+        <span style="font-size:24px;line-height:1">${c.icon}</span>
+        <b style="font-size:14px;line-height:1.3;margin-top:4px;color:${c.color}">${c.label}</b>
+        <small style="line-height:1.35;white-space:normal;margin-top:2px">${c.hint}</small>
       </button>`).join("")}
+    </div>
+    <div style="text-align:center;margin-top:4px">
+      <div class="mut" style="font-size:12px">Работаем ежедневно · среднее время ответа <b>45 мин</b></div>
     </div>`);
     return;
   }
@@ -4141,7 +4433,7 @@ document.addEventListener("click", e => {
   if(a==="popadd"){const g=S._pr&&S._pr[i];if(g&&!S.pop.includes(g)){S.pop.push(g);saveSettings("pop",S.pop);toast("Добавлено в популярные")}admin();return}
   if(a==="popdel"){S.pop.splice(i,1);saveSettings("pop",S.pop);admin();return}
   if(a==="popup"){if(i>0){[S.pop[i-1],S.pop[i]]=[S.pop[i],S.pop[i-1]];saveSettings("pop",S.pop)}admin();return}
-  if(a==="topacks"){const h=$("#packs-h"); if(h) h.scrollIntoView({behavior:"smooth",block:"start"}); hap(); return}
+  if(a==="topacks"){scrollToEl($("#packs-h")); hap(); return}
   if(a==="rnd"){rndGame();hap();return}
   if(a==="fav"){
     const g=decodeURIComponent(b.dataset.g), on=!S.fav.has(g);
@@ -4269,14 +4561,22 @@ document.addEventListener("click", e => {
     render();
     return;
   }
+  if(a==="tref"){
+    if(b.classList.contains("busy")) return;
+    b.classList.add("busy");
+    api("/api/orders",{method:"PATCH",body:{id:o.id}})
+      .then(async()=>{ await loadOrders(); render(); toast("Таймер обновлён — снова 14 дней ✓"); })
+      .catch(e=>{ b.classList.remove("busy"); toast(e.message==="not_allowed"?"Обновить можно, когда осталось 7 дней или меньше":"Не удалось обновить таймер"); });
+    return;
+  }
   if(a==="credhint"){
     sheet(`<div class="sh-grip"></div>
     <div class="sh-head">
       <div class="sh-ic">${'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>'}</div>
       <div class="sh-t"><h2>Срок показа данных</h2><div>Как работает гарантийный период</div></div>
     </div>
-    <div class="sh-pt"><div class="sh-pt-n">14</div><div><b>14 дней после покупки</b><span>Именно столько логин и пароль отображаются в приложении — это срок гарантии.</span></div></div>
-    <div class="sh-pt"><div class="sh-pt-n">2</div><div><b>Сохраните данные заранее</b><span>Скопируйте логин и пароль в надёжное место, пока они доступны.</span></div></div>
+    <div class="sh-pt"><div class="sh-pt-n">1</div><div><b>14 дней после покупки</b><span>Именно столько логин и пароль отображаются в приложении — это срок гарантии.</span></div></div>
+    <div class="sh-pt"><div class="sh-pt-n">2</div><div><b>Нужны данные дольше?</b><span>Когда останется 7 дней или меньше, появится кнопка «Обновить таймер» — он снова станет 14 дней.</span></div></div>
     <div class="sh-pt"><div class="sh-pt-n ok">✓</div><div><b>Доступ не пропадает</b><span>После скрытия данных аккаунт остаётся с вами — меняется только отображение.</span></div></div>
     <button class="sh-btn" data-act="sclose">Понятно</button>`);
     return;
@@ -4417,6 +4717,8 @@ try {
   if(w){
     w.ready(); w.expand();
     w.disableVerticalSwipes?.();
+    // На ПК приложение не должно застревать в полноэкранном режиме
+    try { if (w.isFullscreen && !/android|ios/i.test(w.platform||"")) w.exitFullscreen?.(); } catch(_) {}
     // Telegram тему НЕ применяем автоматически — пользователь управляет сам
   }
 } catch(e){}
