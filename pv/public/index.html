@@ -4122,7 +4122,7 @@ const crEst = (plat, topic, views, ins) => {
 const CR_ERR = {
   bad_url:"Ссылка не подходит: проверьте площадку и адрес", bad_views:"Укажите число просмотров", dup:"Это видео уже отправляли",
   limit_pending:"Уже есть 3 заявки на проверке, дождитесь ответа", limit_day:"Слишком много заявок за сутки", bad_request:"Проверьте заполнение формы",
-  no_schema:"Раздел ещё не подключён (нужен патч базы)", auth:"Откройте приложение в Telegram",
+  no_schema:"Раздел ещё не подключён (нужен патч базы)", auth:"Откройте приложение в Telegram", timeout:"Сервер не ответил, попробуйте ещё раз",
 };
 async function crLoadMine() {
   if(!tgInit()) return;
@@ -4161,7 +4161,7 @@ function creators(fresh = true) {
     <div class="cr-exb">
       <div class="mut">Так выглядит ролик с баннером и рекламной вставкой. Нажмите на пункт, чтобы перейти к моменту.</div>
       <div class="cr-extl">
-        ${[["0:03","Баннер появляется на всю ширину кадра",3],["0:10","Рекламная вставка (3 секунды) со звуком",10],["0:13","Баннер остаётся на экране до конца",13]].map(([tm,tx,sec]) => `<button type="button" class="cr-tp" data-act="crseek" data-t="${sec}"><b>${tm}</b><span>${tx}</span></button>`).join("")}
+        ${[["0:03","Баннер появляется на всю ширину кадра",3],["0:10","Рекламная вставка (около 6 секунд) со звуком",10],["0:13","Баннер остаётся на экране до конца",13]].map(([tm,tx,sec]) => `<button type="button" class="cr-tp" data-act="crseek" data-t="${sec}"><b>${tm}</b><span>${tx}</span></button>`).join("")}
       </div>
     </div>
   </div>
@@ -4194,7 +4194,7 @@ function creators(fresh = true) {
   </div>
   <div class="sec-head"><h2>Рекламная вставка · бонус</h2></div>
   <div class="card cr-banner cr-ins" id="cr-i">
-    <div class="cr-ib">Короткий фрагмент (3 секунды) со звуком. Встройте его в своё видео целиком и отметьте это в заявке: к ставке темы добавится надбавка за каждый шаг просмотров (<b>+${Math.min(...Object.values(c.topics).map(t => t.b))}–${Math.max(...Object.values(c.topics).map(t => t.b))} ₽</b>, зависит от темы, см. таблицу выше).</div>
+    <div class="cr-ib">Короткий фрагмент (около 6 секунд) со звуком. Встройте его в своё видео целиком и отметьте это в заявке: к ставке темы добавится надбавка за каждый шаг просмотров (<b>+${Math.min(...Object.values(c.topics).map(t => t.b))}–${Math.max(...Object.values(c.topics).map(t => t.b))} ₽</b>, зависит от темы, см. таблицу выше).</div>
     <div class="cr-ivw"><video poster="/promo/playvault_insert.jpg" preload="none" controls playsinline src="/promo/playvault_insert_v.mp4"></video></div>
     <div class="cr-var">
       <div class="cr-chips">${CR_INSERTS.map(v => `<button type="button" class="pk-chip ${v.k===(S._criv||"iv")?"on":""}" data-act="crvar" data-g="i" data-v="${v.k}">${v.n} · ${v.d}</button>`).join("")}</div>
@@ -4337,7 +4337,7 @@ document.addEventListener("click", e => {
     b.disabled = true; b.textContent = "Отправляем…";
     api("/api/x?r=creators", {method:"POST", body:{action:"create", platform:f.platform, topic:f.topic, url:f.url, views:+f.views, insert:!!f.ins}})
       .then(async () => { S._crf = {platform:f.platform, topic:f.topic}; closeSheet(); await crLoadMine(); if(S.tab === "creators") creators(false); toast("Заявка отправлена ✓ Проверим до 3 дней"); })
-      .catch(e => { b.disabled = false; b.textContent = "Отправить на проверку"; toast(CR_ERR[e.message] || "Не удалось отправить заявку"); });
+      .catch(e => { b.disabled = false; b.textContent = "Отправить на проверку"; toast(CR_ERR[e.message] || ("Не удалось отправить заявку (" + e.message + (e.detail ? ": " + String(e.detail).slice(0,90) : "") + ")")); });
     return;
   }
   if(a==="crseek"){
