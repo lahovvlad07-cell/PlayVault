@@ -1050,6 +1050,83 @@ div.rvs-pack{display:inline-flex;align-self:flex-start}
 .sup-row b{display:block;font-size:14.5px;font-weight:700;color:var(--ink)}
 .sup-row small{display:block;font-size:12.5px;color:var(--sub);margin-top:2px;line-height:1.35}
 .sup-go{width:18px;height:18px;fill:none;stroke:var(--sub);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none;opacity:.7}
+
+/* ── v17: программа для авторов ── */
+.cr-entry{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:13px 14px;border-radius:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--ac) 16%,var(--sf)),var(--sf));border:1px solid color-mix(in srgb,var(--ac) 32%,var(--brd));margin-top:4px;transition:transform .1s}
+.cr-entry:active{transform:scale(.985)}
+.cr-entry>i{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--ac) 18%,transparent);color:var(--ac)}
+.cr-entry>span{flex:1;min-width:0}
+.cr-entry b{display:block;font-size:14.5px;font-weight:700;color:var(--ink)}
+.cr-entry small{display:block;font-size:12.5px;color:var(--sub);margin-top:2px;line-height:1.35}
+.cr-go{width:18px;height:18px;fill:none;stroke:var(--sub);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.cr-hero{padding:6px 2px 0}
+.cr-badge{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:999px;font-size:12px;font-weight:700;color:var(--ac);background:color-mix(in srgb,var(--ac) 14%,transparent);border:1px solid color-mix(in srgb,var(--ac) 30%,transparent)}
+.cr-hero h2{font-size:26px;font-weight:800;letter-spacing:-.03em;margin:10px 0 6px}
+.cr-hero p{margin:0;font-size:14px;line-height:1.5;color:var(--sub)}
+.cr-steps{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.cr-step{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:14px;background:var(--sf);border:1px solid var(--brd)}
+.cr-step>b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:13px;font-weight:800;color:var(--ac);background:color-mix(in srgb,var(--ac) 14%,transparent)}
+.cr-step i{display:block;font-style:normal;font-size:14px;font-weight:700;color:var(--ink)}
+.cr-step small{display:block;font-size:12.5px;color:var(--sub);margin-top:1px}
+.cr-rates{padding:6px 0 0;gap:0;overflow:hidden}
+.cr-rr{display:grid;grid-template-columns:1.5fr repeat(var(--cols,2),minmax(64px,.7fr));gap:8px;align-items:center;padding:11px 14px;border-top:1px solid var(--brd);font-size:14px}
+.cr-rr:first-child{border-top:0}
+.cr-rr>span:not(:first-child){text-align:right}
+.cr-rr b{font-weight:800}
+.cr-rr.top b{color:var(--ok)}
+.cr-rr em{font-style:normal;font-size:10.5px;font-weight:800;color:var(--ok);background:rgba(92,184,122,.14);padding:2px 6px;border-radius:6px;margin-left:4px;vertical-align:1px}
+.cr-rh{font-size:12px;color:var(--sub);font-weight:600}
+.cr-rr small{display:block;font-weight:500;font-size:11.5px;color:var(--sub);margin-top:2px}
+.cr-rh small{display:block;font-weight:500;opacity:.8;margin-top:1px}
+.cr-note{padding:12px 14px;border-top:1px solid var(--brd);font-size:12.5px;line-height:1.55;color:var(--sub);background:var(--sf2)}
+.cr-note b{color:var(--ink)}
+.cr-banner{padding:0;overflow:hidden;gap:0}
+.cr-banner video{width:100%;display:block;background:#000;aspect-ratio:4/1}
+.cr-bb{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}
+.cr-rules{gap:8px}
+.cr-rules h3{margin:0;font-size:15px}
+.cr-rules ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px;font-size:13px;line-height:1.5;color:var(--sub)}
+.cr-rules b{color:var(--ink)}
+.cr-send{width:100%;height:50px;display:flex;align-items:center;justify-content:center;gap:8px}
+.cr-list{display:flex;flex-direction:column;gap:10px}
+.cr-item,.cr-adm{display:flex;flex-direction:column;gap:7px;padding:13px 14px;border-radius:16px;background:var(--sf);border:1px solid var(--brd)}
+.cr-it{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cr-it b{font-size:14px}
+.cr-st{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:8px;white-space:nowrap}
+.cr-st.ok{color:var(--ok);background:rgba(92,184,122,.14)}
+.cr-st.bad{color:var(--hot);background:rgba(224,92,92,.14)}
+.cr-st.wait{color:var(--warn);background:rgba(232,168,74,.14)}
+.cr-link{font-size:12.5px;color:var(--ac);text-decoration:none;word-break:break-all;cursor:pointer}
+.cr-code{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border-radius:11px;background:var(--sf2);border:1px dashed var(--brd)}
+.cr-code code{font-size:15px;font-weight:800;letter-spacing:.05em}
+.cr-why{font-size:12.5px;line-height:1.45;color:var(--sub);padding:9px 11px;border-radius:11px;background:var(--sf2)}
+.cr-chips{display:flex;flex-wrap:wrap;gap:6px}
+.cr-inp{height:46px;padding:0 14px}
+.cr-est{font-size:13px;color:var(--ink);padding:11px 13px;border-radius:12px;background:var(--sf2);border:1px solid var(--brd);line-height:1.45}
+.cr-est span{color:var(--sub);font-size:12px}
+.cr-ex{padding:0;overflow:hidden;gap:0}
+.cr-exb{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.cr-extl{display:flex;flex-direction:column;gap:6px}
+.cr-tp{display:flex;gap:12px;align-items:center;text-align:left;padding:10px 12px;border:1px solid var(--brd);border-radius:12px;background:var(--sf2);color:var(--ink);font:inherit;cursor:pointer}
+.cr-tp b{font-variant-numeric:tabular-nums;color:var(--acc,#5ba3dc);min-width:34px}
+.cr-tp span{font-size:13.5px;line-height:1.4}
+.cr-var{padding:12px 12px 4px}
+.cr-vt{font-size:12.5px;margin-top:8px}
+.cr-ins .cr-ib{padding:14px 14px 6px;font-size:13.5px;line-height:1.55;color:var(--sub)}
+.cr-ins .cr-ib b{color:var(--ok)}
+.cr-ivw{display:flex;justify-content:center;background:#000;margin-top:8px}
+.cr-ivw video{width:auto;max-width:100%;max-height:360px;aspect-ratio:9/16;background:#000}
+.cr-ivw.h video{width:100%;max-height:none}
+.cr-tog{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--brd);border-radius:14px;background:var(--sf2);margin:4px 0 8px;cursor:pointer}
+.cr-tog input{width:20px;height:20px;margin-top:2px;accent-color:var(--acc,#5ba3dc);flex:none}
+.cr-tog b{display:block;font-size:14px}
+.cr-tog small{display:block;font-size:12px;color:var(--sub);margin-top:2px}
+.cr-ed{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cr-edh{grid-column:1/-1;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);margin-top:6px}
+.cr-ed label,.cr-pay label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mut);font-weight:600}
+.cr-pay{display:grid;grid-template-columns:90px 1fr 1fr;gap:8px;align-items:end}
+.cr-hist{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--brd);font-size:13px}
+.cr-hist:first-child{border-top:0}
 </style>
 
 <div id="pv-splash">
@@ -1762,7 +1839,7 @@ async function createTicket(subj, text){
 function chrome() {
   const bal = $("#balchip");
   if(bal) bal.textContent = r(S.bal);
-  $$("#nav button").forEach(b => b.classList.toggle("on", b.dataset.t===({admin:"me",atks:"me",atk:"me",favs:"me",tickets:"mine",ticket:"mine"}[S.tab]||S.tab)));
+  $$("#nav button").forEach(b => b.classList.toggle("on", b.dataset.t===({admin:"me",atks:"me",atk:"me",favs:"me",tickets:"mine",creators:"mine",ticket:"mine"}[S.tab]||S.tab)));
   const nb = document.querySelector("#nav button[data-t=mine]"), un = unreadU();
   if(un) nb.dataset.n = un; else delete nb.dataset.n;
 }
@@ -2489,6 +2566,7 @@ function me() {
   </div>
   ${favCard()}
   ${refCard()}
+  ${creatorsCard()}
   <div class="card mp-card mp-faq">
     <div class="mp-faq-head"><h3>Вопросы и ответы</h3></div>
     <details>
@@ -2583,6 +2661,7 @@ function tickets() {
     </div>
   </button>`;}).join("")}
   `}`;
+  V.insertAdjacentHTML("beforeend", creatorsCard());
 }
 
 function atks(fresh = true) {
@@ -2730,6 +2809,7 @@ function chat(adm) {
 // ADMIN: общие элементы оформления
 // ═══════════════════════════════════════════
 const IC = {
+  vid:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/>',
   dash:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   wants:'<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/>',
   cat:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
@@ -2764,11 +2844,11 @@ const dateRu = ts => new Date(ts).toLocaleDateString("ru",{day:"numeric",month:"
 
 function admHead(cur){
   const aw = S.atickets.filter(t=>t.ua).length;
-  const T = [["dash","Обзор"],["wants","Спрос"],["cat","Каталог"],["promo","Промо"],["tk","Тикеты"],["bc","Рассылка"],["team","Админы"]];
+  const T = [["dash","Обзор"],["wants","Спрос"],["cat","Каталог"],["promo","Промо"],["vid","Видео"],["tk","Тикеты"],["bc","Рассылка"],["team","Админы"]];
   return `<button class="back" data-act="mebk">Профиль</button>
   <div class="atabs">${T.map(([k,l])=>`<button class="atab ${cur===k?"on":""}" data-act="atab" data-t="${k}">${ico(k,16)}<span>${l}</span>${k==="tk"&&aw?`<i>${aw}</i>`:""}</button>`).join("")}</div>`;
 }
-function admin(){ ({dash:adminDash, wants:adminWants, cat:adminCat, promo:adminPromo, bc:adminBroadcast, team:adminTeam})[S.at || "dash"](); }
+function admin(){ ({dash:adminDash, wants:adminWants, cat:adminCat, promo:adminPromo, vid:adminVid, bc:adminBroadcast, team:adminTeam})[S.at || "dash"](); }
 
 // ── Каталог ──
 function adminCat() {
@@ -3867,6 +3947,7 @@ async function loadSettings() {
     if(j.rec) S.rec = j.rec;
     if(j.pop) S.pop = j.pop;
     if(j.stars_rate) S.starsRate = j.stars_rate;
+    if(j.creator_rates) S.crRates = j.creator_rates;
     if(j.ref_bonus !== undefined) { S.refBonus = j.ref_bonus; ME.bonus = j.ref_bonus; }
     // disc больше не читается из settings — источник правды теперь packs.disc (loadServerPacks)
     if(j.slots) {
@@ -3984,9 +4065,253 @@ const tabsFix = () => {
 };
 document.addEventListener("scroll", e => { if(e.target.classList && e.target.classList.contains("atabs")) TABX = e.target.scrollLeft; }, true);
 new MutationObserver(tabsFix).observe(document.getElementById("view"), {childList:true});
+
+// ═══════════════════════════════════════════
+//  Программа для авторов: баннер в видео за просмотры
+// ═══════════════════════════════════════════
+const CR_DEF = {
+  topics: {
+    games:{n:"Видеоигры",r:5,b:2,h:"Обзоры, летсплеи, гайды, стримы, киберспорт"},
+    cinema:{n:"Кино, сериалы, аниме",r:3,b:2,h:"Обзоры, разборы, нарезки, трейлеры"},
+    tech:{n:"Технологии и гаджеты",r:3,b:2,h:"ПК, телефоны, софт, нейросети"},
+    edu:{n:"Образование и наука",r:2,b:1,h:"Лайфхаки, факты, обучение"},
+    fun:{n:"Юмор и развлечения",r:2,b:1,h:"Мемы, скетчи, челленджи, шоу"},
+    music:{n:"Музыка",r:2,b:1,h:"Каверы, клипы, подборки, нарезки"},
+    sport:{n:"Спорт и авто",r:2,b:1,h:"Тренировки, матчи, машины, мото"},
+    blog:{n:"Влоги и лайфстайл",r:1,b:1,h:"Повседневность, путешествия, мода, еда"},
+    other:{n:"Другие темы",r:1,b:1,h:"Всё, что не вошло в список"}
+  },
+  platforms: {
+    youtube:{n:"YouTube",unit:1000,h:"Обычные видео и Shorts"},
+    vk:{n:"VK Видео",unit:1000,h:"Видео и клипы"},
+    tiktok:{n:"TikTok",unit:5000},
+    instagram:{n:"Instagram Reels",unit:3000}
+  },
+  cap: 300
+};
+const CR_REASONS = [
+  ["no_banner","Баннер не найден или виден меньше 5 секунд"],
+  ["views","Просмотров пока недостаточно"],
+  ["bad_views","Число просмотров не совпадает с реальным"],
+  ["private","Видео закрыто или недоступно"],
+  ["dup","Это видео уже проверялось"],
+  ["rules","Нарушение правил площадки или программы"],
+  ["fake","Признаки накрутки просмотров"],
+];
+function crCfg() {
+  const o = S.crRates || {}, out = {topics:{}, platforms:{}, cap: +o.cap > 0 ? +o.cap : CR_DEF.cap};
+  for(const k in CR_DEF.topics) { const v = o.topics && o.topics[k]; out.topics[k] = {n:CR_DEF.topics[k].n, h:CR_DEF.topics[k].h, b: (o.bonus && o.bonus[k] !== undefined && o.bonus[k] !== null && o.bonus[k] !== "" && +o.bonus[k] >= 0) ? +o.bonus[k] : CR_DEF.topics[k].b, r: (v !== undefined && v !== null && v !== "" && +v >= 0) ? +v : CR_DEF.topics[k].r}; }
+  for(const k in CR_DEF.platforms) { const v = o.platforms && o.platforms[k]; out.platforms[k] = {n:CR_DEF.platforms[k].n, h:CR_DEF.platforms[k].h, unit: +v > 0 ? +v : CR_DEF.platforms[k].unit}; }
+  return out;
+}
+const crNum = n => Number(n).toLocaleString("ru");
+const CR_BANNERS = [
+  {k:"fhd", n:"Full HD", d:"1920×480", f:"playvault_banner.mp4", t:"Для горизонтальных роликов 1080p"},
+  {k:"4k", n:"4K", d:"3840×960", f:"playvault_banner_4k.mp4", t:"Для роликов 4K и крупных экранов"},
+  {k:"s", n:"Компактный", d:"1080×270", f:"playvault_banner_1080.mp4", t:"Для вертикальных и квадратных роликов"},
+];
+const CR_INSERTS = [
+  {k:"iv", n:"Вертикальная", d:"1080×1920", f:"playvault_insert_v.mp4", p:"playvault_insert.jpg", t:"Для Shorts, Reels, TikTok и клипов"},
+  {k:"ih", n:"Горизонтальная", d:"1920×1080", f:"playvault_insert_h.mp4", p:"playvault_insert.jpg", t:"Для обычных горизонтальных видео"},
+];
+const crEst = (plat, topic, views, ins) => {
+  const c = crCfg(), p = c.platforms[plat], t = c.topics[topic];
+  if(!p || !t) return 0;
+  return Math.min(c.cap, Math.floor((+views || 0) / p.unit) * (t.r + (ins ? t.b : 0)));
+};
+const CR_ERR = {
+  bad_url:"Ссылка не подходит: проверьте площадку и адрес", bad_views:"Укажите число просмотров", dup:"Это видео уже отправляли",
+  limit_pending:"Уже есть 3 заявки на проверке, дождитесь ответа", limit_day:"Слишком много заявок за сутки", bad_request:"Проверьте заполнение формы",
+  no_schema:"Раздел ещё не подключён (нужен патч базы)", auth:"Откройте приложение в Telegram",
+};
+async function crLoadMine() {
+  if(!tgInit()) return;
+  try { S.crMine = await api("/api/x?r=creators"); } catch(e) { if(!S.crMine) S.crMine = []; if(e.message === "no_schema") S.crErr = "no_schema"; }
+}
+function creatorsCard() {
+  return `<button class="cr-entry" data-act="creators">
+    <i>${ico("vid",21)}</i>
+    <span><b>Заработок на видео</b><small>Платим за просмотры роликов с нашим баннером</small></span>
+    <svg class="cr-go" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+  </button>`;
+}
+function crStatus(x) {
+  if(x.status === "paid") return `<span class="cr-st ok">${x.redeemed ? "Зачислено" : "Одобрено"} · ${x.reward} ₽</span>`;
+  if(x.status === "rejected") return `<span class="cr-st bad">Отклонено</span>`;
+  return `<span class="cr-st wait">На проверке</span>`;
+}
+function creators(fresh = true) {
+  const c = crCfg(), V = $("#view");
+  if(fresh) crLoadMine().then(() => { if(S.tab === "creators") creators(false); });
+  const L = S.crMine || [];
+  const ex = (() => { const pk = "youtube", tp = "games", v = 12400; return {v, sum: crEst(pk, tp, v), steps: Math.floor(v / c.platforms[pk].unit), r: c.topics[tp].r, u: c.platforms[pk].unit}; })();
+  const ex2 = (() => { const pk = "tiktok", tp = "fun", v = 23000; return {v, sum: crEst(pk, tp, v), steps: Math.floor(v / c.platforms[pk].unit), r: c.topics[tp].r, u: c.platforms[pk].unit}; })();
+  V.innerHTML = `<button class="back" data-act="tickets">Поддержка</button>
+  <div class="cr-hero">
+    <span class="cr-badge">${ico("vid",15)} Для авторов</span>
+    <h2>Платим за просмотры</h2>
+    <p>Добавьте баннер PlayVault в своё видео. За каждый набранный «шаг» просмотров вы получаете рубли на баланс. Площадки: YouTube, VK Видео, TikTok и Instagram Reels.</p>
+  </div>
+  <div class="cr-steps">
+    ${[["1","Получите баннер","Мы пришлём видео-баннер вам в чат"],["2","Добавьте в ролик","Баннер виден не меньше 5 секунд"],["3","Опубликуйте и наберите просмотры","YouTube, VK Видео, TikTok или Reels"],["4","Отправьте ссылку","После проверки придёт промокод на баланс"]].map(([n,t,d]) => `<div class="cr-step"><b>${n}</b><span><i>${t}</i><small>${d}</small></span></div>`).join("")}
+  </div>
+  <div class="sec-head"><h2>Пример готового видео</h2></div>
+  <div class="card cr-ex">
+    <div class="cr-ivw"><video id="cr-exv" poster="/promo/playvault_example.jpg" preload="none" controls playsinline src="/promo/playvault_example.mp4"></video></div>
+    <div class="cr-exb">
+      <div class="mut">Так выглядит ролик с баннером и рекламной вставкой. Нажмите на пункт, чтобы перейти к моменту.</div>
+      <div class="cr-extl">
+        ${[["0:03","Баннер появляется на всю ширину кадра",3],["0:10","Рекламная вставка (3 секунды) со звуком",10],["0:13","Баннер остаётся на экране до конца",13]].map(([tm,tx,sec]) => `<button type="button" class="cr-tp" data-act="crseek" data-t="${sec}"><b>${tm}</b><span>${tx}</span></button>`).join("")}
+      </div>
+    </div>
+  </div>
+  <div class="sec-head"><h2>Ставки по темам</h2></div>
+  <div class="card cr-rates">
+    <div class="cr-rr cr-rh" style="--cols:2"><span>Тема видео</span><span>за шаг</span><span>со вставкой</span></div>
+    ${Object.values(c.topics).map((t,i) => `<div class="cr-rr ${i===0?"top":""}" style="--cols:2"><span>${esc(t.n)}${i===0?` <em>макс.</em>`:""}${t.h?`<small>${esc(t.h)}</small>`:""}</span><span><b>${t.r} ₽</b></span><span><b>${t.r + t.b} ₽</b></span></div>`).join("")}
+  </div>
+  <div class="sec-head"><h2>Шаг просмотров по площадкам</h2></div>
+  <div class="card cr-rates">
+    <div class="cr-rr cr-rh" style="--cols:1"><span>Площадка</span><span>один шаг</span></div>
+    ${Object.values(c.platforms).map(p => `<div class="cr-rr" style="--cols:1"><span>${esc(p.n)}${p.h?`<small>${esc(p.h)}</small>`:""}</span><span><b>${crNum(p.unit)}</b> <small style="display:inline;font-weight:500">просм.</small></span></div>`).join("")}
+    <div class="cr-note">Выплата = ставка темы × число полных шагов. Неполный шаг не считается. Если в видео есть рекламная вставка, к ставке за шаг добавляется надбавка. Максимум за одно видео — <b>${c.cap} ₽</b>.<br>
+    Пример 1: игровой ролик на YouTube, ${crNum(ex.v)} просмотров = ${ex.steps} × ${ex.r} ₽ = <b>${ex.sum} ₽</b>.<br>
+    Пример со вставкой: тот же игровой ролик, но с рекламной вставкой = ${ex.steps} × (${ex.r} + ${c.topics.games.b}) ₽ = <b>${crEst("youtube","games",ex.v,true)} ₽</b>.<br>
+    Пример 2: юмор в TikTok, ${crNum(ex2.v)} просмотров = ${ex2.steps} × ${ex2.r} ₽ = <b>${ex2.sum} ₽</b>.<br>
+    В TikTok и Reels просмотры набираются проще, поэтому шаг там больше.</div>
+  </div>
+  <div class="sec-head"><h2>Баннер</h2></div>
+  <div class="card cr-banner" id="cr-b">
+    <video poster="/promo/playvault_banner.jpg" preload="none" controls playsinline src="/promo/playvault_banner.mp4"></video>
+    <div class="cr-var">
+      <div class="cr-chips">${CR_BANNERS.map(v => `<button type="button" class="pk-chip ${v.k===(S._crbv||"fhd")?"on":""}" data-act="crvar" data-g="b" data-v="${v.k}">${v.n} · ${v.d}</button>`).join("")}</div>
+      <div class="mut cr-vt" id="cr-bt"></div>
+    </div>
+    <div class="cr-bb">
+      <button class="btn pri" data-act="crbanner" data-g="b">Получить в чат с ботом</button>
+      <button class="btn sec" data-act="crdl" data-g="b">Скачать файл</button>
+    </div>
+  </div>
+  <div class="sec-head"><h2>Рекламная вставка · бонус</h2></div>
+  <div class="card cr-banner cr-ins" id="cr-i">
+    <div class="cr-ib">Короткий фрагмент (3 секунды) со звуком. Встройте его в своё видео целиком и отметьте это в заявке: к ставке темы добавится надбавка за каждый шаг просмотров (<b>+${Math.min(...Object.values(c.topics).map(t => t.b))}–${Math.max(...Object.values(c.topics).map(t => t.b))} ₽</b>, зависит от темы, см. таблицу выше).</div>
+    <div class="cr-ivw"><video poster="/promo/playvault_insert.jpg" preload="none" controls playsinline src="/promo/playvault_insert_v.mp4"></video></div>
+    <div class="cr-var">
+      <div class="cr-chips">${CR_INSERTS.map(v => `<button type="button" class="pk-chip ${v.k===(S._criv||"iv")?"on":""}" data-act="crvar" data-g="i" data-v="${v.k}">${v.n} · ${v.d}</button>`).join("")}</div>
+      <div class="mut cr-vt" id="cr-it2"></div>
+    </div>
+    <div class="cr-bb">
+      <button class="btn pri" data-act="crbanner" data-g="i">Получить в чат с ботом</button>
+      <button class="btn sec" data-act="crdl" data-g="i">Скачать файл</button>
+    </div>
+  </div>
+  <div class="card cr-rules">
+    <h3>Правила программы</h3>
+    <ul>
+      <li>Баннер должен быть в видео целиком, на всю ширину кадра, и читаться минимум <b>5 секунд</b>. Место в ролике любое: начало, середина, конец.</li>
+      <li>Рекламная вставка (по желанию) должна быть в видео целиком, со звуком. Если вы отметили вставку, а её в ролике нет, заявка оплачивается без надбавки.</li>
+      <li>Видео опубликовано открыто и доступно по ссылке до конца проверки.</li>
+      <li>Только настоящие просмотры. За накрутку — отказ и закрытый доступ к программе.</li>
+      <li>Просмотры считаем на момент проверки. Заявку отправляйте, когда набралось хотя бы на один «шаг» из таблицы. Проверка до 3 дней.</li>
+      <li>Одно видео оплачивается один раз. Тему выбирайте по содержанию ролика: если указана неверно, ставка считается по реальной теме.</li>
+      <li>Награда приходит промокодом на баланс PlayVault (не деньгами на карту). Его можно потратить на любые наборы.</li>
+    </ul>
+  </div>
+  <button class="btn pri cr-send" data-act="crnew">${ico("vid",18)} Отправить видео на проверку</button>
+  ${S.crErr === "no_schema" ? `<div class="card empty"><div class="mut">Раздел ещё не подключён: выполните db/schema_patch12.sql в Supabase.</div></div>` : ""}
+  ${L.length ? `<div class="sec-head"><h2>Мои заявки</h2></div>
+  <div class="cr-list">${L.map(x => `<div class="cr-item">
+    <div class="cr-it"><b>${esc((c.platforms[x.platform]||{}).n || x.platform)} · ${esc((c.topics[x.topic]||{}).n || x.topic)}${x.with_insert ? " · со вставкой" : ""}</b>${crStatus(x)}</div>
+    <a class="cr-link" data-act="crlink" data-u="${encodeURIComponent(x.url)}">${esc(x.url.replace(/^https?:\/\/(www\.)?/, "").slice(0,48))}</a>
+    <div class="mut" style="font-size:12px">Просмотров указано: ${crNum(x.views)} · ${dateRu(x.created_at)}</div>
+    ${x.status === "paid" ? `<div class="cr-code"><code>${esc(x.promo_code)}</code>${x.redeemed ? `<span class="mut">уже на балансе</span>` : `<button class="btn pri sm" data-act="crredeem" data-code="${esc(x.promo_code)}">Зачислить на баланс</button>`}</div>` : ""}
+    ${x.status === "rejected" ? `<div class="cr-why">${esc((CR_REASONS.find(r => r[0] === x.reject_reason) || [0, x.reject_reason || ""])[1])}</div>` : ""}
+  </div>`).join("")}</div>` : ""}`;
+  crAfter();
+}
+function crAfter() { crVarPaint("b"); crVarPaint("i"); }
+function crForm() {
+  const c = crCfg();
+  S._crf = S._crf || {platform:"youtube", topic:"games"};
+  const f = S._crf;
+  const chips = (obj, cur, key) => Object.entries(obj).map(([k, v]) => `<button type="button" class="pk-chip ${cur===k?"on":""}" data-act="crpick" data-k="${key}" data-v="${k}">${esc(v.n)}</button>`).join("");
+  sheet(`<div class="sh-grip"></div>
+    <div class="sh-head">
+      <div class="sh-ic">${ico("vid",23)}</div>
+      <div class="sh-t"><h2>Заявка на проверку</h2><div>Проверяем до 3 дней</div></div>
+    </div>
+    <div class="rvs-block"><div class="rvs-lbl">Площадка</div><div class="cr-chips" id="cr-pl">${chips(c.platforms, f.platform, "platform")}</div></div>
+    <div class="rvs-block"><div class="rvs-lbl">Тема видео</div><div class="cr-chips" id="cr-tp">${chips(c.topics, f.topic, "topic")}</div></div>
+    <div class="rvs-block"><div class="rvs-lbl">Ссылка на видео</div><input class="search cr-inp" id="cr-url" type="url" inputmode="url" placeholder="https://" autocomplete="off" value="${esc(f.url||"")}"></div>
+    <div class="rvs-block"><div class="rvs-lbl">Просмотров сейчас</div><input class="search cr-inp" id="cr-views" type="number" inputmode="numeric" min="1" placeholder="Например, 12400" value="${f.views||""}"></div>
+    <label class="cr-tog"><input type="checkbox" id="cr-ins" ${f.ins?"checked":""}><span><b>В видео есть рекламная вставка</b><small id="cr-insb"></small></span></label>
+    <div class="cr-est" id="cr-est"></div>
+    <button class="sh-btn" id="cr-go" data-act="crsubmit">Отправить на проверку</button>`);
+  crEstPaint();
+  $("#cr-url").oninput = e => { S._crf.url = e.target.value; };
+  $("#cr-views").oninput = e => { S._crf.views = e.target.value; crEstPaint(); };
+  $("#cr-ins").onchange = e => { S._crf.ins = e.target.checked; crEstPaint(); };
+}
+function crVarPaint(g) {
+  const root = $(g === "i" ? "#cr-i" : "#cr-b"); if(!root) return;
+  const list = g === "i" ? CR_INSERTS : CR_BANNERS, k = g === "i" ? (S._criv || "iv") : (S._crbv || "fhd");
+  const it = list.find(x => x.k === k) || list[0];
+  root.querySelectorAll(".pk-chip").forEach(x => x.classList.toggle("on", x.dataset.v === it.k));
+  const v = root.querySelector("video"); if(v){ v.pause(); v.src = "/promo/" + it.f; if(g === "i"){ v.style.aspectRatio = it.k === "iv" ? "9/16" : "16/9"; v.parentElement.classList.toggle("h", it.k === "ih"); } v.load(); }
+  const t = root.querySelector(".cr-vt"); if(t) t.textContent = it.t;
+}
+function crEstPaint() {
+  const f = S._crf, el = $("#cr-est"); if(!el) return;
+  const c = crCfg(), p = c.platforms[f.platform], v = +f.views || 0, sum = crEst(f.platform, f.topic, v, f.ins);
+  const ib = $("#cr-insb"); if(ib) ib.textContent = "+" + ((c.topics[f.topic] || {}).b || 0) + " ₽ к ставке за каждый шаг для этой темы";
+  el.innerHTML = v ? (sum > 0 ? `Ориентировочно: <b>${sum} ₽</b> <span>(окончательную сумму назначает проверка)</span>` : `Для выплаты нужно хотя бы <b>${crNum(p.unit)}</b> просмотров на ${esc(p.n)}`) : `<span>Укажите просмотры, и мы покажем ориентировочную сумму</span>`;
+}
+async function crAdminLoad() {
+  try { S.crAll = await api("/api/x?r=creators&all=1"); S.crErr = null; } catch(e) { if(!S.crAll) S.crAll = []; S.crErr = e.message === "no_schema" ? "no_schema" : "err"; }
+}
+function adminVid(fresh = true) {
+  const V = $("#view"), c = crCfg();
+  if(fresh) crAdminLoad().then(() => { if(S.tab === "admin" && S.at === "vid") adminVid(false); });
+  const L = S.crAll;
+  if(!L) { V.innerHTML = `${admHead("vid")}${aTitle("vid","Видео авторов","Заявки на выплату за просмотры")}${aSkel(2)}`; return; }
+  if(S.crErr === "no_schema") { V.innerHTML = `${admHead("vid")}${aTitle("vid","Видео авторов","Заявки на выплату за просмотры")}${aEmpty("vid","Нет таблицы","Выполните db/schema_patch12.sql в Supabase")}`; return; }
+  const pend = L.filter(x => x.status === "pending"), done = L.filter(x => x.status !== "pending");
+  const who = x => esc(x.username ? "@" + x.username : (x.first_name || "id" + x.user_id));
+  V.innerHTML = `${admHead("vid")}${aTitle("vid","Видео авторов","Выдать промокод или отказать, больше ничего")}
+  <div class="card">
+    ${aCardH("wallet","Ставки",`<button class="btn pri sm" data-act="crratesave">Сохранить</button>`)}
+    <div class="mut" style="font-size:13px">Рубли за один «шаг» просмотров. Тема считается по ролику, шаг зависит от площадки.</div>
+    <div class="cr-ed">
+      <div class="cr-edh">Темы: ₽ за один шаг</div>
+      ${Object.entries(c.topics).map(([k,t]) => `<label>${esc(t.n)}<input class="num-input" type="number" min="0" step="0.5" data-cr="t:${k}" value="${t.r}"></label>`).join("")}
+      <div class="cr-edh">Надбавка за вставку: ₽ к шагу</div>
+      ${Object.entries(c.topics).map(([k,t]) => `<label>${esc(t.n)}<input class="num-input" type="number" min="0" step="0.5" data-cr="b:${k}" value="${t.b}"></label>`).join("")}
+      <div class="cr-edh">Площадки: просмотров в одном шаге</div>
+      ${Object.entries(c.platforms).map(([k,p]) => `<label>${esc(p.n)}<input class="num-input" type="number" min="1" step="100" data-cr="p:${k}" value="${p.unit}"></label>`).join("")}
+      <div class="cr-edh">Лимит</div>
+      <label>Максимум за видео, ₽<input class="num-input" type="number" min="1" data-cr="cap" value="${c.cap}"></label>
+    </div>
+  </div>
+  <div class="sec-head"><h2>На проверке · ${pend.length}</h2></div>
+  ${pend.length ? pend.map(x => `<div class="card cr-adm">
+    <div class="cr-it"><b>${who(x)}</b><span class="mut" style="font-size:12px">${dateRu(x.created_at)}</span></div>
+    <div class="mut">${esc((c.platforms[x.platform]||{}).n || x.platform)} · ${esc((c.topics[x.topic]||{}).n || x.topic)} · указано ${crNum(x.views)} просмотров${x.with_insert ? ` · <b style="color:var(--ok)">с рекламной вставкой</b>` : ""}</div>
+    <a class="cr-link" data-act="crlink" data-u="${encodeURIComponent(x.url)}">${esc(x.url.replace(/^https?:\/\/(www\.)?/, "").slice(0,56))}</a>
+    <div class="cr-pay">
+      <label>Выплата, ₽<input class="num-input" id="crp${x.id}" type="number" min="1" max="10000" value="${crEst(x.platform, x.topic, x.views, x.with_insert) || ""}"></label>
+      <button class="btn pri sm" data-act="crpay" data-id="${x.id}">Выдать промокод</button>
+      <button class="btn sec sm" data-act="crrej" data-id="${x.id}">Отказать</button>
+    </div>
+  </div>`).join("") : `<div class="card"><div class="mut">Новых заявок нет.</div></div>`}
+  ${done.length ? `<div class="sec-head"><h2>История</h2></div><div class="card">${done.slice(0,30).map(x => `<div class="cr-hist">
+    <div><b>${who(x)}</b> <span class="mut">${esc((c.platforms[x.platform]||{}).n || x.platform)} · ${dateRu(x.resolved_at || x.created_at)}</span></div>
+    <span class="cr-st ${x.status === "paid" ? "ok" : "bad"}">${x.status === "paid" ? "+" + x.reward + " ₽" : "Отказ"}</span>
+  </div>`).join("")}</div>` : ""}`;
+}
+
 const render = () => {
   if(["admin","atks","atk"].includes(S.tab) && !isAdmin()) S.tab = "me";
-  ({shop,mine,me,favs,admin,tickets,ticket:()=>chat(0),atks,atk:()=>chat(1)})[S.tab]();
+  ({shop,mine,me,favs,admin,tickets,creators,ticket:()=>chat(0),atks,atk:()=>chat(1)})[S.tab]();
   chrome(); tabsFix();
 };
 
@@ -4002,6 +4327,88 @@ document.addEventListener("click", e => {
 
   if(a==="psort"){S.pf=b.dataset.s;S.pall=false;pkUpdate();return}
   if(a==="pall"){S.pall=!S.pall;pkUpdate();if(!S.pall) scrollToEl($("#packs-h"));return}
+  if(a==="creators"){S.tab="creators";render();scrollTo(0,0);return}
+  if(a==="crnew"){S._crf = S._crf || {platform:"youtube", topic:"games"}; crForm(); return}
+  if(a==="crpick"){ S._crf[b.dataset.k] = b.dataset.v; const g = b.parentElement; g.querySelectorAll(".pk-chip").forEach(x => x.classList.toggle("on", x === b)); crEstPaint(); return }
+  if(a==="crsubmit"){
+    const f = S._crf || {}; f.url = ($("#cr-url")?.value || "").trim(); f.views = $("#cr-views")?.value;
+    if(!f.url){ toast("Вставьте ссылку на видео"); return; }
+    if(!(+f.views >= 1)){ toast("Укажите число просмотров"); return; }
+    b.disabled = true; b.textContent = "Отправляем…";
+    api("/api/x?r=creators", {method:"POST", body:{action:"create", platform:f.platform, topic:f.topic, url:f.url, views:+f.views, insert:!!f.ins}})
+      .then(async () => { S._crf = {platform:f.platform, topic:f.topic}; closeSheet(); await crLoadMine(); if(S.tab === "creators") creators(false); toast("Заявка отправлена ✓ Проверим до 3 дней"); })
+      .catch(e => { b.disabled = false; b.textContent = "Отправить на проверку"; toast(CR_ERR[e.message] || "Не удалось отправить заявку"); });
+    return;
+  }
+  if(a==="crseek"){
+    const v = $("#cr-exv"); if(!v) return;
+    const go = () => { try { v.currentTime = +b.dataset.t; } catch(_) {} v.play().catch(() => {}); };
+    if(v.readyState < 1){ v.preload = "auto"; v.addEventListener("loadedmetadata", go, {once:true}); v.load(); } else go();
+    return;
+  }
+  if(a==="crvar"){
+    const g = b.dataset.g; if(g === "b") S._crbv = b.dataset.v; else S._criv = b.dataset.v;
+    crVarPaint(g); return;
+  }
+  if(a==="crbanner"){
+    const g = b.dataset.g, v = g === "i" ? (S._criv || "iv") : (S._crbv || "fhd");
+    b.disabled = true;
+    api("/api/x?r=creators", {method:"POST", body:{action:"banner", v}})
+      .then(() => toast(g === "i" ? "Вставку отправили в чат с ботом ✓" : "Баннер отправили в чат с ботом ✓"))
+      .catch(() => { toast("Не получилось отправить в чат: скачайте файл"); })
+      .finally(() => { b.disabled = false; });
+    return;
+  }
+  if(a==="crdl"){
+    const g = b.dataset.g, list = g === "i" ? CR_INSERTS : CR_BANNERS, k = g === "i" ? (S._criv || "iv") : (S._crbv || "fhd");
+    const it = list.find(x => x.k === k) || list[0];
+    const url = location.origin + "/promo/" + it.f, w = window.Telegram && Telegram.WebApp;
+    try { if(w && w.downloadFile && w.isVersionAtLeast && w.isVersionAtLeast("8.0")) { w.downloadFile({url, file_name:"PlayVault_" + it.f.replace("playvault_","")}); return; } } catch(_) {}
+    if(w && w.openLink) w.openLink(url); else window.open(url, "_blank");
+    return;
+  }
+  if(a==="crlink"){
+    const u = decodeURIComponent(b.dataset.u || ""), w = window.Telegram && Telegram.WebApp;
+    if(w && w.openLink) w.openLink(u); else window.open(u, "_blank");
+    return;
+  }
+  if(a==="crredeem"){
+    b.disabled = true;
+    api("/api/x?r=promo", {method:"POST", body:{action:"redeem", code:b.dataset.code}})
+      .then(async j => { S.bal = j.balance; chrome(); toast("На баланс зачислено " + j.added + " ₽ ✓"); await crLoadMine(); if(S.tab === "creators") creators(false); })
+      .catch(e => { b.disabled = false; toast(e.message === "used" ? "Промокод уже использован" : e.message === "expired" ? "Срок промокода истёк" : "Не удалось зачислить"); });
+    return;
+  }
+  if(a==="crratesave"){
+    const o = {topics:{}, platforms:{}, bonus:{}};
+    $$("[data-cr]").forEach(inp => { const [t,k] = inp.dataset.cr.split(":"); const v = +inp.value; if(t === "t") o.topics[k] = v; else if(t === "b") o.bonus[k] = v; else if(t === "p") o.platforms[k] = v; else if(t === "cap") o.cap = v; });
+    if(!(o.cap > 0)){ toast("Укажите максимум за видео"); return; }
+    S.crRates = o; saveSettings("creator_rates", o).then(() => { toast("Ставки сохранены ✓"); }); adminVid(false);
+    return;
+  }
+  if(a==="crpay"){
+    const amt = Math.floor(+($("#crp" + id)?.value || 0));
+    if(!(amt >= 1 && amt <= 10000)){ toast("Укажите сумму выплаты"); return; }
+    b.disabled = true;
+    api("/api/x?r=creators", {method:"POST", body:{action:"pay", id, amount:amt}})
+      .then(async j => { toast("Промокод " + j.code + " отправлен автору ✓"); await crAdminLoad(); adminVid(false); })
+      .catch(e => { b.disabled = false; toast(e.message === "already" ? "Заявка уже обработана" : "Не удалось выдать промокод"); });
+    return;
+  }
+  if(a==="crrej"){
+    sheet(`<div class="sh-grip"></div>
+      <div class="sh-head"><div class="sh-ic warn">${ico("vid",23)}</div><div class="sh-t"><h2>Причина отказа</h2><div>Автор получит её в бота</div></div></div>
+      <div class="sh-list">${CR_REASONS.map(([k,t]) => `<button class="sh-opt" data-act="crrejgo" data-id="${id}" data-k="${k}"><span class="sh-opt-t"><b>${t}</b></span></button>`).join("")}</div>
+      <button class="sh-btn ghost" data-act="sclose">Отмена</button>`);
+    return;
+  }
+  if(a==="crrejgo"){
+    b.disabled = true;
+    api("/api/x?r=creators", {method:"POST", body:{action:"reject", id, reason:b.dataset.k}})
+      .then(async () => { closeSheet(); toast("Заявка отклонена"); await crAdminLoad(); adminVid(false); })
+      .catch(e => { b.disabled = false; toast(e.message === "already" ? "Заявка уже обработана" : "Не удалось отклонить"); });
+    return;
+  }
   if(a==="rvwrite"){rvWrite();return}
   if(a==="mine"){S.tab="mine";render();scrollTo(0,0);return}
   if(a==="tickets"){S.tab="tickets";render();scrollTo(0,0);return}
