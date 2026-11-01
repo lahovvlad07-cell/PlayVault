@@ -7,6 +7,7 @@ import stats    from "../lib/h/stats.js";
 import prices   from "../lib/h/steam-prices.js";
 import reviews      from "../lib/h/reviews.js";
 import notifyPrefs  from "../lib/h/notify-prefs.js";
+import creators     from "../lib/h/creators.js";
 
 import { sql, mkSql, tgUser, getRole, saveUser, bindRef, startParam, botName, getRefBonus, tg } from "../lib/core.js";
 
@@ -125,7 +126,7 @@ async function ping(req, res) {
 
 // ─── Роутер ─────────────────────────────────────────────────────────────────
 
-const H = { ping, me, settings, topup, promo, wants, tickets, stats, "steam-prices": prices, reviews, "notify-prefs": notifyPrefs };
+const H = { ping, me, settings, topup, promo, wants, tickets, stats, "steam-prices": prices, reviews, "notify-prefs": notifyPrefs, creators };
 
 export default async function handler(req, res) {
   const h = H[req.query?.r];
